@@ -3,10 +3,11 @@
 import { updateItemQuantity } from "@/components/cart/actions";
 import { useCart } from "@/components/cart/cart-context";
 import { currencyCodeMap } from "@/lib/constants";
-import { MetaObject, Product } from "@/lib/shopify/types";
+import { Product } from "@/lib/shopify/types";
 import Image from "next/image";
 import { useActionState, useEffect, useState, useTransition } from "react";
-import { Icon } from "../Icons";
+// import { Icon } from "../Icons";
+import { Button } from "./Button";
 import {
   Carousel,
   CarouselContent,
@@ -14,7 +15,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel";
-import { Button } from "./Button";
+// Removed unused Button import
 
 interface strainProps {
   product: Product[];
@@ -24,11 +25,16 @@ interface HeaderData {
   subHeader?: string;
 }
 
+interface HeaderField {
+  key: string;
+  value: string;
+}
+
 export function Strains({ product }: strainProps) {
 
   const { addCartItem, cart } = useCart();
   const [, formAction] = useActionState(updateItemQuantity, null);
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const [isLoading, setIsLoading] = useState(true);
   const [headerData, setHeaderData] = useState<HeaderData>({});
 
@@ -40,8 +46,8 @@ export function Strains({ product }: strainProps) {
         const { header } = await response.json();
         
         if (header?.fields) {
-          const mainHeader = header.fields.find((f: any) => f.key === 'main_header')?.value;
-          const subHeader = header.fields.find((f: any) => f.key === 'sub_header')?.value;
+          const mainHeader = header.fields.find((f: HeaderField) => f.key === 'main_header')?.value;
+          const subHeader = header.fields.find((f: HeaderField) => f.key === 'sub_header')?.value;
           setHeaderData({ mainHeader, subHeader });
         }
       } catch (error) {
@@ -154,10 +160,11 @@ export function Strains({ product }: strainProps) {
         <CarouselNext className=" size-9.5 md:size-12" />
       </Carousel>
 
-      <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="flex px-4 py-3 sm:px-8 sm:py-4 justify-center items-center gap-4 rounded-full border border-white bg-[#1D431D] shadow-[0_1px_0_1px_#1D431D] text-white text-sm sm:text-base font-bold leading-[150%] uppercase">
-        All strains
-        <Icon.arrowRightIcon />
-      </button>
+      <Button
+        title="All strains"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className="gap-4"
+      />
     </div>
   );
 }

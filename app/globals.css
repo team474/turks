@@ -22,6 +22,10 @@ body {
   overflow-x: hidden;
 }
 
+html, body {
+  scroll-behavior: smooth;
+}
+
 /* @layer base {
   *,
   ::after,

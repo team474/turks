@@ -13,6 +13,11 @@ const config: Config = {
         jura: ['var(--font-jura)', 'sans-serif'],
       },
       keyframes: {
+        shine: {
+          '0%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' },
+        },
         'accordion-down': {
           from: { height: '0' },
           to: { height: 'var(--radix-accordion-content-height)' },
@@ -23,6 +28,7 @@ const config: Config = {
         },
       },
       animation: {
+        shine: 'shine var(--duration) linear infinite',
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },

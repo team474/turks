@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useActionState, useEffect, useState, useTransition } from "react";
 import { StrainMetaCard } from "@/components/landing-page/StrainMetaCard";
+import { StrainSelector } from "@/components/landing-page/StrainSelector";
 
 interface HeroProps {
   product: Product[];
@@ -272,32 +273,14 @@ export function Hero({ product }: HeroProps) {
           {featuredItem?.name || 'Select a strain'}
         </h1>
 
-        <div className="flex flex-col items-start gap-4 w-full">
-          <p className="text-base sm:text-xl font-bold leading-[120%] uppercase text-[#101010]">
-            All Strains
-          </p>
-          <div className="flex items-start gap-2.5 sm:gap-4 flex-wrap">
-            {allStrains.map((item, index) => {
-              const isSelected = featuredItem?.name === item.name;
-              return (
-                <button
-                  key={index}
-                  onClick={() => handleItemClick(item)}
-                  style={{ background: item.color }}
-                  className={`flex px-3.5 sm:px-4 py-2 sm:py-3 gap-2 sm:gap-3 items-center rounded-full hover:opacity-90 transition-opacity`}
-                >
-                  <span
-                    className={`size-4 sm:size-6 rounded-full ${isSelected ? 'border-[7px] border-gray-800' : ''
-                      } bg-white`}
-                  />
-                  <p className="text-xs sm:text-base font-normal leading-[150%] text-[#202020]">
-                    {item.name}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <StrainSelector
+          items={allStrains.map(({ name, color }) => ({ name, color }))}
+          selectedName={featuredItem?.name ?? null}
+          onSelect={(name) => {
+            const item = allStrains.find((s) => s.name === name);
+            if (item) handleItemClick(item);
+          }}
+        />
 
         <StrainMetaCard
           name={featuredItem?.name || 'Select a strain'}

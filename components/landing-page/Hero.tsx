@@ -9,7 +9,7 @@ import { useActionState, useEffect, useState, useTransition } from "react";
 import { StrainMetaCard } from "@/components/landing-page/StrainMetaCard";
 import { StrainSelector } from "@/components/landing-page/StrainSelector";
 import { fadeOnly } from "@/lib/animation";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { useProductMeta } from "@/lib/hooks/useProductMeta";
 import { gradientAround } from "@/lib/color";
 // import { GradientFade } from "@/components/landing-page/GradientFade";
@@ -18,6 +18,8 @@ import { QuantityControl } from "@/components/landing-page/QuantityControl";
 import { PriceDisplay } from "@/components/landing-page/PriceDisplay";
 import { ProductActions } from "@/components/landing-page/ProductActions";
 import { useReducedMotion } from "framer-motion";
+import { motionDurations } from "@/lib/animation";
+import { mixWithWhite, mixWithBlack, saturateHex } from "@/lib/color";
 
 interface HeroProps {
   product: Product[];
@@ -72,6 +74,22 @@ export function Hero({ product }: HeroProps) {
   // Debounced onSelect to serialize transitions
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [queuedSelection, setQueuedSelection] = useState<string | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const BLEND_MS = Math.round((motionDurations.normal + 0.05) * 1000);
+  const scheduleProcess = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      if (queuedSelection) {
+        const next = queuedSelection;
+        setQueuedSelection(null);
+        handleSelectByName(next);
+        scheduleProcess();
+      } else {
+        setIsTransitioning(false);
+        timerRef.current = null;
+      }
+    }, BLEND_MS);
+  };
   const onSelectDebounced = (name: string) => {
     if (isTransitioning) {
       setQueuedSelection(name);
@@ -79,6 +97,7 @@ export function Hero({ product }: HeroProps) {
     }
     setIsTransitioning(true);
     handleSelectByName(name);
+    scheduleProcess();
   };
 
   // Ensure we always show the first image when the featured product changes
@@ -148,6 +167,11 @@ export function Hero({ product }: HeroProps) {
 
   // Helpers to build a 3-stop gradient around the case color
   const backgroundGradient = gradientAround(caseColor || '#FFFFFF', 5);
+  const base = caseColor || '#1D431D';
+  const ctaBg = mixWithWhite(base, 20);
+  const ctaBorder = saturateHex(mixWithBlack(base, 68), 38);
+  const checkoutBg = saturateHex(mixWithBlack(base, 30), 30);
+  const iconSaturated = saturateHex(mixWithBlack(base, 30), 38);
 
 
   return (
@@ -158,53 +182,54 @@ export function Hero({ product }: HeroProps) {
           selectedIndex={selectedIndex}
           onSelectIndex={(i) => setSelectedIndex(i)}
           gradientOverlay={backgroundGradient}
+          borderColorHex={caseColor || '#1D431D'}
         />
       </div>
 
       <div className="flex flex-col items-start gap-5 sm:gap-7.5">
-        <AnimatePresence mode="wait" initial={false} onExitComplete={() => {
-          if (queuedSelection) {
-            const item = allStrains.find((s) => s.name === queuedSelection);
-            setQueuedSelection(null);
-            if (item) {
-              handleSelectByName(item.name);
-            }
-          } else {
-            setIsTransitioning(false);
-          }
-        }}>
-          <motion.div key={`right-${featureProduct.id}`} variants={fadeOnly} initial="initial" animate="animate" exit="exit" transition={prefersReducedMotion ? { duration: 0.1 } : undefined} className="flex flex-col items-start gap-5 sm:gap-7.5">
-            <h1 className="text-[26px] sm:text-[42px] font-black leading-[120%] text-[#101010] uppercase font-playfair-display-sc">
+        <h1 className="text-[26px] sm:text-[42px] font-black leading-[120%] text-[#101010] uppercase font-playfair-display-sc">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span key={selectedName || 'none'} variants={fadeOnly} initial="initial" animate="animate" exit="exit" className="inline-block">
               {selectedName || 'Select a strain'}
-            </h1>
+            </motion.span>
+          </AnimatePresence>
+        </h1>
 
-            <StrainSelector
-              items={allStrains.map(({ name, color }) => ({ name, color }))}
-              selectedName={selectedName}
-              onSelect={onSelectDebounced}
-            />
+        <StrainSelector
+          items={allStrains.map(({ name, color }) => ({ name, color }))}
+          selectedName={selectedName}
+          onSelect={onSelectDebounced}
+        />
 
-            <StrainMetaCard
-              name={selectedName || 'Select a strain'}
-              colorHex={caseColor}
-              effects={effects}
-              terpenes={terpenes}
-            />
+        <StrainMetaCard
+          name={selectedName || 'Select a strain'}
+          colorHex={caseColor}
+          effects={effects}
+          terpenes={terpenes}
+        />
 
-            <div className="flex flex-col items-start gap-2 sm:gap-4 w-full">
-              <p className="text-base sm:text-xl font-bold leading-[120%] uppercase text-[#101010]">Description</p>
-              <p className="text-sm sm:text-base font-normal leading-[150%] text-[#101010]">{featureProduct?.description}</p>
-            </div>
+        <div className="flex flex-col items-start gap-2 sm:gap-4 w-full">
+          <p className="text-base sm:text-xl font-bold leading-[120%] uppercase text-[#101010]">Description</p>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.p key={featureProduct?.id || 'none'} variants={fadeOnly} initial="initial" animate="animate" exit="exit" className="text-sm sm:text-base font-normal leading-[150%] text-[#101010]">
+              {featureProduct?.description}
+            </motion.p>
+          </AnimatePresence>
+        </div>
 
-            <div className="flex justify-between items-center w-full">
-              <PriceDisplay amount={featureProduct?.priceRange?.minVariantPrice?.amount} currencyCode={featureProduct?.priceRange?.minVariantPrice?.currencyCode} />
-              <QuantityControl value={currentQuantity} onIncrement={() => updateQuantity('increment')} onDecrement={() => updateQuantity('decrement')} />
-            </div>
+        <div className="flex justify-between items-center w-full">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div key={`${featureProduct?.priceRange?.minVariantPrice?.currencyCode}-${featureProduct?.priceRange?.minVariantPrice?.amount}`} variants={fadeOnly} initial="initial" animate="animate" exit="exit">
+              <div style={{ color: ctaBorder }}>
+                <PriceDisplay amount={featureProduct?.priceRange?.minVariantPrice?.amount} currencyCode={featureProduct?.priceRange?.minVariantPrice?.currencyCode} />
+              </div>
+            </motion.div>
+          </AnimatePresence>
+          <QuantityControl value={currentQuantity} onIncrement={() => updateQuantity('increment')} onDecrement={() => updateQuantity('decrement')} bgColor={ctaBg} borderColor={ctaBorder} iconColor={iconSaturated} textColor={ctaBorder} />
+        </div>
 
-            {/* Action Buttons */}
-            <ProductActions onAddToCart={addToCartAction} onCheckout={() => redirectToCheckout()} checkoutDisabled={cart?.lines.length === 0} />
-          </motion.div>
-        </AnimatePresence>
+        {/* Action Buttons */}
+        <ProductActions onAddToCart={addToCartAction} onCheckout={() => redirectToCheckout()} checkoutDisabled={cart?.lines.length === 0} ctaBg={ctaBg} ctaBorder={ctaBorder} checkoutBg={checkoutBg} />
       </div>
     </div>
   );

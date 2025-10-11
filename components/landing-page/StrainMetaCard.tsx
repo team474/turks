@@ -1,9 +1,8 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { GradientFade } from '@/components/landing-page/GradientFade'
+import { motion, AnimatePresence } from 'framer-motion'
 import { gradientAround, mixWithBlack } from '@/lib/color'
-import { listItem, listStagger } from '@/lib/animation'
+import { listItem, listStagger, colorBlend } from '@/lib/animation'
 
 interface StrainMetaCardProps {
   name: string;
@@ -45,9 +44,10 @@ export function StrainMetaCard({ name, colorHex, effects, terpenes, className }:
   return (
     <motion.div
       className={`relative overflow-hidden flex gap-1 sm:gap-1.5 rounded-2xl w-full min-h-[135px] sm:min-h-[176px] p-2 sm:p-3 hover:shadow-lg transition-all duration-300 ease-out ${className ?? ''}`}
-      style={{ border: `1px solid ${borderColor}` }}
+      style={{ borderWidth: 1, borderStyle: 'solid', borderColor, background: backgroundGradient }}
+      animate={{ borderColor }}
+      transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
     >
-      <GradientFade gradient={backgroundGradient} animateDrift />
       <div className="relative z-10 flex w-full gap-1 sm:gap-1.5">
       <div className="relative flex p-4 sm:p-10 justify-center items-center gap-2.5 flex-1 rounded-2xl font-medium uppercase text-[#202020]" style={{ background: 'transparent' }}>
         <p className="text-xs sm:text-sm font-semibold absolute top-2.5 left-2.5">Hybrid</p>
@@ -61,15 +61,17 @@ export function StrainMetaCard({ name, colorHex, effects, terpenes, className }:
           Effects
         </p>
         <span className="w-full h-px min-h-px bg-[#1010101A]"></span>
-        <motion.div className="flex flex-col gap-4 items-start" variants={listStagger} initial="initial" animate="animate" exit="exit">
-          {effects.map((item, index) => (
-            <motion.div key={index} className="flex items-center gap-2" variants={listItem}>
-              <p className="text-sm sm:text-lg font-normal leading-[150%] text-center text-[#101010]">
-                {item}
-              </p>
-            </motion.div>
-          ))}
-        </motion.div>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div key={`effects-${name}`} className="flex flex-col gap-4 items-start" variants={listStagger} initial="initial" animate="animate" exit="exit">
+            {effects.map((item, index) => (
+              <motion.div key={index} className="flex items-center gap-2" variants={listItem}>
+                <p className="text-sm sm:text-lg font-normal leading-[150%] text-center text-[#101010]">
+                  {item}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </div>
       <span className="w-px self-center h-[70%] bg-[#1010101A]"></span>
 
@@ -78,15 +80,17 @@ export function StrainMetaCard({ name, colorHex, effects, terpenes, className }:
           Terpenes
         </p>
         <span className="w-full h-px min-h-px bg-[#1010101A]"></span>
-        <motion.div className="flex flex-col gap-4 items-start" variants={listStagger} initial="initial" animate="animate" exit="exit">
-          {terpenes.map((item, index) => (
-            <motion.div key={index} className="flex items-center gap-2" variants={listItem}>
-              <p className="text-sm sm:text-lg font-normal leading-[150%] text-center text-[#101010]">
-                {item}
-              </p>
-            </motion.div>
-          ))}
-        </motion.div>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div key={`terpenes-${name}`} className="flex flex-col gap-4 items-start" variants={listStagger} initial="initial" animate="animate" exit="exit">
+            {terpenes.map((item, index) => (
+              <motion.div key={index} className="flex items-center gap-2" variants={listItem}>
+                <p className="text-sm sm:text-lg font-normal leading-[150%] text-center text-[#101010]">
+                  {item}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </div>
       </div>
     </motion.div>

@@ -1,10 +1,13 @@
 'use client'
 
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { colorBlend } from '@/lib/animation'
 import Image from 'next/image'
 import { fadeOnly } from '@/lib/animation'
 import { useEffect, useState } from 'react'
 import { GradientFade } from '@/components/landing-page/GradientFade'
+import { MiniGradientFade } from '@/components/landing-page/MiniGradientFade'
+import { mixWithBlack } from '@/lib/color'
 
 interface GalleryImage {
   url: string
@@ -18,9 +21,10 @@ interface ProductImageGalleryProps {
   selectedIndex: number
   onSelectIndex: (index: number) => void
   gradientOverlay?: string
+  borderColorHex?: string
 }
 
-export function ProductImageGallery({ images, selectedIndex, onSelectIndex, gradientOverlay }: ProductImageGalleryProps) {
+export function ProductImageGallery({ images, selectedIndex, onSelectIndex, gradientOverlay, borderColorHex }: ProductImageGalleryProps) {
   const prefersReducedMotion = useReducedMotion()
   const [thumbStartIndex, setThumbStartIndex] = useState(0)
   // Keyboard navigation can be added on interactive elements (e.g., buttons) to avoid a11y violations
@@ -49,8 +53,13 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
   }, [selectedIndex, images])
   return (
     <div className="flex flex-col items-start gap-3 sm:gap-5 w-full">
-      <div className="relative rounded-2xl sm:rounded-4xl w-full h-[347px] sm:h-[615px] overflow-hidden">
-        {gradientOverlay && <GradientFade gradient={gradientOverlay} animateDrift />}
+      <motion.div
+        className="relative rounded-2xl sm:rounded-4xl w-full h-[347px] sm:h-[615px] overflow-hidden border"
+        style={{ background: gradientOverlay }}
+        animate={{ borderColor: mixWithBlack(borderColorHex || '#1D431D', 50) }}
+        transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
+      >
+        {/* gradient applied statically via background above */}
         <AnimatePresence mode="sync" initial={false}>
           {images[selectedIndex]?.url && (
             <motion.div
@@ -58,8 +67,9 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
               variants={fadeOnly}
               initial="initial"
               animate="animate"
-              exit="exit"
+              exit={{ opacity: 0 }}
               className="absolute inset-0"
+              transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
             >
               <Image
                 src={images[selectedIndex].url}
@@ -72,7 +82,7 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
 
       <div className="flex w-full items-center gap-3 sm:gap-5">
         <button
@@ -88,26 +98,32 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
           {images.slice(thumbStartIndex, thumbStartIndex + 3).map((img, i) => {
             const absoluteIndex = thumbStartIndex + i
             const isSelected = selectedIndex === absoluteIndex
+            const baseBorder = borderColorHex || '#1D431D'
+            const tileBorder = isSelected ? mixWithBlack(baseBorder, 50) : mixWithBlack(baseBorder, 25)
             return (
               <motion.button
                 key={absoluteIndex}
                 onClick={() => onSelectIndex(absoluteIndex)}
-                className={`h-[100px] sm:h-[176px] flex-1 rounded-2xl sm:rounded-4xl cursor-pointer overflow-hidden transition-colors duration-200 ${isSelected ? 'border-2 border-[#1D431D] ring-2 ring-[#1D431D]' : 'border border-[#1D431D]/50'}`}
+                className={`relative h-[100px] sm:h-[176px] flex-1 rounded-2xl sm:rounded-4xl overflow-hidden cursor-pointer transition-colors duration-200 ${isSelected ? 'border-2' : 'border'}`}
+                style={{ borderColor: tileBorder }}
                 layout
                 animate={{ scale: isSelected ? 1.05 : 1 }}
                 whileHover={{ scale: prefersReducedMotion ? 1 : 1.03 }}
                 whileTap={{ scale: prefersReducedMotion ? 1 : 0.98 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20, mass: 0.3 }}
               >
+                <>
+                <MiniGradientFade gradient={gradientOverlay || ''} />
                 {img?.url && (
                   <Image
                     src={img.url}
                     alt={img.altText || ''}
                     height={img.height}
                     width={img.width}
-                    className="size-full object-contain bg-white"
+                    className="absolute inset-0 size-full object-contain z-[1]"
                   />
                 )}
+                </>
               </motion.button>
             )
           })}

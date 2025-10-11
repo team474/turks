@@ -57,4 +57,65 @@ export const fadeOnly = {
   },
 };
 
+// Unified color/gradient blend duration (seconds)
+export const colorBlend = 0.6;
+
+
+// Slower, directional variants for section reveals
+export const slowUp = {
+  initial: { opacity: 0, y: 24 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: motionEasings.out },
+  },
+  exit: {
+    opacity: 0,
+    y: -8,
+    transition: { duration: 0.4, ease: motionEasings.inOut },
+  },
+};
+
+export const slowDown = {
+  initial: { opacity: 0, y: -24 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: motionEasings.out },
+  },
+  exit: {
+    opacity: 0,
+    y: 8,
+    transition: { duration: 0.4, ease: motionEasings.inOut },
+  },
+};
+
+export const slowLeft = {
+  initial: { opacity: 0, x: 24 },
+  animate: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.6, ease: motionEasings.out },
+  },
+  exit: {
+    opacity: 0,
+    x: -8,
+    transition: { duration: 0.4, ease: motionEasings.inOut },
+  },
+};
+
+export const slowRight = {
+  initial: { opacity: 0, x: -24 },
+  animate: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.6, ease: motionEasings.out },
+  },
+  exit: {
+    opacity: 0,
+    x: 8,
+    transition: { duration: 0.4, ease: motionEasings.inOut },
+  },
+};
+
 

@@ -16,6 +16,12 @@ export function Button({
   onClick?: () => void;
   style?: React.CSSProperties;
 }) {
+  const computedStyle: React.CSSProperties = {
+    backgroundColor: 'var(--cta-bg, #DFF552)',
+    border: '1px solid var(--cta-border, #101010)',
+    color: 'var(--cta-border, #101010)',
+    ...style,
+  };
   return (
     <button
       onClick={() => {
@@ -53,7 +59,7 @@ export function Button({
           window.location.href = link;
         }
       }}
-      style={style}
+      style={computedStyle}
       className={cn(
         "group cursor-pointer z-10 flex px-[1.25rem] py-[1rem] sm:px-[2.5rem] sm:py-[1.25rem] justify-center items-center gap-5 rounded-full text-lg sm:text-xl font-bold leading-[150%] uppercase",
         "shadow-[0_6px_14px_rgba(0,0,0,0.15)] transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] hover:brightness-110 hover:shadow-[0_12px_28px_rgba(0,0,0,0.28)] active:brightness-95",

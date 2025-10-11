@@ -10,6 +10,8 @@ import { getProducts } from "@/lib/shopify";
 import { Metadata } from "next";
 import { Reveal } from "@/components/animation/Reveal";
 import { slowUp, slowLeft, slowRight, slowDown } from "@/lib/animation";
+import { mixWithWhite, mixWithBlack, saturateHex } from "@/lib/color";
+import React from "react";
 
 
 export const metadata: Metadata = {
@@ -26,9 +28,19 @@ export default async function HomePage() {
 
   console.log("prod", products);
   
+  // derive initial CTA colors from first product to avoid FOUC
+  const base = (products?.[0]?.metafields?.find((m) => m.key === 'case_color')?.value) || '#1D431D';
+  const ctaBg = mixWithWhite(base, 20);
+  const ctaBorder = saturateHex(mixWithBlack(base, 68), 38);
+  const checkoutBg = saturateHex(mixWithBlack(base, 30), 30);
+  const styleVars = {
+    ['--cta-bg']: ctaBg,
+    ['--cta-border']: ctaBorder,
+    ['--checkout-bg']: checkoutBg,
+  } as React.CSSProperties;
   
   return (
-    <>
+    <div id="cta-color-scope" style={styleVars}>
       <section id="strain" className="w-full max-w-[1170px] mx-auto p-6 lg:p-4 xl:px-0 lg:py-18">
         {products && (
           <Reveal variants={slowUp} amount={0.2}>
@@ -78,6 +90,6 @@ export default async function HomePage() {
           <CTA />
         </Reveal>
       </section>
-    </>
+    </div>
   );
 }

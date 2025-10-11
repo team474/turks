@@ -17,7 +17,6 @@ import { ProductImageGallery } from "@/components/landing-page/ProductImageGalle
 import { QuantityControl } from "@/components/landing-page/QuantityControl";
 import { PriceDisplay } from "@/components/landing-page/PriceDisplay";
 import { ProductActions } from "@/components/landing-page/ProductActions";
-import { useReducedMotion } from "framer-motion";
 import { motionDurations } from "@/lib/animation";
 import { mixWithWhite, mixWithBlack, saturateHex } from "@/lib/color";
 
@@ -47,7 +46,7 @@ export function Hero({ product }: HeroProps) {
       product: p
     }))
   ), [product]);
-  const prefersReducedMotion = useReducedMotion();
+  // const prefersReducedMotion = useReducedMotion();
 
   const { caseColor, effects, terpenes } = useProductMeta(featureProduct);
 
@@ -163,7 +162,7 @@ export function Hero({ product }: HeroProps) {
     }
   };
 
-  if (!featureProduct) return null;
+  // avoid early-return before hooks to keep hook order consistent
 
   // Helpers to build a 3-stop gradient around the case color
   const backgroundGradient = gradientAround(caseColor || '#FFFFFF', 5);
@@ -173,6 +172,18 @@ export function Hero({ product }: HeroProps) {
   const checkoutBg = saturateHex(mixWithBlack(base, 30), 30);
   const iconSaturated = saturateHex(mixWithBlack(base, 30), 38);
 
+  // Sync CSS variables so other buttons (About, CTA) match the hero button colors
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    const el = document.getElementById('cta-color-scope') || document.documentElement;
+    if (!el) return;
+    el.style.setProperty('--cta-bg', ctaBg);
+    el.style.setProperty('--cta-border', ctaBorder);
+    el.style.setProperty('--checkout-bg', checkoutBg);
+  }, [ctaBg, ctaBorder, checkoutBg]);
+
+
+  if (!featureProduct) return null;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 items-start gap-6 sm:gap-7.5">

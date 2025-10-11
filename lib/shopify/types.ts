@@ -17,6 +17,7 @@ export type CartProduct = {
   handle: string;
   title: string;
   featuredImage: Image;
+  metafields?: Metafield[];
 };
 
 export type CartItem = {

@@ -22,6 +22,10 @@ body {
   overflow-x: hidden;
 }
 
+html, body {
+  scroll-behavior: smooth;
+}
+
 /* @layer base {
   *,
   ::after,
@@ -31,7 +35,6 @@ body {
     border-color: var(--color-gray-100, currentColor);
   }
 }
-
 
 @supports (font: -apple-system-body) and (-webkit-appearance: none) {
   img[loading="lazy"] {

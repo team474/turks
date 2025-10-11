@@ -1,7 +1,10 @@
+"use client";
+
 import CartModal from "components/cart/modal";
 import { Menu } from "lib/shopify/types";
 import Link from "next/link";
 import { Suspense } from "react";
+import { motion } from "framer-motion";
 import MobileMenu from "./mobile-menu";
 
 const menu = [
@@ -18,12 +21,19 @@ const menu = [
     path: "/blog",
   },
 ];
-export async function Navbar() {
+export function Navbar() {
   return (
-    <header className="flex bg-[#C8D4AA]">
+    <motion.header
+      className="flex bg-[linear-gradient(to_right,_hsl(77,33%,80%),_hsl(77,33%,75%),_hsl(77,33%,70%))] md:bg-[linear-gradient(to_right,_hsl(77,33%,90%),_hsl(77,33%,75%),_hsl(77,33%,60%))] border-b border-b-[hsl(77,33%,65%)]"
+      style={{ backgroundSize: "300% 300%", backgroundPositionX: "0%" }}
+      animate={{ backgroundPositionX: ["0%", "100%", "0%"] }}
+      transition={{ duration: 30, ease: "linear", repeat: Infinity }}
+    >
       <div className="flex w-full max-w-[1440px] mx-auto px-6 xl:px-34 py-6 justify-between items-center">
         <h2 className="oi-regular text-[32px] font-normal leading-[120%] uppercase tracking-[0.64px] text-[#1D431D]">
-          TURK&apos;S
+          <Link href="/" prefetch={true} className="inline-block">
+            TURK&apos;S
+          </Link>
         </h2>
 
         <div className="block flex-none md:hidden">
@@ -33,13 +43,13 @@ export async function Navbar() {
         </div>
 
         {menu.length ? (
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-10 lg:gap-12">
             {menu.map((item: Menu) => (
               <div key={item.title}>
                 <Link
                   href={item.path}
                   prefetch={true}
-                  className="text-[#1D431D] text-base font-medium leading-[150%]"
+                  className="text-[#1D431D] text-lg md:text-xl font-medium leading-[150%]"
                 >
                   {item.title}
                 </Link>
@@ -48,7 +58,7 @@ export async function Navbar() {
           </nav>
         ) : null}
 
-        <div className="hidden md:flex justify-end items-end gap-5">
+        <div className="hidden md:flex justify-end items-end gap-6 lg:gap-8">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="28"
@@ -76,6 +86,6 @@ export async function Navbar() {
           <CartModal />
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 }

@@ -1,5 +1,6 @@
 import { CartProvider } from "components/cart/cart-context";
 import { Navbar } from "components/layout/navbar";
+// mobile menu handled inside Navbar
 // import { ThemeProvider } from "components/theme-provider";
 // import WelcomeModal from "components/welcome-modal";
 // import { WelcomeToast } from "components/welcome-toast";
@@ -62,6 +63,7 @@ export default async function RootLayout({
 }) {
   // Don't await the fetch, pass the Promise to the context provider
   const cart = getCart();
+  // mobile menu handled inside Navbar
 
   return (
     <html

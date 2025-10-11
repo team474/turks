@@ -58,7 +58,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {article.handle}
           </p>
         </div>
-        <p className="absolute left-1/2 -translate-x-1/2 -bottom-28 md:-bottom-60 md:text-[220px] text-[100px] font-normal leading-[120%] text-[#101010] uppercase text-center opacity-2">
+        <p className="oi-regular absolute left-1/2 -translate-x-1/2 -bottom-28 md:-bottom-60 md:text-[220px] text-[100px] font-normal leading-[120%] text-[#101010] uppercase text-center opacity-2">
           turk&apos;s
         </p>
         <Icon.leafIcon className="hidden md:flex absolute top-3.5 left-2 lg:top-[24px] sm:left-5 size-12 md:size-18" />
@@ -158,3 +158,4 @@ export async function generateMetadata({
     },
   };
 }
+

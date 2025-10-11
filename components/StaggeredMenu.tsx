@@ -1,3 +1,4 @@
+'use client';
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import Link from 'next/link';
@@ -72,6 +73,8 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   const textWrapRef = useRef<HTMLSpanElement | null>(null);
   const [textLines, setTextLines] = useState<string[]>(['Menu', 'Close']);
 
+  const offscreenTranslate = position === 'left' ? 'translate3d(-100%, 0, 0)' : 'translate3d(100%, 0, 0)';
+
   const openTlRef = useRef<gsap.core.Timeline | null>(null);
   const closeTweenRef = useRef<gsap.core.Tween | null>(null);
   const spinTweenRef = useRef<gsap.core.Timeline | null>(null);
@@ -95,15 +98,11 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 
       if (!panel || !plusH || !plusV || !icon || !textInner) return;
 
-      let preLayers: HTMLElement[] = [];
-      if (preContainer) {
-        preLayers = Array.from(preContainer.querySelectorAll('.sm-prelayer')) as HTMLElement[];
-      }
-      preLayerElsRef.current = preLayers;
+      preLayerElsRef.current = preContainer
+        ? (Array.from(preContainer.querySelectorAll('.sm-prelayer')) as HTMLElement[])
+        : [];
 
-      const offscreen = position === 'left' ? -100 : 100;
-      // Ensure panel and layers start offscreen so it doesn't appear open on first paint
-      gsap.set([panel, ...preLayers], { xPercent: offscreen });
+      // Initial offscreen state handled via CSS to prevent SSR hydration flash
 
       gsap.set(plusH, { transformOrigin: '50% 50%', rotate: 0 });
       gsap.set(plusV, { transformOrigin: '50% 50%', rotate: 90 });
@@ -118,7 +117,8 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 
   const buildOpenTimeline = useCallback(() => {
     const panel = panelRef.current;
-    const layers = preLayerElsRef.current;
+    // layers not needed for JS animation; CSS handles slide-in
+    // const layers = preLayerElsRef.current;
     if (!panel) return null;
 
     openTlRef.current?.kill();
@@ -135,30 +135,15 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     const socialTitle = panel.querySelector('.sm-socials-title') as HTMLElement | null;
     const socialLinks = Array.from(panel.querySelectorAll('.sm-socials-link')) as HTMLElement[];
 
-    const layerStates = layers.map(el => ({ el, start: Number(gsap.getProperty(el, 'xPercent')) }));
-    const panelStart = Number(gsap.getProperty(panel, 'xPercent'));
-
     if (itemEls.length) gsap.set(itemEls, { yPercent: 140, rotate: 10 });
     if (numberEls.length) setCssNumberVar(numberEls, '--sm-num-opacity', 0);
     if (socialTitle) gsap.set(socialTitle, { opacity: 0 });
     if (socialLinks.length) gsap.set(socialLinks, { y: 25, opacity: 0 });
 
     const tl = gsap.timeline({ paused: true });
-
-    layerStates.forEach((ls, i) => {
-      tl.fromTo(ls.el, { xPercent: ls.start }, { xPercent: 0, duration: 0.5, ease: 'power4.out' }, i * 0.07);
-    });
-
-    const lastTime = layerStates.length ? (layerStates.length - 1) * 0.07 : 0;
-    const panelInsertTime = lastTime + (layerStates.length ? 0.08 : 0);
+    // Panel and layer slide-in are handled via CSS [data-open] + transition
+    const panelInsertTime = 0.0;
     const panelDuration = 0.65;
-
-    tl.fromTo(
-      panel,
-      { xPercent: panelStart },
-      { xPercent: 0, duration: panelDuration, ease: 'power4.out' },
-      panelInsertTime
-    );
 
     if (itemEls.length) {
       const itemsStartRatio = 0.15;
@@ -228,19 +213,11 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     itemEntranceTweenRef.current?.kill();
 
     const panel = panelRef.current;
-    const layers = preLayerElsRef.current;
     if (!panel) return;
 
-    const all: HTMLElement[] = [...layers, panel];
     closeTweenRef.current?.kill();
-
-    const offscreen = position === 'left' ? -100 : 100;
-
-    closeTweenRef.current = gsap.to(all, {
-      xPercent: offscreen,
-      duration: 0.32,
-      ease: 'power3.in',
-      overwrite: 'auto',
+    closeTweenRef.current = gsap.to({}, {
+      duration: 0.001,
       onComplete: () => {
         const itemEls = Array.from(panel.querySelectorAll('.sm-panel-itemLabel')) as HTMLElement[];
         if (itemEls.length) gsap.set(itemEls, { yPercent: 140, rotate: 10 });
@@ -258,7 +235,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
         busyRef.current = false;
       }
     });
-  }, [position]);
+  }, []);
 
   const animateIcon = useCallback((opening: boolean) => {
     const icon = iconRef.current;
@@ -384,10 +361,11 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
               toggleMenu();
             }
           }}
+          style={{ pointerEvents: open ? 'auto' : 'none' }}
         />
         <div
           ref={preLayersRef}
-          className="sm-prelayers absolute top-0 right-0 bottom-0 pointer-events-none z-[5]"
+          className="sm-prelayers pointer-events-none z-[5]"
           aria-hidden="true"
         >
           {(() => {
@@ -400,8 +378,8 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
             return arr.map((c, i) => (
               <div
                 key={i}
-                className="sm-prelayer absolute top-0 right-0 h-full w-full translate-x-0"
-                style={{ background: c }}
+                className="sm-prelayer absolute top-0 right-0 h-full w-full"
+                style={{ background: c, transform: open ? 'translate3d(0, 0, 0)' : offscreenTranslate }}
               />
             ));
           })()}
@@ -512,8 +490,8 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
         <aside
           id="staggered-menu-panel"
           ref={panelRef}
-          className="staggered-menu-panel absolute top-0 right-0 h-full flex flex-col p-[6em_2em_2em_2em] overflow-y-auto z-10 backdrop-blur-[12px]"
-          style={{ WebkitBackdropFilter: 'blur(12px)' }}
+          className="staggered-menu-panel h-full flex flex-col p-[6em_2em_2em_2em] overflow-y-auto z-10 backdrop-blur-[12px]"
+          style={{ WebkitBackdropFilter: 'blur(12px)', transform: open ? 'translate3d(0, 0, 0)' : offscreenTranslate }}
           aria-hidden={!open}
         >
           <div className="sm-panel-inner flex-1 flex flex-col items-end text-right gap-5">
@@ -602,7 +580,24 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 .sm-scope [data-position='left'] .staggered-menu-panel { right: auto; left: 0; }
 .sm-scope .sm-prelayers { position: fixed; top: 0; right: 0; bottom: 0; width: clamp(260px, 38vw, 420px); pointer-events: none; z-index: 5; }
 .sm-scope [data-position='left'] .sm-prelayers { right: auto; left: 0; }
-.sm-scope .sm-prelayer { position: absolute; top: 0; right: 0; height: 100%; width: 100%; transform: translateX(0); }
+.sm-scope .sm-prelayer { position: absolute; top: 0; right: 0; height: 100%; width: 100%; }
+
+/* Smooth slide transitions purely in CSS */
+.sm-scope .staggered-menu-panel,
+.sm-scope .sm-prelayer { transition: transform 350ms ease; will-change: transform; backface-visibility: hidden; }
+.sm-scope .staggered-menu-panel { backface-visibility: hidden; }
+
+/* Default closed state: keep panel and layers offscreen before JS/hydration */
+.sm-scope .staggered-menu-wrapper:not([data-open])[data-position='right'] .staggered-menu-panel,
+.sm-scope .staggered-menu-wrapper:not([data-open])[data-position='right'] .sm-prelayer { transform: translate3d(100%, 0, 0); }
+.sm-scope .staggered-menu-wrapper:not([data-open])[data-position='left'] .staggered-menu-panel,
+.sm-scope .staggered-menu-wrapper:not([data-open])[data-position='left'] .sm-prelayer { transform: translate3d(-100%, 0, 0); }
+
+/* Explicit open state: ensure panel and layers are visible even if JS timing varies */
+.sm-scope .staggered-menu-wrapper[data-open][data-position='right'] .staggered-menu-panel,
+.sm-scope .staggered-menu-wrapper[data-open][data-position='right'] .sm-prelayer { transform: translate3d(0, 0, 0); }
+.sm-scope .staggered-menu-wrapper[data-open][data-position='left'] .staggered-menu-panel,
+.sm-scope .staggered-menu-wrapper[data-open][data-position='left'] .sm-prelayer { transform: translate3d(0, 0, 0); }
 .sm-scope .sm-panel-inner { flex: 1; display: flex; flex-direction: column; gap: 1.25rem; }
 .sm-scope .sm-socials { margin-top: auto; padding-top: 2rem; display: flex; flex-direction: column; gap: 0.75rem; }
 .sm-scope .sm-socials-title { margin: 0; font-size: 1rem; font-weight: 500; color: var(--sm-accent, #ff0000); }

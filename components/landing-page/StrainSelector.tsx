@@ -39,6 +39,8 @@ export function StrainSelector({ title = 'Select Strain', items, selectedName, o
               className={`flex px-3.5 sm:px-4 py-2 sm:py-3 gap-2 sm:gap-3 items-center rounded-full transition-all duration-200 ease-out hover:shadow-lg hover:-translate-y-0.5 hover:brightness-105`}
               role="radio"
               aria-checked={isSelected}
+              animate={{ borderColor, backgroundColor }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >

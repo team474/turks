@@ -8,11 +8,13 @@ export function Button({
   link,
   className,
   onClick,
+  style,
 }: {
   title: string;
   link?: string;
   className?: string;
   onClick?: () => void;
+  style?: React.CSSProperties;
 }) {
   return (
     <button
@@ -51,9 +53,10 @@ export function Button({
           window.location.href = link;
         }
       }}
+      style={style}
       className={cn(
-        "group cursor-pointer z-10 flex px-[1.25rem] py-[1rem] sm:px-[2.5rem] sm:py-[1.25rem] justify-center items-center gap-5 rounded-full text-white text-lg sm:text-xl font-bold leading-[150%] uppercase",
-        "bg-[radial-gradient(circle_at_center,_#1C401C_0%,_#1D431D_50%,_#1E461E_100%)] shadow-[0_6px_14px_rgba(0,0,0,0.15)] transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] hover:brightness-120 hover:shadow-[0_12px_28px_rgba(0,0,0,0.28)] active:brightness-95",
+        "group cursor-pointer z-10 flex px-[1.25rem] py-[1rem] sm:px-[2.5rem] sm:py-[1.25rem] justify-center items-center gap-5 rounded-full text-lg sm:text-xl font-bold leading-[150%] uppercase",
+        "shadow-[0_6px_14px_rgba(0,0,0,0.15)] transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] hover:brightness-110 hover:shadow-[0_12px_28px_rgba(0,0,0,0.28)] active:brightness-95",
         className
       )}
     >

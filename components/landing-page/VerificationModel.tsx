@@ -6,82 +6,17 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 const VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000; // 1 day
 const AGE_VERIFIED_AT_KEY = "ageVerificationAcceptedAt";
-const AGE_VERIFICATION_STATE_KEY = "ageVerificationState";
-
-const US_STATES = [
-  "Alabama",
-  "Alaska",
-  "Arizona",
-  "Arkansas",
-  "California",
-  "Colorado",
-  "Connecticut",
-  "Delaware",
-  "District of Columbia",
-  "Florida",
-  "Georgia",
-  "Hawaii",
-  "Illinois",
-  "Indiana",
-  "Iowa",
-  "Kentucky",
-  "Louisiana",
-  "Maine",
-  "Maryland",
-  "Massachusetts",
-  "Michigan",
-  "Minnesota",
-  "Mississippi",
-  "Missouri",
-  "Montana",
-  "Nevada",
-  "New Hampshire",
-  "New Jersey",
-  "New Mexico",
-  "New York",
-  "North Carolina",
-  "North Dakota",
-  "Ohio",
-  "Oklahoma",
-  "Oregon",
-  "Pennsylvania",
-  "Rhode Island",
-  "South Carolina",
-  "Tennessee",
-  "Texas",
-  "Utah",
-  "Vermont",
-  "Virginia",
-  "Washington",
-  "Wisconsin",
-];
 
 export function VerificationModel() {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, setState] = useState("");
-  const [showStateError, setShowStateError] = useState(false);
 
   function handleYes() {
-    if (!state) {
-      setShowStateError(true);
-      return;
-    }
     try {
       localStorage.setItem(AGE_VERIFIED_AT_KEY, String(Date.now()));
-      localStorage.setItem(AGE_VERIFICATION_STATE_KEY, state);
       // Set a lightweight cookie as a server hint (optional)
       document.cookie = `ageVerification=1; max-age=${Math.floor(
         VERIFICATION_TTL_MS / 1000
@@ -104,8 +39,6 @@ export function VerificationModel() {
         const isValid =
           Number.isFinite(verifiedAt) && Date.now() - verifiedAt < VERIFICATION_TTL_MS;
         if (isValid) {
-          const savedState = localStorage.getItem(AGE_VERIFICATION_STATE_KEY) ?? "";
-          if (savedState) setState(savedState);
           setIsOpen(false);
           return;
         }
@@ -128,49 +61,12 @@ export function VerificationModel() {
         <div className="flex items-start">
           <div className="flex-1 pr-8">
             <DialogTitle className="text-[28px] text-[#101010] font-semibold leading-[120%] uppercase">
-              please select your location
+              Please confirm your age.
             </DialogTitle>
             <DialogDescription className="sr-only">
-              Choose your country and state, then confirm your age.
+              Confirm you are 21+ to continue.
             </DialogDescription>
           </div>
-        </div>
-
-        <span className="w-full h-px bg-[#101010] opacity-10" />
-
-        <div>
-          <Select
-            value={state}
-            onValueChange={(v) => {
-              setState(v);
-              setShowStateError(false);
-            }}
-          >
-            <SelectTrigger
-              className={cn(
-                "h-12 w-full rounded-full bg-secondary pl-5 pr-10 text-left border-none ring-0 bg-[#F7F7F7]",
-                "justify-between"
-              )}
-              aria-label="Select your State"
-            >
-              <SelectValue placeholder="Select your State" />
-            </SelectTrigger>
-            <SelectContent className="max-h-72 bg-white border-none ring-0">
-              <SelectGroup>
-                {US_STATES.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    {s}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-
-          {showStateError && (
-            <p className="mt-2 text-center text-sm font-medium text-error">
-              You must select your State
-            </p>
-          )}
         </div>
 
         <span className="w-full h-px bg-[#101010] opacity-10" />
@@ -178,10 +74,10 @@ export function VerificationModel() {
         <div className="w-full flex flex-col justify-center items-center gap-7.5 p-7.5 rounded-3xl bg-[#E3EAD5]">
           <div className="flex flex-col gap-5 justify-center items-center">
             <p className="text-[28px] text-[#101010] font-semibold leading-[120%] uppercase">
-              are you 21 or older ?
+              Are you 21+?
             </p>
             <p className="text-xl text-[#101010] font-normal leading-[150%]">
-              You must be 21+ to enter
+              You must be 21+ to enter.
             </p>
           </div>
 

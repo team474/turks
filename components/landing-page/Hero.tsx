@@ -7,6 +7,7 @@ import { Product } from "@/lib/shopify/types";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { useActionState, useEffect, useState, useTransition } from "react";
+import { StrainMetaCard } from "@/components/landing-page/StrainMetaCard";
 
 interface HeroProps {
   product: Product[];
@@ -133,32 +134,12 @@ export function Hero({ product }: HeroProps) {
 
   if (!featureProduct) return null;
 
-  function generateShortName(name: string): string {
-    if (!name) return "";
-    const words = name.trim().split(/\s+/).filter(Boolean);
-    if (words.length === 0) return "";
-
-    if (words.length === 1) {
-      const w = words[0];
-      return (w?.slice(0, 3) || "").toUpperCase().padEnd(3, "_");
-    }
-
-    if (words.length === 2) {
-      const first = words[0]?.[0] ?? "";
-      const second = words[1]?.slice(0, 2) ?? "";
-      return (first + second).toUpperCase();
-    }
-
-    return words
-      .slice(0, 3)
-      .map((w) => w?.[0] ?? "")
-      .join("")
-      .toUpperCase();
-  }
-
   const caseColor = getMetafieldValue(featureProduct, 'case_color');
   const terpenesValue = getMetafieldValue(featureProduct, 'terpenes');
   const effectsValue = getMetafieldValue(featureProduct, 'effects');
+
+  const effectsList = effectsValue ? (JSON.parse(effectsValue) as string[]) : [];
+  const terpenesList = terpenesValue ? (JSON.parse(terpenesValue) as string[]) : [];
 
   // Helpers to build a 3-stop gradient around the case color
   function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
@@ -318,51 +299,12 @@ export function Hero({ product }: HeroProps) {
           </div>
         </div>
 
-        <div className="flex gap-1 sm:gap-1.5 rounded-2xl w-full h-[135px] sm:h-[176px]" style={{ background: backgroundGradient }}>
-          <div className="relative h-full flex p-4 sm:p-10 justify-center items-center gap-2.5 flex-1 rounded-2xl font-medium uppercase text-[#202020]" style={{ background: 'transparent' }}>
-            <p className="text-[10px] sm:text-xs absolute top-2.5 left-2.5">Hybrid</p>
-            <p className="text-[10px] sm:text-xs absolute bottom-2.5 right-2.5">{featuredItem?.name}</p>
-            <p className="text-[28px] sm:text-[40px] leading-[120%]">{generateShortName(featuredItem?.name || "")}</p>
-          </div>
-
-          <div className="flex p-2 sm:p-4 flex-col items-start gap-3 sm:gap-4 flex-1">
-            <p className="text-xs sm:text-base font-bold leading-[120%] uppercase text-[#101010] text-nowrap">
-              {'Top effects'}
-            </p>
-            <span className="w-full h-px min-h-px bg-[#1010101A]"></span>
-            <div className="flex flex-col gap-4 items-start">
-              {effectsValue && (
-                JSON.parse(effectsValue).map((item: string, index: number) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <p className="text-xs sm:text-base font-normal leading-[150%] text-center text-[#101010]">
-                      {item}
-                    </p>
-                  </div>
-                ))
-              )}
-            </div>
-
-          </div>
-          <span className="w-px h-full bg-[#1010101A]"></span>
-
-          <div className="flex p-2 sm:p-4 flex-col items-start gap-2 sm:gap-4 flex-1">
-            <p className="text-xs sm:text-base font-bold leading-[120%] uppercase text-[#101010]">
-              {'Terpenes'}
-            </p>
-            <span className="w-full h-px min-h-px bg-[#1010101A]"></span>
-            <div className="flex flex-col gap-4 items-start">
-              {terpenesValue && (
-                JSON.parse(terpenesValue).map((item: string, index: number) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <p className="text-xs sm:text-base font-normal leading-[150%] text-center text-[#101010]">
-                      {item}
-                    </p>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
+        <StrainMetaCard
+          name={featuredItem?.name || 'Select a strain'}
+          colorHex={caseColor}
+          effects={effectsList}
+          terpenes={terpenesList}
+        />
 
         <div className="flex flex-col items-start gap-2 sm:gap-4 w-full">
           <p className="text-base sm:text-xl font-bold leading-[120%] uppercase text-[#101010]">

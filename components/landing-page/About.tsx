@@ -24,7 +24,7 @@ export async function About() {
       <div className="flex max-w-[570px] w-full flex-col items-start gap-12">
         <div className="flex flex-col justify-center gap-5">
           <h2 className="text-5xl font-black leading-[120%] text-[#101010] uppercase text-start font-playfair-display-sc">
-            Turk’s
+            Turk&apos;s
           </h2>
           <RichTextRenderer
             content={aboutText || "No disclaimer text available"}
@@ -32,7 +32,7 @@ export async function About() {
           />
         </div>
 
-        <Button title="Shop Now" link="/#strain" />
+        <Button title="Shop Now" link="/#strain" className="self-center md:self-start" />
       </div>
     </div>
   );

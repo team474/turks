@@ -222,9 +222,15 @@ export function Hero({ product }: HeroProps) {
         <div className="flex flex-col items-start gap-2 sm:gap-4 w-full">
           <p className="text-base sm:text-xl font-bold leading-[120%] uppercase text-[#101010]">Description</p>
           <AnimatePresence mode="wait" initial={false}>
-            <motion.p key={featureProduct?.id || 'none'} variants={fadeOnly} initial="initial" animate="animate" exit="exit" className="text-sm sm:text-base font-normal leading-[150%] text-[#101010]">
-              {featureProduct?.description}
-            </motion.p>
+            <motion.div
+              key={featureProduct?.id || 'none'}
+              variants={fadeOnly}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="text-sm sm:text-base font-normal leading-[150%] text-[#101010]"
+              dangerouslySetInnerHTML={{ __html: featureProduct?.descriptionHtml || featureProduct?.description || '' }}
+            />
           </AnimatePresence>
         </div>
 

@@ -16,6 +16,9 @@ import { useCart } from "./cart-context";
 import { DeleteItemButton } from "./delete-item-button";
 import { EditItemQuantityButton } from "./edit-item-quantity-button";
 import OpenCart from "./open-cart";
+import type React from "react";
+
+type CSSVarProperties = React.CSSProperties & { [key: `--${string}`]: string };
 
 type MerchandiseSearchParams = {
   [key: string]: string;
@@ -24,6 +27,7 @@ type MerchandiseSearchParams = {
 export default function CartModal() {
   const { cart, updateCartItem } = useCart();
   const [isOpen, setIsOpen] = useState(false);
+  const [entered, setEntered] = useState(false);
   const quantityRef = useRef(cart?.totalQuantity);
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
@@ -88,6 +92,15 @@ export default function CartModal() {
     });
   }, [cart]);
 
+  // Manage mount-time entrance animation for cart items
+  useEffect(() => {
+    if (isOpen) {
+      const id = requestAnimationFrame(() => setEntered(true));
+      return () => cancelAnimationFrame(id);
+    }
+    setEntered(false);
+  }, [isOpen]);
+
   return (
     <>
       <button aria-label="Open cart" onClick={openCart}>
@@ -104,7 +117,7 @@ export default function CartModal() {
             leaveFrom="opacity-100 backdrop-blur-[.5px]"
             leaveTo="opacity-0 backdrop-blur-none"
           >
-            <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+            <div className="fixed inset-0 bg-black/30 backdrop-blur-[12px]" aria-hidden="true" />
           </Transition.Child>
           <Transition.Child
             as={Fragment}
@@ -115,9 +128,12 @@ export default function CartModal() {
             leaveFrom="translate-x-0"
             leaveTo="translate-x-full"
           >
-            <Dialog.Panel className="fixed bottom-0 right-0 top-0 flex h-full w-full flex-col border-l border-neutral-200 bg-white p-6 text-black backdrop-blur-xl md:w-[390px]">
+            <Dialog.Panel
+              className="fixed bottom-0 right-0 top-0 flex h-full w-full flex-col border-l-2 p-6 backdrop-blur-xl md:w-[clamp(260px,38vw,420px)] [will-change:transform] bg-[var(--cart-bg)] text-[var(--cart-dark)] font-medium"
+              style={({ ['--cart-accent']: '#1D431D', ['--cart-dark']: '#1D431D', ['--cart-mid']: '#2E5A2E', ['--cart-bg']: '#DBEEC8', ['--cart-cta-bg']: '#6EAE3F', ['--cart-cta-bg-hover']: '#5A9B33', borderLeftColor: 'var(--cart-dark)' } as CSSVarProperties)}
+            >
               <div className="flex items-center justify-between">
-                <p className="text-lg font-semibold">My Cart</p>
+                <p className="text-lg font-medium text-[var(--cart-dark,#1D431D)]">My Cart</p>
                 <button aria-label="Close cart" onClick={closeCart}>
                   <CloseCart />
                 </button>
@@ -125,8 +141,8 @@ export default function CartModal() {
 
               {!cart || cart.lines.length === 0 ? (
                 <div className="mt-20 flex w-full flex-col items-center justify-center overflow-hidden">
-                  <ShoppingCartIcon className="h-16" />
-                  <p className="mt-6 text-center text-2xl font-bold">
+                  <ShoppingCartIcon className="h-16 text-[var(--cart-dark,#1D431D)]" />
+                  <p className="mt-6 text-center text-2xl font-medium text-[var(--cart-dark,#1D431D)]">
                     Your cart is empty.
                   </p>
                 </div>
@@ -156,11 +172,16 @@ export default function CartModal() {
                           `/product/${item.merchandise.product.handle}`,
                           new URLSearchParams(merchandiseSearchParams),
                         );
+                        const itemColor = item.merchandise.product.metafields?.find((mf) => mf.key === 'case_color')?.value as string | undefined;
 
                         return (
                           <li
                             key={i}
-                            className="flex w-full flex-col border-b border-neutral-300"
+                            className={clsx(
+                              "flex w-full flex-col border-b transition-all duration-500 ease-out border-[color:var(--cart-dark,#1D431D)]/20",
+                              entered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+                            )}
+                            style={{ transitionDelay: `${i * 40}ms` }}
                           >
                             <div className="relative flex w-full flex-row justify-between px-1 py-4">
                               <div className="absolute z-40 -ml-1 -mt-2">
@@ -170,7 +191,10 @@ export default function CartModal() {
                                 />
                               </div>
                               <div className="flex flex-row">
-                                <div className="relative h-16 w-16 overflow-hidden rounded-md border border-neutral-300 bg-neutral-300">
+                                <div
+                                  className="relative h-16 w-16 overflow-hidden rounded-md border border-[color:var(--cart-dark,#1D431D)]/20"
+                                  style={{ backgroundColor: itemColor || 'var(--cart-bg)' }}
+                                >
                                   <Image
                                     className="h-full w-full object-cover"
                                     width={64}
@@ -188,15 +212,15 @@ export default function CartModal() {
                                 <Link
                                   href={merchandiseUrl}
                                   onClick={closeCart}
-                                  className="z-30 ml-2 flex flex-row space-x-4"
+                                  className="z-30 ml-2 flex flex-row space-x-4 transition-colors hover:text-[var(--cart-accent,#1D431D)] text-[var(--cart-dark,#1D431D)]"
                                 >
                                   <div className="flex flex-1 flex-col text-base">
-                                    <span className="leading-tight">
+                                    <span className="leading-tight text-[var(--cart-dark,#1D431D)]">
                                       {item.merchandise.product.title}
                                     </span>
                                     {item.merchandise.title !==
                                     DEFAULT_OPTION ? (
-                                      <p className="text-sm text-neutral-500">
+                                      <p className="text-sm text-[var(--cart-dark,#1D431D)]/80">
                                         {item.merchandise.title}
                                       </p>
                                     ) : null}
@@ -211,7 +235,7 @@ export default function CartModal() {
                                     item.cost.totalAmount.currencyCode
                                   }
                                 />
-                                <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-neutral-200">
+                                <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-[color:var(--cart-dark,#1D431D)]/30">
                                   <EditItemQuantityButton
                                     item={item}
                                     type="minus"
@@ -234,23 +258,23 @@ export default function CartModal() {
                         );
                       })}
                   </ul>
-                  <div className="py-4 text-sm text-neutral-500">
-                    <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1">
-                      <p>Taxes</p>
+                  <div className="py-4 text-sm text-[var(--cart-dark,#1D431D)]">
+                    <div className="mb-3 flex items-center justify-between border-b border-[color:var(--cart-dark,#1D431D)]/20 pb-1">
+                      <p className="text-[var(--cart-dark,#1D431D)]">Taxes</p>
                       <Price
-                        className="text-right text-base text-black"
+                        className="text-right text-base text-[var(--cart-dark,#1D431D)]"
                         amount={cart.cost.totalTaxAmount.amount}
                         currencyCode={cart.cost.totalTaxAmount.currencyCode}
                       />
                     </div>
-                    <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1">
-                      <p>Shipping</p>
-                      <p className="text-right">Calculated at checkout</p>
+                    <div className="mb-3 flex items-center justify-between border-b border-[color:var(--cart-dark,#1D431D)]/20 pb-1 pt-1">
+                      <p className="text-[var(--cart-dark,#1D431D)]">Shipping</p>
+                      <p className="text-right text-[var(--cart-dark,#1D431D)]/80">Calculated at checkout</p>
                     </div>
-                    <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1">
-                      <p>Total</p>
+                    <div className="mb-3 flex items-center justify-between border-b border-[color:var(--cart-dark,#1D431D)]/20 pb-1 pt-1">
+                      <p className="text-[var(--cart-dark,#1D431D)]">Total</p>
                       <Price
-                        className="text-right text-base text-black"
+                        className="text-right text-base text-[var(--cart-dark,#1D431D)]"
                         amount={cart.cost.totalAmount.amount}
                         currencyCode={cart.cost.totalAmount.currencyCode}
                       />
@@ -271,7 +295,7 @@ export default function CartModal() {
 
 function CloseCart({ className }: { className?: string }) {
   return (
-    <div className="relative flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white">
+    <div className="relative flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors hover:border-[var(--cart-accent,#1D431D)]/50 hover:text-[var(--cart-accent,#1D431D)] dark:border-neutral-700 dark:text-white">
       <XMarkIcon
         className={clsx(
           "h-6 transition-all ease-in-out hover:scale-110 bg-gray-500",
@@ -287,11 +311,11 @@ function CheckoutButton() {
 
   return (
     <button
-      className="block w-full rounded-full bg-green-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
+      className="block w-full rounded-full border border-[color:var(--cart-dark,#1D431D)] bg-[var(--cart-cta-bg,#C2E5A1)] hover:bg-[var(--cart-cta-bg-hover,#B4D889)] p-3 text-center text-sm font-medium text-[color:var(--cart-dark,#1D431D)] transition-colors"
       type="submit"
       disabled={pending}
     >
-      {pending ? <LoadingDots className="bg-white" /> : "Proceed to Checkout"}
+      {pending ? <LoadingDots className="bg-[#1D431D]" /> : "Proceed to Checkout"}
     </button>
   );
 }

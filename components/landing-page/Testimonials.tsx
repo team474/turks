@@ -17,12 +17,32 @@ const getUserImageUrl = (metaObject: MetaObject): string => {
 };
 
 // Helper function to render stars based on rating
-const renderStars = (rating: number) => {
+const renderStars = (rating: number, className: string = "fill-[#1D431D]") => {
   const stars = [];
   for (let i = 0; i < rating; i++) {
-    stars.push(<Icon.yellowStarIcon key={i} />);
+    stars.push(<Icon.yellowStarIcon key={i} className={className} />);
   }
   return stars;
+};
+
+// Helper to generate initials for avatar fallback
+const getInitials = (name: string): string => {
+  if (!name) return "";
+  const words = name.trim().split(/\s+/);
+  return words.slice(0, 2).map((w) => w[0]?.toUpperCase() || "").join("");
+};
+
+// Helper to infer ISO date from a "X days ago"-style string
+const inferDateFromDaysAgo = (relative: string | undefined): string | undefined => {
+  if (!relative) return undefined;
+  const match = relative.match(/(\d+)/);
+  if (!match) return undefined;
+  const daysString = match[1] ?? match[0];
+  const days = parseInt(daysString, 10);
+  if (Number.isNaN(days)) return undefined;
+  const d = new Date();
+  d.setDate(d.getDate() - days);
+  return d.toISOString().split("T")[0]; // YYYY-MM-DD
 };
 
 const features = [
@@ -117,48 +137,120 @@ export async function Testimonials() {
             );
             const stars = parseInt(getFieldValue(testimonial, "stars")) || 5;
             const userImageUrl = getUserImageUrl(testimonial);
+            const initials = getInitials(userName || "");
+            const publishedISO = inferDateFromDaysAgo(commentDaysAgo);
+            const reviewLd = {
+              "@context": "https://schema.org",
+              "@type": "Review",
+              author: { "@type": "Person", name: userName || "Anonymous" },
+              reviewBody: comment || "",
+              reviewRating: {
+                "@type": "Rating",
+                ratingValue: String(stars),
+                bestRating: "5",
+                worstRating: "1",
+              },
+              ...(publishedISO ? { datePublished: publishedISO } : {}),
+            };
 
             return (
               <div
                 key={testimonial.id}
                 className={`flex md:max-w-[370px] w-full flex-col items-center gap-4 ${index === 1 && "md:flex-col-reverse"}`}
               >
-                <div
-                  style={{
-                    filter: "drop-shadow(0 4px 14px rgba(0, 0, 0, 0.05))",
-                  }}
-                  className="flex p-7.5 pb-2 flex-col justify-center items-center gap-8 bg-white rounded-3xl"
+                <article
+                  className="flex p-7.5 pb-6 flex-col justify-center items-center gap-8 bg-[#DBEEC8] border border-[#1D431D] rounded-3xl shadow-sm motion-safe:transition-transform duration-200 md:motion-safe:hover:-translate-y-1 md:hover:shadow-md md:active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D431D] focus-visible:ring-offset-2 focus-visible:ring-offset-[#DBEEC8] md:min-h-[260px]"
+                  aria-label={`Testimonial by ${userName}`}
                 >
-                  <Icon.doubleQuote className="fill-[#1D431D]" />
-                  <div className="flex items-center gap-2">
-                    {renderStars(stars)}
+                  {/* Mobile: two-column layout with avatar on left and content on right */}
+                  <div className="grid grid-cols-[60px_1fr] items-start gap-3 w-full md:hidden">
+                    <div className="size-[60px] shrink-0 rounded-full border-2 border-white shadow-[0_4px_14px_0_rgba(0,0,0,0.05)] overflow-hidden">
+                      {userImageUrl ? (
+                        <Image
+                          src={userImageUrl}
+                          alt={userName || "User avatar"}
+                          width={60}
+                          height={60}
+                          sizes="60px"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-[#E3EAD5] flex items-center justify-center text-[#1D431D] font-semibold">
+                          {initials}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex flex-col items-start gap-2 justify-center">
+                      <cite className="text-lg font-medium leading-[120%] text-[#1D431D] uppercase not-italic">{userName}</cite>
+                      {publishedISO ? (
+                        <time dateTime={publishedISO} className="text-base font-normal leading-[150%] text-[#1D431D]">
+                          {commentDaysAgo}
+                        </time>
+                      ) : (
+                        <span className="text-base font-normal leading-[150%] text-[#1D431D]">{commentDaysAgo}</span>
+                      )}
+                      <div className="flex items-center gap-2 scale-110" aria-label={`${stars} out of 5 stars`}>
+                        <span className="sr-only">{stars} out of 5 stars</span>
+                        {renderStars(stars, "fill-[#1D431D]").map((el, idx) => (
+                          <span aria-hidden="true" key={idx}>{el}</span>
+                        ))}
+                      </div>
+                      <Icon.doubleQuote className="size-8 fill-[#1D431D] text-[#1D431D]" />
+                      <blockquote className="text-base leading-[150%] text-[#1D431D]">
+                        {comment}
+                      </blockquote>
+                    </div>
                   </div>
-                  <p className="text-base md:text-xl leading-[150%] text-[#101010] text-center">
-                    {comment}
-                  </p>
-                </div>
 
-                <div className="flex flex-col justify-center items-center gap-6.5">
-                  <div className="size-13 md:size-18 shrink-0 rounded-full border-2 border-white shadow-[0_4px_14px_0_rgba(0,0,0,0.05)] overflow-hidden">
+                  {/* Desktop: original stacked content */}
+                  <div className="hidden md:flex md:flex-col justify-center items-center gap-8">
+                    <Icon.doubleQuote className="fill-[#1D431D] text-[#1D431D]" />
+                    <div className="flex items-center gap-2" aria-label={`${stars} out of 5 stars`}>
+                      <span className="sr-only">{stars} out of 5 stars</span>
+                      {renderStars(stars, "fill-[#1D431D]").map((el, idx) => (
+                        <span aria-hidden="true" key={idx}>{el}</span>
+                      ))}
+                    </div>
+                    <blockquote className="text-base md:text-xl leading-[150%] text-[#101010] md:text-[#1D431D] text-center">
+                      {comment}
+                    </blockquote>
+                  </div>
+
+                  {/* SEO: JSON-LD for review */}
+                  <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewLd) }}
+                  />
+                </article>
+
+                <div className="hidden md:flex flex-col justify-center items-center gap-6.5">
+                  <div className="size-[60px] md:size-[83px] shrink-0 rounded-full border-2 border-white shadow-[0_4px_14px_0_rgba(0,0,0,0.05)] overflow-hidden">
                     {userImageUrl ? (
                       <Image
                         src={userImageUrl}
-                        alt={userName}
-                        width={72}
-                        height={72}
+                        alt={userName || "User avatar"}
+                        width={84}
+                        height={84}
+                        sizes="(min-width: 768px) 83px, 60px"
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full bg-[#E3EAD5]"></div>
+                      <div className="w-full h-full bg-[#E3EAD5] flex items-center justify-center text-[#1D431D] font-semibold">
+                        {initials}
+                      </div>
                     )}
                   </div>
                   <div className="flex justify-center items-center gap-1 flex-col">
-                    <p className="text-base md:text-xl font-medium leading-[120%] text-[#101010] uppercase">
+                    <cite className="text-lg md:text-2xl font-medium leading-[120%] text-[#101010] uppercase not-italic">
                       {userName}
-                    </p>
-                    <p className="text-sm md:text-base font-normal leading-[150%] text-[#101010] text-center">
-                      {commentDaysAgo}
-                    </p>
+                    </cite>
+                    {publishedISO ? (
+                      <time dateTime={publishedISO} className="text-base md:text-lg font-normal leading-[150%] text-[#101010] text-center">
+                        {commentDaysAgo}
+                      </time>
+                    ) : (
+                      <span className="text-base md:text-lg font-normal leading-[150%] text-[#101010] text-center">{commentDaysAgo}</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -171,10 +263,10 @@ export async function Testimonials() {
         )}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-0 w-full max-w-[1170px] p-4 md:p-7.5 justify-between items-center rounded-2xl md:rounded-4xl bg-[#E3EAD5]">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0 w-full max-w-[1170px] p-6 md:p-7.5 justify-between items-center rounded-2xl md:rounded-4xl bg-[#DBEEC8] border border-[#1D431D]">
         {features.map((item, index) => (
           <div key={index} className="gap-2 flex items-center">
-            <div className="flex w-full flex-col items-center gap-7.5 shrink-0">
+            <div className="flex w-full flex-col items-center gap-2 md:gap-7.5 shrink-0">
               {item.icon}
               <p className="text-xs sm:text-base font-bold leading-[120%] uppercase text-[#101010] text-center">
                 {item.title}

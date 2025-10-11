@@ -9,6 +9,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      colors: {
+        brand: {
+          green: '#1D431D',
+          mint: '#DBEEC8',
+          mintAlt: '#E3EAD5',
+          border: '#CAD8B8',
+        },
+      },
       fontFamily: {
         jura: ['var(--font-jura)', 'sans-serif'],
       },

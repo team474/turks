@@ -31,7 +31,9 @@ export function Navbar() {
     >
       <div className="flex w-full max-w-[1440px] mx-auto px-6 xl:px-34 py-6 justify-between items-center">
         <h2 className="oi-regular text-[32px] font-normal leading-[120%] uppercase tracking-[0.64px] text-[#1D431D]">
-          TURK&apos;S
+          <Link href="/" prefetch={true} className="inline-block">
+            TURK&apos;S
+          </Link>
         </h2>
 
         <div className="block flex-none md:hidden">

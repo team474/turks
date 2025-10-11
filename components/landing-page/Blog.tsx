@@ -10,6 +10,7 @@ import {
   CarouselPrevious,
 } from "../ui/carousel";
 import { Reveal } from "@/components/animation/Reveal";
+import { Button } from "./Button";
 
 export async function Blog() {
   let header: MetaObject | undefined;
@@ -44,7 +45,7 @@ export async function Blog() {
         }}
         className="w-full"
       >
-        <CarouselContent>
+        <CarouselContent className="pt-2 pb-4 md:pb-8">
           {articles.map((item) => (
             <CarouselItem
               key={item.id}
@@ -53,7 +54,7 @@ export async function Blog() {
               <Reveal>
                 <Link href={`/blog/${item.handle}`} className="block">
                   <div className="flex max-w-[295px] md:max-w-[370px] flex-col items-start gap-4 md:gap-7.5 group">
-                    <div className="h-[215px] md:h-[270px] w-full rounded-3xl bg-[#E3EAD5] overflow-hidden">
+                  <div className="h-[215px] md:h-[270px] w-full rounded-3xl bg-[#E3EAD5] overflow-hidden border border-[var(--cta-border)]">
                       <Image
                         src={item.image.url}
                         alt={item.image.altText || item.title}
@@ -100,8 +101,15 @@ export async function Blog() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="top-[107px] md:top-[135px]" />
-        <CarouselNext className="top-[107px] md:top-[135px]" />
+        <div className="mt-2 sm:mt-3 w-full flex items-center justify-between gap-3">
+          <CarouselPrevious className="static top-auto left-auto right-auto translate-y-0 rotate-0 h-12 sm:h-14 px-6 sm:px-7 rounded-2xl border bg-[var(--cta-bg)] text-[var(--cta-border)] border-[var(--cta-border)] shadow-[0_4px_14px_0_rgba(0,0,0,0.10)]" />
+          <Button
+            title="All posts"
+            link="/blog"
+            className="gap-4 border-2"
+          />
+          <CarouselNext className="static top-auto left-auto right-auto translate-y-0 rotate-0 h-12 sm:h-14 px-6 sm:px-7 rounded-2xl border bg-[var(--cta-bg)] text-[var(--cta-border)] border-[var(--cta-border)] shadow-[0_4px_14px_0_rgba(0,0,0,0.10)]" />
+        </div>
       </Carousel>
     </div>
   );

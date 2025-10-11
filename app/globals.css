@@ -19,6 +19,7 @@ root {
 
 body {
   font-family: var(--font-poppins), Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
 }
 
 /* @layer base {
@@ -167,4 +168,5 @@ button {
   font-family: var(--font-oi), serif;
   font-weight: 400;
   font-style: normal;
+
 }

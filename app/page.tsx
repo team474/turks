@@ -55,11 +55,11 @@ export default async function HomePage() {
           {products && <Strains product={products}/>}
         </Reveal>
       </section>
-      <section className="relative w-full max-w-[1440px] mx-auto p-6 2xl:px-34 2xl:pl-10 md:py-18">
+      <section className="relative w-full max-w-[1170px] mx-auto p-6 lg:p-4 xl:px-0 lg:py-18">
         <Reveal variants={slowRight} amount={0.3}>
           <About />
         </Reveal>
-        <p className="oi-regular absolute left-1/2 -translate-x-1/2 -bottom-4 md:-bottom-12.5 md:text-[220px] text-[100px] font-normal leading-[120%] text-[#101010] uppercase text-center opacity-2">
+        <p className="oi-regular absolute left-1/2 -translate-x-1/2 -bottom-4 md:-bottom-12.5 md:text-[220px] text-[100px] font-normal leading-[120%] text-[#101010] uppercase text-center opacity-2 pointer-events-none select-none">
           TURK&apos;S
         </p>
       </section>
@@ -77,9 +77,9 @@ export default async function HomePage() {
         </Reveal>
       </section>
 
-      <section className="relative w-full max-w-[1170px] mx-auto py-6 px-8 lg:py-18 overflow-hidden">
-        <Icon.leafIcon className="hidden md:flex absolute top-9.5 left-5" />
-        <Icon.pipeIcon className="hidden md:flex absolute top-12 right-5 scale-x-[-1]" />
+      <section className="relative w-full max-w-[1170px] mx-auto pt-14 pb-6 px-8 lg:py-18 overflow-hidden">
+        <Icon.leafIcon className="absolute top-9.5 left-5 z-0 pointer-events-none" />
+        <Icon.pipeIcon className="absolute top-12 right-5 scale-x-[-1] z-0 pointer-events-none" />
         <Reveal variants={slowLeft} amount={0.3}>
           <Blog />
         </Reveal>

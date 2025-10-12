@@ -159,20 +159,20 @@ export async function Testimonials() {
                 className={`flex md:max-w-[370px] w-full flex-col items-center gap-4 ${index === 1 && "md:flex-col-reverse"}`}
               >
                 <article
-                  className="flex p-7.5 pb-6 flex-col justify-center items-center gap-8 bg-[#DBEEC8] border border-[#1D431D] rounded-3xl shadow-sm motion-safe:transition-transform duration-200 md:motion-safe:hover:-translate-y-1 md:hover:shadow-md md:active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D431D] focus-visible:ring-offset-2 focus-visible:ring-offset-[#DBEEC8] md:min-h-[260px]"
+                  className="flex p-7.5 pb-6 flex-col justify-center items-center gap-8 bg-[linear-gradient(to_bottom,_#E8F5DC,_#DBEEC8,_#CEE8B6)] border border-[#1D431D] rounded-3xl shadow-sm motion-safe:transition-transform duration-200 hover:-translate-y-0.5 md:hover:-translate-y-1 hover:shadow-md md:hover:shadow-lg md:active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1D431D] focus-visible:ring-offset-2 focus-visible:ring-offset-[#DBEEC8] md:min-h-[260px]"
                   aria-label={`Testimonial by ${userName}`}
                 >
                   {/* Mobile: two-column layout with avatar on left and content on right */}
-                  <div className="grid grid-cols-[60px_1fr] items-start gap-3 w-full md:hidden">
-                    <div className="size-[60px] shrink-0 rounded-full border-2 border-white shadow-[0_4px_14px_0_rgba(0,0,0,0.05)] overflow-hidden">
+                  <div className="grid grid-cols-[72px_1fr] items-start gap-3 w-full md:hidden">
+                    <div className="size-[72px] shrink-0 rounded-full shadow-[0_4px_14px_0_rgba(0,0,0,0.05)] overflow-hidden bg-[#E3EAD5]">
                       {userImageUrl ? (
                         <Image
                           src={userImageUrl}
                           alt={userName || "User avatar"}
-                          width={60}
-                          height={60}
-                          sizes="60px"
-                          className="w-full h-full object-cover"
+                          width={72}
+                          height={72}
+                          sizes="72px"
+                          className="block w-full h-full object-cover"
                         />
                       ) : (
                         <div className="w-full h-full bg-[#E3EAD5] flex items-center justify-center text-[#1D431D] font-semibold">
@@ -180,32 +180,38 @@ export async function Testimonials() {
                         </div>
                       )}
                     </div>
-                    <div className="flex flex-col items-start gap-2 justify-center">
-                      <cite className="text-lg font-medium leading-[120%] text-[#1D431D] uppercase not-italic">{userName}</cite>
-                      {publishedISO ? (
-                        <time dateTime={publishedISO} className="text-base font-normal leading-[150%] text-[#1D431D]">
-                          {commentDaysAgo}
-                        </time>
-                      ) : (
-                        <span className="text-base font-normal leading-[150%] text-[#1D431D]">{commentDaysAgo}</span>
-                      )}
-                      <div className="flex items-center gap-2 scale-110" aria-label={`${stars} out of 5 stars`}>
-                        <span className="sr-only">{stars} out of 5 stars</span>
-                        {renderStars(stars, "fill-[#1D431D]").map((el, idx) => (
-                          <span aria-hidden="true" key={idx}>{el}</span>
-                        ))}
+                    <div className="flex flex-col items-start gap-2 justify-center w-full">
+                      <div className="flex w-full items-start justify-between gap-2">
+                        <div className="flex flex-col items-start">
+                          <cite className="text-lg font-medium leading-[120%] text-[#1D431D] uppercase not-italic">{userName}</cite>
+                          {publishedISO ? (
+                            <time dateTime={publishedISO} className="text-base font-normal leading-[150%] text-[#1D431D]">
+                              {commentDaysAgo}
+                            </time>
+                          ) : (
+                            <span className="text-base font-normal leading-[150%] text-[#1D431D]">{commentDaysAgo}</span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 scale-110 shrink-0" aria-label={`${stars} out of 5 stars`}>
+                          <span className="sr-only">{stars} out of 5 stars</span>
+                          {renderStars(stars, "fill-[#1D431D]").map((el, idx) => (
+                            <span aria-hidden="true" key={idx}>{el}</span>
+                          ))}
+                        </div>
                       </div>
-                      <Icon.doubleQuote className="size-8 fill-[#1D431D] text-[#1D431D]" />
-                      <blockquote className="text-base leading-[150%] text-[#1D431D]">
-                        {comment}
-                      </blockquote>
+                      <div className="flex items-start gap-2 w-full">
+                        <Icon.doubleQuote className="size-8 fill-[#1D431D] text-[#1D431D] shrink-0 mt-0.5" />
+                        <blockquote className="text-base leading-[150%] text-[#1D431D] flex-1">
+                          {comment}
+                        </blockquote>
+                      </div>
                     </div>
                   </div>
 
                   {/* Desktop: original stacked content */}
                   <div className="hidden md:flex md:flex-col justify-center items-center gap-8">
                     <Icon.doubleQuote className="fill-[#1D431D] text-[#1D431D]" />
-                    <div className="flex items-center gap-2" aria-label={`${stars} out of 5 stars`}>
+                    <div className="flex items-center gap-2 scale-150" aria-label={`${stars} out of 5 stars`}>
                       <span className="sr-only">{stars} out of 5 stars</span>
                       {renderStars(stars, "fill-[#1D431D]").map((el, idx) => (
                         <span aria-hidden="true" key={idx}>{el}</span>
@@ -224,15 +230,15 @@ export async function Testimonials() {
                 </article>
 
                 <div className="hidden md:flex flex-col justify-center items-center gap-6.5">
-                  <div className="size-[60px] md:size-[83px] shrink-0 rounded-full border-2 border-white shadow-[0_4px_14px_0_rgba(0,0,0,0.05)] overflow-hidden">
+                  <div className="size-[72px] md:size-[100px] shrink-0 rounded-full shadow-[0_4px_14px_0_rgba(0,0,0,0.05)] overflow-hidden bg-[#E3EAD5]">
                     {userImageUrl ? (
                       <Image
                         src={userImageUrl}
                         alt={userName || "User avatar"}
-                        width={84}
-                        height={84}
-                        sizes="(min-width: 768px) 83px, 60px"
-                        className="w-full h-full object-cover"
+                        width={100}
+                        height={100}
+                        sizes="(min-width: 768px) 100px, 72px"
+                        className="block w-full h-full object-cover"
                       />
                     ) : (
                       <div className="w-full h-full bg-[#E3EAD5] flex items-center justify-center text-[#1D431D] font-semibold">

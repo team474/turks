@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog, Transition } from "@headlessui/react";
-import { ShoppingCartIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import LoadingDots from "components/loading-dots";
 import Price from "components/price";
@@ -130,13 +130,11 @@ export default function CartModal() {
           >
             <Dialog.Panel
               className="fixed bottom-0 right-0 top-0 flex h-full w-full flex-col border-l-2 p-6 backdrop-blur-xl md:w-[clamp(260px,38vw,420px)] [will-change:transform] bg-[var(--cart-bg)] text-[var(--cart-dark)] font-medium"
-              style={({ ['--cart-accent']: '#1D431D', ['--cart-dark']: '#1D431D', ['--cart-mid']: '#2E5A2E', ['--cart-bg']: '#DBEEC8', ['--cart-cta-bg']: '#6EAE3F', ['--cart-cta-bg-hover']: '#5A9B33', borderLeftColor: 'var(--cart-dark)' } as CSSVarProperties)}
+              style={({ ['--cart-accent']: '#1D431D', ['--cart-dark']: '#1D431D', ['--cart-mid']: '#2E5A2E', ['--cart-bg']: '#C8D4AA', ['--cart-cta-bg']: '#6EAE3F', ['--cart-cta-bg-hover']: '#5A9B33', borderLeftColor: 'var(--cart-dark)' } as CSSVarProperties)}
             >
               <div className="flex items-center justify-between">
                 <p className="text-lg font-medium text-[var(--cart-dark,#1D431D)]">My Cart</p>
-                <button aria-label="Close cart" onClick={closeCart}>
-                  <CloseCart />
-                </button>
+                <CloseCart onClick={closeCart} />
               </div>
 
               {!cart || cart.lines.length === 0 ? (
@@ -192,13 +190,13 @@ export default function CartModal() {
                               </div>
                               <div className="flex flex-row">
                                 <div
-                                  className="relative h-16 w-16 overflow-hidden rounded-md border border-[color:var(--cart-dark,#1D431D)]/20"
+                                  className="relative h-20 w-20 overflow-hidden rounded-md border border-[#1D431D]"
                                   style={{ backgroundColor: itemColor || 'var(--cart-bg)' }}
                                 >
                                   <Image
                                     className="h-full w-full object-cover"
-                                    width={64}
-                                    height={64}
+                                    width={80}
+                                    height={80}
                                     alt={
                                       item.merchandise.product.featuredImage
                                         .altText ||
@@ -235,7 +233,7 @@ export default function CartModal() {
                                     item.cost.totalAmount.currencyCode
                                   }
                                 />
-                                <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-[color:var(--cart-dark,#1D431D)]/30">
+                                <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-[color:var(--cart-dark,#1D431D)]/30 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md hover:bg-black/5">
                                   <EditItemQuantityButton
                                     item={item}
                                     type="minus"
@@ -293,16 +291,16 @@ export default function CartModal() {
   );
 }
 
-function CloseCart({ className }: { className?: string }) {
+function CloseCart({ className, onClick }: { className?: string; onClick?: () => void }) {
   return (
-    <div className="relative flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors hover:border-[var(--cart-accent,#1D431D)]/50 hover:text-[var(--cart-accent,#1D431D)] dark:border-neutral-700 dark:text-white">
-      <XMarkIcon
-        className={clsx(
-          "h-6 transition-all ease-in-out hover:scale-110 bg-gray-500",
-          className,
-        )}
-      />
-    </div>
+    <button
+      type="button"
+      className={clsx("ml-auto -mt-1 text-[var(--cart-dark,#1D431D)] text-4xl font-bold leading-none", className)}
+      aria-label="Close cart"
+      onClick={onClick}
+    >
+      <span aria-hidden>×</span>
+    </button>
   );
 }
 

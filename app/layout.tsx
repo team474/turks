@@ -77,8 +77,8 @@ export default async function RootLayout({
           <Navbar />
           <main className="bg-[#F7F8F2] overflow-x-hidden">
             {children}
-            <section className="bg-[#C8D4AA]">
-              <Footer />
+            <section className="bg-[linear-gradient(to_bottom,_#F7F8F2,_hsl(77,33%,75%),_hsl(77,33%,70%))] md:bg-[linear-gradient(to_bottom,_#F7F8F2,_hsl(77,33%,75%),_hsl(77,33%,60%))]">
+              <Footer  />
             </section>
             <Toaster closeButton />
             {/* <WelcomeToast /> */}

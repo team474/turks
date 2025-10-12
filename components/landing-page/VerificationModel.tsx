@@ -28,7 +28,11 @@ export function VerificationModel() {
   }
 
   function handleNo() {
-    alert("You are not allowed to enter. You must be 21 or older.");
+    try {
+      window.location.href = "https://www.google.com";
+    } catch {
+      // ignore navigation errors
+    }
   }
 
   useEffect(() => {
@@ -52,16 +56,17 @@ export function VerificationModel() {
   return (
     <Dialog open={isOpen}>
       <DialogContent
-        className="sm:max-w-[650px] w-full rounded-2xl p-4 md:p-7.5 border-none gap-8"
-        style={{ background: "#ffffff" }}
+        overlayClassName="bg-black/60 backdrop-blur-sm"
+        className="sm:max-w-[650px] w-full rounded-2xl p-4 md:p-7.5 border-1 border-[#1D431D] gap-8"
+        style={{ background: "#E3EAD5" }}
         aria-describedby={undefined}
         showCloseButton={false}
       >
         {/* Header */}
         <div className="flex items-start">
-          <div className="flex-1 pr-8">
-            <DialogTitle className="text-[28px] text-[#101010] font-semibold leading-[120%] uppercase">
-              Please confirm your age.
+          <div className="flex-1 pt-4 md:pt-2">
+            <DialogTitle className="text-[28px] text-[#101010] font-semibold leading-[120%] uppercase text-center">
+              Please confirm your age
             </DialogTitle>
             <DialogDescription className="sr-only">
               Confirm you are 21+ to continue.
@@ -71,7 +76,7 @@ export function VerificationModel() {
 
         <span className="w-full h-px bg-[#101010] opacity-10" />
 
-        <div className="w-full flex flex-col justify-center items-center gap-7.5 p-7.5 rounded-3xl bg-[#E3EAD5]">
+        <div className="w-full flex flex-col justify-center items-center gap-7.5 p-7.5 rounded-3xl border-[.5px] border-[#1d431d52] bg-[#DBEEC8]">
           <div className="flex flex-col gap-5 justify-center items-center">
             <p className="text-[28px] text-[#101010] font-semibold leading-[120%] uppercase">
               Are you 21+?
@@ -84,13 +89,13 @@ export function VerificationModel() {
           <div className="flex gap-4">
             <button
               onClick={handleYes}
-              className="cursor-pointer px-8 py-4 justify-center items-center flex rounded-full bg-[#1D431D] text-white text-center text-base font-bold leading-[150%] uppercase"
+              className="cursor-pointer px-8 py-4 justify-center items-center flex rounded-full bg-[#1D431D] hover:bg-[#163416] text-[#DBEEC8] text-center text-base font-bold leading-[150%] uppercase transition-colors duration-200"
             >
               YES
             </button>
             <button
               onClick={handleNo}
-              className="cursor-pointer px-8 py-4 justify-center items-center flex rounded-full border border-[#1D431D] text-[#1D431D] text-center text-base font-bold leading-[150%] uppercase"
+              className="cursor-pointer px-8 py-4 justify-center items-center flex rounded-full border border-[#1D431D] text-[#1D431D] text-center text-base font-bold leading-[150%] uppercase transition-colors duration-200 hover:bg-[#ecfcb3]"
             >
               No
             </button>

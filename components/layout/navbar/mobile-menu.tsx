@@ -2,6 +2,7 @@
 
 import { Menu } from "lib/shopify/types";
 import StaggeredMenu from "components/StaggeredMenu";
+import CartModal from "components/cart/modal";
 
 export default function MobileMenu({ menu }: { menu: Menu[] }) {
   const items = (menu || []).map((m) => ({
@@ -22,20 +23,23 @@ export default function MobileMenu({ menu }: { menu: Menu[] }) {
 
   return (
     <div className="md:hidden">
-      <StaggeredMenu
-        position="right"
-        items={items}
-        socialItems={[]}
-        displaySocials={false}
-        displayItemNumbering={false}
-        menuButtonColor="#1D431D"
-        openMenuButtonColor="#1D431D"
-        changeMenuColorOnOpen={false}
-        colors={colors}
-        isFixed={false}
-        accentColor="#1D431D"
-        renderInlineToggle={true}
-      />
+      <div className="flex items-center gap-4">
+        <StaggeredMenu
+          position="right"
+          items={items}
+          socialItems={[]}
+          displaySocials={false}
+          displayItemNumbering={false}
+          menuButtonColor="#1D431D"
+          openMenuButtonColor="#1D431D"
+          changeMenuColorOnOpen={false}
+          colors={colors}
+          isFixed={false}
+          accentColor="#1D431D"
+          renderInlineToggle={true}
+        />
+        <CartModal />
+      </div>
     </div>
   );
 }

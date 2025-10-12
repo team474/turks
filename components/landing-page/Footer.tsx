@@ -163,7 +163,7 @@ export async function Footer() {
                   <Link
                     key={index}
                     href={item.link}
-                    className="text-sm font-medium leading-[150%]"
+                    className="text-sm font-medium leading-[150%] transition-colors duration-200 hover:text-[#1D431D]"
                   >
                     {item.name}
                   </Link>
@@ -180,7 +180,7 @@ export async function Footer() {
                   <Link
                     key={index}
                     href={item.path}
-                    className="text-sm font-medium leading-[150%]"
+                    className="text-sm font-medium leading-[150%] transition-colors duration-200 hover:text-[#1D431D]"
                   >
                     {item.title}
                   </Link>
@@ -190,14 +190,14 @@ export async function Footer() {
 
             <div className="flex col-span-2 md:col-span-1 flex-col items-start gap-8 flex-1">
               <p className="text-xl font-medium leading-[120%] uppercase">
-                Social Accounts
+                Socials
               </p>
               <div className="flex items-start gap-6 flex-wrap">
                 {availableSocialAccounts.map((item, index) => (
                   <Link
                     key={index}
                     href={item.link}
-                    className="size-12 flex justify-center items-center p-2.5 bg-[#1D431D] rounded-full"
+                    className="size-12 flex justify-center items-center p-2.5 bg-[#1D431D] rounded-full transition-colors duration-200 hover:bg-[#163416]"
                   >
                     {item.Icon}
                   </Link>
@@ -212,7 +212,7 @@ export async function Footer() {
                 <Link
                   key={index}
                   href={item.path}
-                  className="text-xs sm:text-sm font-medium leading-[150%]"
+                  className="text-xs sm:text-sm font-medium leading-[150%] transition-colors duration-200 hover:text-[#1D431D]"
                 >
                   {item.title}
                 </Link>

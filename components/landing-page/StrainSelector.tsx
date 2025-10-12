@@ -1,8 +1,8 @@
 
 'use client'
 
-import { mixWithWhite, mixWithBlack } from '@/lib/color'
-import { motion } from 'framer-motion'
+import { mixWithWhite, mixWithBlack, saturateHex } from '@/lib/color'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface StrainSelectorItem {
   name: string;
@@ -30,7 +30,12 @@ export function StrainSelector({ title = 'Select Strain', items, selectedName, o
           const baseColor = item.color || '#FFFFFF';
           const backgroundColor = isSelected ? mixWithWhite(baseColor, 15) : baseColor;
           const borderColor = mixWithBlack(backgroundColor, 12);
-          const circleColor = isSelected ? mixWithBlack(baseColor, 40) : borderColor;
+          // StrainsInfo color system
+          const panelDarker = mixWithBlack(baseColor, 27);
+          const saturated = saturateHex(panelDarker, 30); // "saturated"
+          const saturatedDark = saturateHex(mixWithBlack(baseColor, 68), 38); // "saturated dark"
+          // Circle ring = saturated dark when selected; otherwise use control border
+          const circleColor = isSelected ? saturatedDark : borderColor;
           return (
             <motion.button
               key={`${item.name}-${index}`}
@@ -44,14 +49,25 @@ export function StrainSelector({ title = 'Select Strain', items, selectedName, o
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <span
+              <motion.span
                 className="relative flex items-center justify-center size-4 sm:size-6 rounded-full"
-                style={{ backgroundColor: circleColor }}
+                animate={{ backgroundColor: circleColor }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               >
-                {isSelected && (
-                  <span className="block size-2 sm:size-3 rounded-full bg-white/70" />
-                )}
-              </span>
+                <AnimatePresence initial={false} mode="wait">
+                  {isSelected && (
+                    <motion.span
+                      key="selected-dot"
+                      className="block size-2 sm:size-3 rounded-full"
+                      style={{ backgroundColor: saturated }}
+                      initial={{ opacity: 0, scale: 0.85 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.85 }}
+                      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    />
+                  )}
+                </AnimatePresence>
+              </motion.span>
               <p className="text-sm sm:text-lg font-medium leading-[150%] text-[#202020] whitespace-nowrap">
                 {item.name}
               </p>

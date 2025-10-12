@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useActionState, useEffect, useState, useTransition } from "react";
 import { StrainMetaCard } from "@/components/landing-page/StrainMetaCard";
 import { StrainSelector } from "@/components/landing-page/StrainSelector";
-import { fadeOnly } from "@/lib/animation";
+import { fadeOnly, heroStagger, heroChild } from "@/lib/animation";
 import { useMemo, useRef } from "react";
 import { useProductMeta } from "@/lib/hooks/useProductMeta";
 import { gradientAround } from "@/lib/color";
@@ -186,8 +186,12 @@ export function Hero({ product }: HeroProps) {
   if (!featureProduct) return null;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 items-start gap-6 sm:gap-7.5">
-      <div className="flex flex-col items-start gap-3 sm:gap-5">
+    <motion.div
+      variants={heroStagger}
+      className="grid grid-cols-1 lg:grid-cols-2 items-start gap-6 sm:gap-7.5"
+      style={{ willChange: 'transform, opacity' }}
+    >
+      <motion.div variants={heroChild} className="flex flex-col items-start gap-3 sm:gap-5">
         <ProductImageGallery
           images={images as { url: string; altText?: string | null; width: number; height: number }[]}
           selectedIndex={selectedIndex}
@@ -195,31 +199,35 @@ export function Hero({ product }: HeroProps) {
           gradientOverlay={backgroundGradient}
           borderColorHex={caseColor || '#1D431D'}
         />
-      </div>
+      </motion.div>
 
-      <div className="flex flex-col items-start gap-5 sm:gap-7.5">
-        <h1 className="text-[26px] sm:text-[42px] font-black leading-[120%] text-[#101010] uppercase font-playfair-display-sc">
+      <div className="flex flex-col items-center sm:items-start gap-5 sm:gap-7.5">
+        <motion.h1 variants={heroChild} className="text-[26px] sm:text-[42px] font-black leading-[120%] text-[#101010] uppercase font-playfair-display-sc">
           <AnimatePresence mode="wait" initial={false}>
-            <motion.span key={selectedName || 'none'} variants={fadeOnly} initial="initial" animate="animate" exit="exit" className="inline-block">
+            <motion.span key={selectedName || 'none'} variants={fadeOnly} initial="initial" animate="animate" exit="exit" className="inline-block text-center sm:text-left">
               {selectedName || 'Select a strain'}
             </motion.span>
           </AnimatePresence>
-        </h1>
+        </motion.h1>
 
-        <StrainSelector
-          items={allStrains.map(({ name, color }) => ({ name, color }))}
-          selectedName={selectedName}
-          onSelect={onSelectDebounced}
-        />
+        <motion.div variants={heroChild}>
+          <StrainSelector
+            items={allStrains.map(({ name, color }) => ({ name, color }))}
+            selectedName={selectedName}
+            onSelect={onSelectDebounced}
+          />
+        </motion.div>
 
-        <StrainMetaCard
-          name={selectedName || 'Select a strain'}
-          colorHex={caseColor}
-          effects={effects}
-          terpenes={terpenes}
-        />
+        <motion.div variants={heroChild} className="w-full">
+          <StrainMetaCard
+            name={selectedName || 'Select a strain'}
+            colorHex={caseColor}
+            effects={effects}
+            terpenes={terpenes}
+          />
+        </motion.div>
 
-        <div className="flex flex-col items-start gap-2 sm:gap-4 w-full">
+        <motion.div variants={heroChild} className="flex flex-col items-start gap-2 sm:gap-4 w-full">
           <p className="text-base sm:text-xl font-bold leading-[120%] uppercase text-[#101010]">Description</p>
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
@@ -232,9 +240,9 @@ export function Hero({ product }: HeroProps) {
               dangerouslySetInnerHTML={{ __html: featureProduct?.descriptionHtml || featureProduct?.description || '' }}
             />
           </AnimatePresence>
-        </div>
+        </motion.div>
 
-        <div className="flex justify-between items-center w-full">
+        <motion.div variants={heroChild} className="flex justify-between items-center w-full">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={`${featureProduct?.priceRange?.minVariantPrice?.currencyCode}-${featureProduct?.priceRange?.minVariantPrice?.amount}`} variants={fadeOnly} initial="initial" animate="animate" exit="exit">
               <div style={{ color: ctaBorder }}>
@@ -243,11 +251,13 @@ export function Hero({ product }: HeroProps) {
             </motion.div>
           </AnimatePresence>
           <QuantityControl value={currentQuantity} onIncrement={() => updateQuantity('increment')} onDecrement={() => updateQuantity('decrement')} bgColor={ctaBg} borderColor={ctaBorder} iconColor={iconSaturated} textColor={ctaBorder} />
-        </div>
+        </motion.div>
 
         {/* Action Buttons */}
-        <ProductActions onAddToCart={addToCartAction} onCheckout={() => redirectToCheckout()} checkoutDisabled={cart?.lines.length === 0} ctaBg={ctaBg} ctaBorder={ctaBorder} checkoutBg={checkoutBg} />
+        <motion.div variants={heroChild}>
+          <ProductActions onAddToCart={addToCartAction} onCheckout={() => redirectToCheckout()} checkoutDisabled={cart?.lines.length === 0} ctaBg={ctaBg} ctaBorder={ctaBorder} checkoutBg={checkoutBg} />
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

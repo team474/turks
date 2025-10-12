@@ -75,7 +75,7 @@ export default async function RootLayout({
         {/* <ThemeProvider attribute="class" enableSystem> */}
         <CartProvider cartPromise={cart}>
           <Navbar />
-          <main className="bg-[#f6f8f4] overflow-x-hidden">
+          <main className="bg-[#F7F8F2] overflow-x-hidden">
             {children}
             <section className="bg-[#C8D4AA]">
               <Footer />

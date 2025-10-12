@@ -77,7 +77,7 @@ export function StrainMetaCard({ name, colorHex, effects, terpenes, className }:
 
       <div className="flex p-2 sm:p-4 flex-col items-start gap-3 sm:gap-4 flex-1">
         <p className="text-sm sm:text-lg font-bold leading-[120%] uppercase text-[#101010]">
-          Terpenes
+          Flavors
         </p>
         <span className="w-full h-px min-h-px bg-[#1010101A]"></span>
         <AnimatePresence mode="wait" initial={false}>

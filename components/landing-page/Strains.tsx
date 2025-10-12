@@ -193,9 +193,14 @@ export function Strains({ product }: strainProps) {
                     <Image
                       src={strain?.images[0]?.url ?? ''}
                       alt={strain?.title}
+                      loading="lazy"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 640px, 480px"
-                      className="object-contain scale-[1.35] sm:scale-[1.2] md:scale-[1.25] transition-transform duration-300 ease-out group-hover:scale-125"
+                      className="object-contain scale-[1.35] sm:scale-[1.2] md:scale-[1.25] transition-transform duration-300 ease-out group-hover:scale-125 opacity-0 transition-opacity"
+                      onLoadingComplete={(img) => {
+                        img.classList.remove('opacity-0');
+                        img.classList.add('opacity-100');
+                      }}
                     />
                   </div>
                   <div 
@@ -245,9 +250,24 @@ export function Strains({ product }: strainProps) {
 }
 
 function DynamicCTA({ bgColor, textColor, borderColor }: { bgColor: string; textColor: string; borderColor: string }) {
+  const [isSm, setIsSm] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 640px)');
+    const handler = (e: MediaQueryListEvent | MediaQueryList) => {
+      // Support both initial call (MediaQueryList) and change events
+      const matches = 'matches' in e ? e.matches : (e as MediaQueryList).matches;
+      setIsSm(matches);
+    };
+    // Initial
+    handler(mql);
+    // Subscribe
+    mql.addEventListener('change', handler as (ev: MediaQueryListEvent) => void);
+    return () => mql.removeEventListener('change', handler as (ev: MediaQueryListEvent) => void);
+  }, []);
+
   return (
     <Button
-      title="All strains"
+      title={isSm ? 'Strains' : 'All strains'}
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       className="gap-4 border-2"
       style={{

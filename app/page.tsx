@@ -71,7 +71,7 @@ export default async function HomePage() {
         </Reveal>
       </section>
 
-      <section className="w-full max-w-[1170px] mx-auto py-6 lg:p-4 xl:px-0 lg:py-18 overflow-hidden">
+      <section className="w-full max-w-[1170px] mx-auto pb-6 lg:p-4 xl:px-0 lg:py-10 overflow-hidden">
         <Reveal variants={slowUp} amount={0.3}>
           {products && <StrainsInfo product={products} />}
         </Reveal>

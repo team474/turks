@@ -53,13 +53,13 @@ export async function Blog() {
             >
               <Reveal>
                 <Link href={`/blog/${item.handle}`} className="block">
-                  <div className="flex max-w-[295px] md:max-w-[370px] flex-col items-start gap-4 md:gap-7.5 group">
-                  <div className="h-[215px] md:h-[270px] w-full rounded-3xl bg-[#E3EAD5] overflow-hidden border border-[var(--cta-border)]">
+                  <div className="flex max-w-[360px] md:max-w-[460px] flex-col items-start gap-4 md:gap-7.5 group">
+                    <div className="h-[300px] md:h-[380px] w-full rounded-3xl bg-[#E3EAD5] overflow-hidden border border-[var(--cta-border)]">
                       <Image
                         src={item.image.url}
                         alt={item.image.altText || item.title}
-                        width={295}
-                        height={215}
+                        width={460}
+                        height={380}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>

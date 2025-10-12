@@ -17,7 +17,7 @@ import {
   CarouselPrevious,
 } from "../ui/carousel";
 import { motion } from "framer-motion";
-import { listItem } from "@/lib/animation";
+import { listItemSlow } from "@/lib/animation";
 // Removed unused Button import
 
 interface strainProps {
@@ -176,7 +176,7 @@ export function Strains({ product }: strainProps) {
                 className="sm:basis-1/2 lg:basis-1/3 flex justify-center"
               >
                 <motion.div
-                  variants={listItem}
+                  variants={listItemSlow}
                   initial="initial"
                   whileInView="animate"
                   viewport={{ once: true, amount: 0.25 }}
@@ -196,7 +196,7 @@ export function Strains({ product }: strainProps) {
                       loading="lazy"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 640px, 480px"
-                      className="object-contain scale-[1.35] sm:scale-[1.2] md:scale-[1.25] transition-transform duration-300 ease-out group-hover:scale-125 opacity-0 transition-opacity"
+                      className="object-contain scale-[1.35] sm:scale-[1.2] md:scale-[1.25] transition-transform duration-300 ease-out group-hover:scale-125 opacity-0"
                       onLoadingComplete={(img) => {
                         img.classList.remove('opacity-0');
                         img.classList.add('opacity-100');

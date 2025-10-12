@@ -125,16 +125,21 @@ export function StrainsInfo({ product }: infoProps) {
                   background: baseColor,
                   borderColor
                 }}
-                className="group relative flex w-full max-w-none sm:max-w-[400px] md:max-w-[400px] h-[720px] sm:h-[820px] md:h-[900px] p-1.5 sm:p-2 mx-1.5 sm:mx-2 flex-col items-center justify-between shrink-0 gap-2 sm:gap-3 md:gap-4 rounded-3xl border border-solid overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+                className="group relative flex w-full max-w-none sm:max-w-[400px] md:max-w-[400px] h-[560px] sm:h-[660px] md:h-[760px] p-1.5 sm:p-2 mx-1.5 sm:mx-2 flex-col items-center justify-start shrink-0 gap-0 rounded-3xl border border-solid overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
               >
-                <div className="relative w-full h-[260px] sm:h-[300px] md:h-[360px]">
+                <div className="relative w-full h-[240px] sm:h-[300px] md:h-[380px]">
                   {item.image ? (
                     <Image
                       src={item.image}
                       alt={item.name}
+                      loading="lazy"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 640px, 480px"
-                      className="object-contain scale-[1.35] sm:scale-[1.2] md:scale-[1.25] transition-transform duration-300 ease-out group-hover:scale-125"
+                      className="object-contain scale-[1.5] sm:scale-[1.35] md:scale-[1.4] transition-transform duration-300 ease-out group-hover:scale-[1.65] opacity-0 transition-opacity"
+                      onLoadingComplete={(img) => {
+                        img.classList.remove('opacity-0');
+                        img.classList.add('opacity-100');
+                      }}
                     />
                   ) : (
                     <div className="w-full h-full bg-[#E3EAD5] flex items-center justify-center rounded-2xl">
@@ -144,9 +149,9 @@ export function StrainsInfo({ product }: infoProps) {
                 </div>
                 <div 
                   style={{ background: panelColor, borderColor: textIconColor, borderWidth: 0.5 }}
-                  className="flex w-full p-5 sm:p-6 md:p-7 justify-between items-start rounded-[20px] border"
+                  className="flex w-full px-5 py-4 sm:px-6 sm:py-5 md:px-6 md:py-5 items-start rounded-[20px] border"
                 >
-                  <div className="flex flex-col justify-center items-start gap-3 md:gap-4">
+                  <div className="flex flex-col justify-center items-start gap-2 md:gap-3">
                     <p className="text-xl sm:text-2xl md:text-3xl font-extrabold leading-[115%] uppercase" style={{ color: textIconColor }}>
                       {item.name}
                     </p>

@@ -62,17 +62,18 @@ export const colorBlend = 0.6;
 
 
 // Slower, directional variants for section reveals
+export const slowDuration = 0.8;
 export const slowUp = {
   initial: { opacity: 0, y: 24 },
   animate: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: motionEasings.out },
+    transition: { duration: slowDuration, ease: motionEasings.out, delay: 0.05 },
   },
   exit: {
     opacity: 0,
     y: -8,
-    transition: { duration: 0.4, ease: motionEasings.inOut },
+    transition: { duration: 0.5, ease: motionEasings.inOut },
   },
 };
 
@@ -81,12 +82,12 @@ export const slowDown = {
   animate: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: motionEasings.out },
+    transition: { duration: slowDuration, ease: motionEasings.out, delay: 0.05 },
   },
   exit: {
     opacity: 0,
     y: 8,
-    transition: { duration: 0.4, ease: motionEasings.inOut },
+    transition: { duration: 0.5, ease: motionEasings.inOut },
   },
 };
 
@@ -95,12 +96,12 @@ export const slowLeft = {
   animate: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.6, ease: motionEasings.out },
+    transition: { duration: slowDuration, ease: motionEasings.out, delay: 0.05 },
   },
   exit: {
     opacity: 0,
     x: -8,
-    transition: { duration: 0.4, ease: motionEasings.inOut },
+    transition: { duration: 0.5, ease: motionEasings.inOut },
   },
 };
 
@@ -109,12 +110,41 @@ export const slowRight = {
   animate: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.6, ease: motionEasings.out },
+    transition: { duration: slowDuration, ease: motionEasings.out, delay: 0.05 },
   },
   exit: {
     opacity: 0,
     x: 8,
-    transition: { duration: 0.4, ease: motionEasings.inOut },
+    transition: { duration: 0.5, ease: motionEasings.inOut },
+  },
+};
+
+// Hero stagger for initial mount
+export const heroStagger = {
+  animate: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
+};
+
+export const heroChild = {
+  initial: { opacity: 0, y: 20 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: slowDuration, ease: motionEasings.out },
+  },
+};
+
+// Slower list item reveal for cards
+export const listItemSlow = {
+  initial: { opacity: 0, y: 10 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: motionEasings.out },
+  },
+  exit: {
+    opacity: 0,
+    y: -6,
+    transition: { duration: 0.25, ease: motionEasings.inOut },
   },
 };
 

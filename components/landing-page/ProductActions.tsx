@@ -15,10 +15,10 @@ export function ProductActions({ onAddToCart, onCheckout, checkoutDisabled, ctaB
       <form action={onAddToCart} className="flex-1">
         <button
           type="submit"
-          className="flex w-full px-4 py-3 sm:px-8 sm:py-4 justify-center items-center gap-3 rounded-full cursor-pointer transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md hover:brightness-105"
+          className="flex w-full px-5 py-4 sm:px-10 sm:py-5 justify-center items-center gap-4 rounded-full cursor-pointer transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md hover:brightness-105"
           style={{ backgroundColor: ctaBg, border: ctaBorder ? `1px solid ${ctaBorder}` : undefined, color: ctaBorder }}
         >
-          <p className="text-sm sm:text-base font-bold leading-[150%] uppercase text-center cursor-pointer" style={{ color: ctaBorder }}>
+          <p className="text-base sm:text-lg font-bold leading-[150%] uppercase text-center cursor-pointer whitespace-nowrap" style={{ color: ctaBorder }}>
             Add to cart
           </p>
         </button>
@@ -26,11 +26,11 @@ export function ProductActions({ onAddToCart, onCheckout, checkoutDisabled, ctaB
       <button
         type="button"
         onClick={onCheckout}
-        className={`flex px-4 py-3 sm:px-8 sm:py-4 justify-center items-center gap-3 flex-1 rounded-full cursor-pointer transition-all duration-200 ease-out ${checkoutDisabled ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-md hover:brightness-105'}`}
+        className={`flex px-5 py-4 sm:px-10 sm:py-5 justify-center items-center gap-4 flex-1 rounded-full cursor-pointer transition-all duration-200 ease-out ${checkoutDisabled ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'hover:-translate-y-0.5 hover:shadow-md hover:brightness-105'}`}
         style={{ backgroundColor: checkoutBg ?? ctaBg, border: ctaBorder ? `1px solid ${ctaBorder}` : undefined, color: ctaBorder }}
         disabled={checkoutDisabled}
       >
-        <p className="text-sm sm:text-base font-bold leading-[150%] uppercase text-center">
+        <p className="text-base sm:text-lg font-bold leading-[150%] uppercase text-center whitespace-nowrap">
           Checkout
         </p>
       </button>

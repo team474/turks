@@ -20,12 +20,12 @@ interface StrainSelectorProps {
 export function StrainSelector({ title = 'Select Strain', items, selectedName, onSelect, className }: StrainSelectorProps) {
 
   return (
-    <div className={`flex flex-col items-start gap-4 w-full ${className ?? ''}`} role="radiogroup" aria-label={title}>
-      <p className="text-lg sm:text-2xl font-bold leading-[120%] uppercase text-[#101010]">
+    <div className={`flex flex-col items-center sm:items-start gap-4 w-full ${className ?? ''}`} role="radiogroup" aria-label={title}>
+      <p className="text-lg sm:text-2xl font-bold leading-[120%] uppercase text-[#101010] text-center sm:text-left">
         {title}
       </p>
-      <div className="flex items-start gap-2.5 sm:gap-4 flex-wrap">
-        {items.map((item, index) => {
+      <div className="grid grid-cols-[max-content_max-content] justify-center gap-x-6 gap-y-3 sm:flex sm:flex-wrap sm:justify-start sm:gap-4 w-full">
+        {items.slice(0, 6).map((item, index) => {
           const isSelected = selectedName === item.name;
           const baseColor = item.color || '#FFFFFF';
           const backgroundColor = isSelected ? mixWithWhite(baseColor, 15) : baseColor;
@@ -52,7 +52,7 @@ export function StrainSelector({ title = 'Select Strain', items, selectedName, o
                   <span className="block size-2 sm:size-3 rounded-full bg-white/70" />
                 )}
               </span>
-              <p className="text-sm sm:text-lg font-medium leading-[150%] text-[#202020]">
+              <p className="text-sm sm:text-lg font-medium leading-[150%] text-[#202020] whitespace-nowrap">
                 {item.name}
               </p>
             </motion.button>

@@ -33,10 +33,10 @@ const aboutUs = [
     title: "Contact",
     path: "/contact-us",
   },
-  {
-    title: "Blog",
-    path: "/blog",
-  },
+  // {
+  //   title: "Blog",
+  //   path: "/blog",
+  // },
 ];
 
 // Helper function to get social accounts based on available data

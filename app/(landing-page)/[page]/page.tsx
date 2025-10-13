@@ -1,11 +1,21 @@
 import type { Metadata } from "next";
 import type { CSSProperties } from "react";
 
-import { getPage } from "lib/shopify";
+import { getPage, getShopPolicies } from "lib/shopify";
 import { notFound } from "next/navigation";
 import { CompanyPage } from "@/components/landing-page/CompanyPage";
 import { ProseReveal } from "@/components/blog/ProseReveal";
 import { mixWithBlack, mixWithWhite, saturateHex } from "@/lib/color";
+import type { ShopPolicies } from "@/lib/shopify/types";
+
+// Map of URL handles to Shopify policy keys
+const POLICY_MAP: Record<string, keyof ShopPolicies> = {
+  "privacy-policy": "privacyPolicy",
+  "terms-of-service": "termsOfService",
+  "refund-policy": "refundPolicy",
+  "return-policy": "refundPolicy", // Shopify calls it refundPolicy
+  "shipping-policy": "shippingPolicy",
+};
 
 export async function generateMetadata(props: {
   params: Promise<{ page: string }>;
@@ -30,9 +40,33 @@ export default async function Page(props: {
   params: Promise<{ page: string }>;
 }) {
   const params = await props.params;
-  const page = await getPage(params.page);
+  
+  // Check if this is a policy page
+  const policyKey = POLICY_MAP[params.page] as keyof ShopPolicies | undefined;
+  let pageData: { title: string; body: string; bodySummary?: string } | null = null;
+  
+  if (policyKey) {
+    // Fetch from Shopify's built-in policies
+    const policies = await getShopPolicies();
+    const policy = policies[policyKey];
+    
+    if (policy) {
+      pageData = {
+        title: policy.title,
+        body: policy.body,
+        bodySummary: '',
+      };
+    }
+  } else {
+    // Fetch regular page
+    const page = await getPage(params.page);
+    
+    if (page) {
+      pageData = page;
+    }
+  }
 
-  if (!page) return notFound();
+  if (!pageData) return notFound();
 
   // Brand-muted accents matching blog detail page
   const baseBrand = "#1D431D";
@@ -46,21 +80,21 @@ export default async function Page(props: {
   } as CSSProperties;
 
   return (
-    <CompanyPage title={page.title}>
+    <CompanyPage title={pageData.title}>
       <div className="flex flex-col gap-6 md:gap-8 w-full max-w-[1170px] mx-auto">
         {/* Header with accent */}
         <div className="flex flex-col gap-4 md:gap-5 items-center md:items-start">
           <div className="flex items-center gap-3">
             <span className="h-[2px] w-12 rounded-full bg-[var(--page-text)]" style={pageVars} />
             <h1 className="text-2xl md:text-4xl font-black leading-[120%] text-[#101010] uppercase font-playfair-display-sc">
-              {page.title}
+              {pageData.title}
             </h1>
             <span className="h-[2px] w-12 rounded-full bg-[var(--page-text)]" style={pageVars} />
           </div>
-          {page.bodySummary && (
+          {pageData.bodySummary && (
             <div className="relative pl-4 md:pl-5 border-l-2 border-[var(--page-text)] max-w-[72ch]" style={pageVars}>
               <p className="text-base md:text-lg font-normal leading-[160%] text-[#101010]/90 italic">
-                {page.bodySummary}
+                {pageData.bodySummary}
               </p>
             </div>
           )}
@@ -72,7 +106,7 @@ export default async function Page(props: {
           style={pageVars}
         >
           <ProseReveal
-            html={page.body}
+            html={pageData.body}
             className="prose w-full max-w-[72ch] mx-auto text-base md:text-[17px] leading-[1.75] md:leading-[1.8] text-black prose-headings:font-bold prose-headings:text-black prose-headings:mt-8 prose-headings:mb-4 prose-h1:text-2xl prose-h2:text-[22px] md:prose-h2:text-[24px] prose-h3:text-lg prose-h4:text-base prose-h5:text-sm prose-h6:text-xs prose-a:text-black prose-a:underline prose-a:hover:text-neutral-300 prose-strong:text-black prose-strong:font-semibold prose-ol:mt-6 prose-ol:mb-6 prose-ol:list-decimal prose-ol:pl-6 prose-ul:mt-6 prose-ul:mb-6 prose-ul:list-disc prose-ul:pl-6 prose-img:w-full prose-img:max-h-[400px] prose-img:object-contain prose-img:rounded-2xl prose-img:my-8 prose-p:mb-5 md:prose-p:mb-6 prose-p:leading-[1.75] md:prose-p:leading-[1.8]"
           />
         </div>

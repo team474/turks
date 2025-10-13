@@ -69,6 +69,27 @@ export type Page = {
   updatedAt: string;
 };
 
+export type ShopPolicy = {
+  id: string;
+  title: string;
+  body: string;
+  handle: string;
+  url: string;
+};
+
+export type ShopPolicies = {
+  privacyPolicy?: ShopPolicy | null;
+  termsOfService?: ShopPolicy | null;
+  refundPolicy?: ShopPolicy | null;
+  shippingPolicy?: ShopPolicy | null;
+};
+
+export type ShopPoliciesOperation = {
+  data: {
+    shop: ShopPolicies;
+  };
+};
+
 export type Metafield = {
   id: string;
   namespace: string;

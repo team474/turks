@@ -18,10 +18,10 @@ const menu = [
     title: "Contact",
     path: "/contact-us",
   },
-  {
-    title: "Blog",
-    path: "/blog",
-  },
+  // {
+  //   title: "Blog",
+  //   path: "/blog",
+  // },
 ];
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);

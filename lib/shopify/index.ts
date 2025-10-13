@@ -40,6 +40,7 @@ import {
   getProductRecommendationsQuery,
   getProductsQuery,
 } from "./queries/product";
+import { getShopPoliciesQuery } from "./queries/shop";
 import {
   BlogArticle,
   Cart,
@@ -50,6 +51,8 @@ import {
   MetaObject,
   Page,
   Product,
+  ShopPolicies,
+  ShopPoliciesOperation,
   ShopifyAddToCartOperation,
   ShopifyBlogArticleOperation,
   ShopifyBlogArticlesByBlogOperation,
@@ -412,6 +415,10 @@ export async function getMenu(handle: string): Promise<Menu[]> {
 }
 
 export async function getPage(handle: string): Promise<Page> {
+  "use cache";
+  cacheTag(TAGS.collections);
+  cacheLife("days");
+
   const res = await shopifyFetch<ShopifyPageOperation>({
     query: getPageQuery,
     variables: { handle },
@@ -426,6 +433,18 @@ export async function getPages(): Promise<Page[]> {
   });
 
   return removeEdgesAndNodes(res.body.data.pages);
+}
+
+export async function getShopPolicies(): Promise<ShopPolicies> {
+  "use cache";
+  cacheTag(TAGS.collections);
+  cacheLife("days");
+
+  const res = await shopifyFetch<ShopPoliciesOperation>({
+    query: getShopPoliciesQuery,
+  });
+
+  return res.body.data.shop;
 }
 
 export async function getProduct(handle: string): Promise<Product | undefined> {
@@ -550,17 +569,23 @@ export async function revalidate(req: NextRequest): Promise<NextResponse> {
     "products/delete",
     "products/update",
   ];
+  const pageWebhooks = [
+    "pages/create",
+    "pages/delete",
+    "pages/update",
+  ];
   const topic = (await headers()).get("x-shopify-topic") || "unknown";
   const secret = req.nextUrl.searchParams.get("secret");
   const isCollectionUpdate = collectionWebhooks.includes(topic);
   const isProductUpdate = productWebhooks.includes(topic);
+  const isPageUpdate = pageWebhooks.includes(topic);
 
   if (!secret || secret !== process.env.SHOPIFY_REVALIDATION_SECRET) {
     console.error("Invalid revalidation secret.");
     return NextResponse.json({ status: 401 });
   }
 
-  if (!isCollectionUpdate && !isProductUpdate) {
+  if (!isCollectionUpdate && !isProductUpdate && !isPageUpdate) {
     // We don't need to revalidate anything for any other topics.
     return NextResponse.json({ status: 200 });
   }
@@ -571,6 +596,10 @@ export async function revalidate(req: NextRequest): Promise<NextResponse> {
 
   if (isProductUpdate) {
     revalidateTag(TAGS.products);
+  }
+
+  if (isPageUpdate) {
+    revalidateTag(TAGS.collections);
   }
 
   return NextResponse.json({ status: 200, revalidated: true, now: Date.now() });

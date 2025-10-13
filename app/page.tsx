@@ -1,6 +1,6 @@
 import { Icon } from "@/components/Icons";
 import { About } from "@/components/landing-page/About";
-import { Blog } from "@/components/landing-page/Blog";
+// import { Blog } from "@/components/landing-page/Blog";
 import { CTA } from "@/components/landing-page/CTA";
 import { Hero } from "@/components/landing-page/Hero";
 import { Strains } from "@/components/landing-page/Strains";
@@ -97,7 +97,7 @@ export default async function HomePage() {
         </Reveal>
       </section>
 
-      <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] my-8">
+      {/* <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] my-8">
         <SquiggleSeparator className="w-full h-10" color="#1D431D" />
       </div>
 
@@ -111,7 +111,7 @@ export default async function HomePage() {
         <Reveal variants={slowLeft} amount={0.3}>
           <Blog />
         </Reveal>
-      </section>
+      </section> */}
 
       <section className="w-full max-w-[1170px] mx-auto p-6 lg:p-4 xl:px-0 lg:py-18">
         <Reveal variants={slowRight} amount={0.3}>

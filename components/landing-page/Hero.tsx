@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useActionState, useEffect, useState, useTransition } from "react";
 import { StrainMetaCard } from "@/components/landing-page/StrainMetaCard";
 import { StrainSelector } from "@/components/landing-page/StrainSelector";
-import { fadeOnly, heroStagger, heroChild } from "@/lib/animation";
+import { heroFade, heroStagger, heroChild } from "@/lib/animation";
 import { useMemo, useRef } from "react";
 import { useProductMeta } from "@/lib/hooks/useProductMeta";
 import { gradientAround } from "@/lib/color";
@@ -202,9 +202,9 @@ export function Hero({ product }: HeroProps) {
       </motion.div>
 
       <div className="flex flex-col items-center sm:items-start gap-5 sm:gap-7.5">
-        <motion.h1 variants={heroChild} className="text-[26px] sm:text-[42px] font-black leading-[120%] text-[#101010] uppercase font-playfair-display-sc">
+        <motion.h1 variants={heroChild} className="text-[26px] sm:text-[42px] leading-[120%] text-[#101010] uppercase font-vast-shadow">
           <AnimatePresence mode="wait" initial={false}>
-            <motion.span key={selectedName || 'none'} variants={fadeOnly} initial="initial" animate="animate" exit="exit" className="inline-block text-center sm:text-left">
+            <motion.span key={selectedName || 'none'} variants={heroFade} initial="initial" animate="animate" exit="exit" className="inline-block text-center sm:text-left">
               {selectedName || 'Select a strain'}
             </motion.span>
           </AnimatePresence>
@@ -232,7 +232,7 @@ export function Hero({ product }: HeroProps) {
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={featureProduct?.id || 'none'}
-              variants={fadeOnly}
+              variants={heroFade}
               initial="initial"
               animate="animate"
               exit="exit"
@@ -244,7 +244,7 @@ export function Hero({ product }: HeroProps) {
 
         <motion.div variants={heroChild} className="flex justify-between items-center w-full">
           <AnimatePresence mode="wait" initial={false}>
-            <motion.div key={`${featureProduct?.priceRange?.minVariantPrice?.currencyCode}-${featureProduct?.priceRange?.minVariantPrice?.amount}`} variants={fadeOnly} initial="initial" animate="animate" exit="exit">
+            <motion.div key={`${featureProduct?.priceRange?.minVariantPrice?.currencyCode}-${featureProduct?.priceRange?.minVariantPrice?.amount}`} variants={heroFade} initial="initial" animate="animate" exit="exit">
               <div style={{ color: ctaBorder }}>
                 <PriceDisplay amount={featureProduct?.priceRange?.minVariantPrice?.amount} currencyCode={featureProduct?.priceRange?.minVariantPrice?.currencyCode} />
               </div>

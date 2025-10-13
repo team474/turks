@@ -9,6 +9,23 @@ export const motionEasings = {
   inOut: [0.22, 1, 0.36, 1] as [number, number, number, number],
 };
 
+// Hero-specific fade duration to match image crossfade
+export const heroFadeDuration = 1.1;
+// Text transitions in Hero should be faster: one-third of image fade
+export const heroTextFadeDuration = heroFadeDuration / 3;
+
+export const heroFade = {
+  initial: { opacity: 0 },
+  animate: {
+    opacity: 1,
+    transition: { duration: heroTextFadeDuration, ease: motionEasings.out },
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: heroTextFadeDuration, ease: motionEasings.inOut },
+  },
+};
+
 export const crossfadeScale = {
   initial: { opacity: 0, scale: 0.98, y: 6 },
   animate: {

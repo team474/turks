@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { gradientAround, mixWithBlack } from '@/lib/color'
+import { BorderBeam } from '@/components/ui/border-beam'
 import { listItem, listStagger, colorBlend } from '@/lib/animation'
 
 interface StrainMetaCardProps {
@@ -40,14 +41,80 @@ function generateShortName(name: string): string {
 export function StrainMetaCard({ name, colorHex, effects, terpenes, className }: StrainMetaCardProps) {
   const backgroundGradient = gradientAround(colorHex || '#FFFFFF', 15);
   const borderColor = mixWithBlack(colorHex || '#FFFFFF', 12);
+  const wrapperStyle: React.CSSProperties & { ['--primary']?: string } = {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor,
+    background: backgroundGradient,
+    ['--primary']: borderColor,
+  };
+
+  const animationProps: {
+    initial: Record<'--x', string>;
+    animate: Record<'--x', string>;
+    transition: {
+      repeat: number;
+      repeatType: 'loop';
+      repeatDelay: number;
+      type: 'spring';
+      stiffness: number;
+      damping: number;
+      mass: number;
+    };
+  } = {
+    initial: { ['--x']: '100%' },
+    animate: { ['--x']: '-100%' },
+    transition: {
+      repeat: Infinity,
+      repeatType: 'loop' as const,
+      repeatDelay: 1,
+      type: 'spring' as const,
+      stiffness: 20,
+      damping: 15,
+      mass: 2,
+    },
+  };
 
   return (
     <motion.div
       className={`relative overflow-hidden flex gap-1 sm:gap-1.5 rounded-2xl w-full min-h-[135px] sm:min-h-[176px] p-2 sm:p-3 hover:shadow-lg transition-all duration-300 ease-out ${className ?? ''}`}
-      style={{ borderWidth: 1, borderStyle: 'solid', borderColor, background: backgroundGradient }}
+      style={wrapperStyle}
       animate={{ borderColor }}
       transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
     >
+      {/* Shimmer overlay across the entire card surface */}
+      <motion.span
+        {...animationProps}
+        className="absolute inset-0 z-0 block rounded-[inherit] pointer-events-none"
+        style={{
+          // Light sheen that brightens instead of darkening
+          backgroundImage:
+            'linear-gradient(-75deg, rgba(255,255,255,0) calc(var(--x) + 10%), rgba(255,255,255,0.14) calc(var(--x) + 20%), rgba(255,255,255,0) calc(var(--x) + 90%))',
+          mixBlendMode: 'screen',
+          opacity: 0.9,
+        }}
+      />
+      {/* Two subtle beams, same direction, opposite starting positions */}
+      <>
+        <BorderBeam
+          size={140}
+          duration={10}
+          borderWidth={0.75}
+          initialOffset={0}
+          colorFrom={mixWithBlack(borderColor, 28)}
+          colorTo={mixWithBlack(borderColor, 55)}
+          style={{ opacity: 0.55 }}
+        />
+        <BorderBeam
+          size={140}
+          duration={10}
+          borderWidth={0.75}
+          initialOffset={50}
+          colorFrom={mixWithBlack(borderColor, 28)}
+          colorTo={mixWithBlack(borderColor, 55)}
+          style={{ opacity: 0.55 }}
+        />
+      </>
       <div className="relative z-10 flex w-full gap-1 sm:gap-1.5">
       <div className="relative flex p-4 sm:p-10 justify-center items-center gap-2.5 flex-1 rounded-2xl font-medium uppercase text-[#202020]" style={{ background: 'transparent' }}>
         <p className="text-xs sm:text-sm font-semibold absolute top-2.5 left-2.5">Hybrid</p>

@@ -10,7 +10,7 @@ import { GeistSans } from "geist/font/sans";
 import { getCart } from "lib/shopify";
 import { baseUrl } from "lib/utils";
 import type { Metadata } from "next";
-import { Jura, Oi, Playfair_Display_SC, Poppins } from "next/font/google";
+import { Jura, Oi, Poppins, Vast_Shadow } from "next/font/google";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
@@ -30,11 +30,11 @@ const poppins = Poppins({
   display: "swap",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
-const playfair_display_sc = Playfair_Display_SC({
+const vast_shadow = Vast_Shadow({
   subsets: ["latin"],
-  variable: "--font-playfair-display-sc",
+  variable: "--font-vast-shadow",
   display: "swap",
-  weight: ["400", "700", "900"],
+  weight: ["400"],
 });
 
 const oi = Oi({
@@ -68,7 +68,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable} ${jura.variable} ${poppins.variable} ${playfair_display_sc.variable} ${oi.variable}`}
+      className={`${GeistSans.variable} ${jura.variable} ${poppins.variable} ${vast_shadow.variable} ${oi.variable}`}
       suppressHydrationWarning
     >
       <body>
@@ -77,8 +77,8 @@ export default async function RootLayout({
           <Navbar />
           <main className="bg-[#F7F8F2] overflow-x-hidden">
             {children}
-            <section className="bg-[#C8D4AA]">
-              <Footer />
+            <section className="bg-[linear-gradient(to_bottom,_#F7F8F2,_hsl(77,33%,75%),_hsl(77,33%,70%))] md:bg-[linear-gradient(to_bottom,_#F7F8F2,_hsl(77,33%,75%),_hsl(77,33%,60%))]">
+              <Footer  />
             </section>
             <Toaster closeButton />
             {/* <WelcomeToast /> */}

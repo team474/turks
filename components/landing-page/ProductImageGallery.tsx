@@ -1,13 +1,13 @@
 'use client'
 
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { colorBlend } from '@/lib/animation'
+import { heroFadeDuration, motionEasings } from '@/lib/animation'
 import Image from 'next/image'
 import { fadeOnly } from '@/lib/animation'
-import { useEffect, useState } from 'react'
-import { GradientFade } from '@/components/landing-page/GradientFade'
+import { useEffect, useRef, useState } from 'react'
 import { MiniGradientFade } from '@/components/landing-page/MiniGradientFade'
 import { mixWithBlack } from '@/lib/color'
+import { BorderBeam } from '@/components/ui/border-beam'
 
 interface GalleryImage {
   url: string
@@ -27,7 +27,13 @@ interface ProductImageGalleryProps {
 export function ProductImageGallery({ images, selectedIndex, onSelectIndex, gradientOverlay, borderColorHex }: ProductImageGalleryProps) {
   const prefersReducedMotion = useReducedMotion()
   const [thumbStartIndex, setThumbStartIndex] = useState(0)
+  const [isImageTransitioning, setIsImageTransitioning] = useState(false)
+  const queuedIndexRef = useRef<number | null>(null)
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
   // Keyboard navigation can be added on interactive elements (e.g., buttons) to avoid a11y violations
+
+  // Lengthen the crossfade between images
+  const imageFadeDuration = 1.1
 
   useEffect(() => {
     const maxStart = Math.max(0, images.length - 3)
@@ -51,16 +57,47 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
     if (selectedIndex - 1 >= 0) preload(selectedIndex - 1)
     if (selectedIndex + 1 < images.length) preload(selectedIndex + 1)
   }, [selectedIndex, images])
+  const scheduleProcess = () => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => {
+      if (queuedIndexRef.current !== null) {
+        const next = queuedIndexRef.current
+        queuedIndexRef.current = null
+        onSelectIndex(next)
+        scheduleProcess()
+      } else {
+        setIsImageTransitioning(false)
+        timerRef.current = null
+      }
+    }, Math.round(imageFadeDuration * 1000))
+  }
+
+  const onSelectIndexSafe = (index: number) => {
+    if (isImageTransitioning) {
+      queuedIndexRef.current = index
+      return
+    }
+    setIsImageTransitioning(true)
+    onSelectIndex(index)
+    scheduleProcess()
+  }
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [])
+
   return (
     <div className="flex flex-col items-start gap-3 sm:gap-5 w-full">
       <motion.div
         className="relative rounded-2xl sm:rounded-4xl w-full h-[347px] sm:h-[615px] overflow-hidden border"
         style={{ background: gradientOverlay }}
         animate={{ borderColor: mixWithBlack(borderColorHex || '#1D431D', 50) }}
-        transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: heroFadeDuration, ease: motionEasings.out }}
       >
         {/* gradient applied statically via background above */}
-        <AnimatePresence mode="sync" initial={false}>
+        <AnimatePresence mode="wait" initial={false}>
           {images[selectedIndex]?.url && (
             <motion.div
               key={images[selectedIndex]?.url || String(selectedIndex)}
@@ -69,7 +106,7 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
               animate="animate"
               exit={{ opacity: 0 }}
               className="absolute inset-0"
-              transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: imageFadeDuration, ease: [0.16, 1, 0.3, 1] }}
             >
               <Image
                 src={images[selectedIndex].url}
@@ -82,6 +119,27 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
             </motion.div>
           )}
         </AnimatePresence>
+        {/* Subtle border beam placed last to render above the image */}
+        <>
+          <BorderBeam
+            size={120}
+            duration={16}
+            borderWidth={1}
+            initialOffset={0}
+            colorFrom={mixWithBlack(borderColorHex || '#1D431D', 28)}
+            colorTo={mixWithBlack(borderColorHex || '#1D431D', 55)}
+            style={{ opacity: 0.6 }}
+          />
+          <BorderBeam
+            size={120}
+            duration={16}
+            borderWidth={1}
+            initialOffset={50}
+            colorFrom={mixWithBlack(borderColorHex || '#1D431D', 28)}
+            colorTo={mixWithBlack(borderColorHex || '#1D431D', 55)}
+            style={{ opacity: 0.6 }}
+          />
+        </>
       </motion.div>
 
       <div className="flex w-full items-center gap-3 sm:gap-5">
@@ -103,7 +161,7 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
             return (
               <motion.button
                 key={absoluteIndex}
-                onClick={() => onSelectIndex(absoluteIndex)}
+                onClick={() => onSelectIndexSafe(absoluteIndex)}
                 className={`relative h-[100px] sm:h-[176px] flex-1 rounded-2xl sm:rounded-4xl overflow-hidden cursor-pointer transition-colors duration-200 ${isSelected ? 'border-2' : 'border'}`}
                 style={{ borderColor: tileBorder }}
                 layout

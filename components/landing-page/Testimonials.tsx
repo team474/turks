@@ -49,7 +49,7 @@ const features = [
   {
     title: (
       <>
-        London Pound <br /> Cake
+        Chemical and additive <br /> Free
       </>
     ),
     icon: <Icon.chamicalFreeIcon className="size-13 md:size-18" />,

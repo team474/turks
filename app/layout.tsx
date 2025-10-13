@@ -13,6 +13,7 @@ import type { Metadata } from "next";
 import { Jura, Oi, Poppins, Vast_Shadow } from "next/font/google";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/next"
 import "./globals.css";
 
 const { SITE_NAME } = process.env;
@@ -75,6 +76,7 @@ export default async function RootLayout({
         {/* <ThemeProvider attribute="class" enableSystem> */}
         <CartProvider cartPromise={cart}>
           <Navbar />
+          <Analytics />
           <main className="bg-[#F7F8F2] overflow-x-hidden">
             {children}
             <section className="bg-[linear-gradient(to_bottom,_#F7F8F2,_hsl(77,33%,75%),_hsl(77,33%,70%))] md:bg-[linear-gradient(to_bottom,_#F7F8F2,_hsl(77,33%,75%),_hsl(77,33%,60%))]">

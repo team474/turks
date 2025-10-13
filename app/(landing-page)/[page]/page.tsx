@@ -32,7 +32,7 @@ export default async function Page(props: {
   if (!page) return notFound();
 
   return (
-    <CompanyPage title={page.title}>
+    <CompanyPage title={page.title} >
       <div className="flex p-6 items-center gap-8 rounded-2xl bg-[#DBEEC8] z-10">
         <div
           className="prose w-full max-w-full text-base leading-7 text-black prose-headings:font-bold prose-headings:text-black prose-h1:text-2xl prose-h2:text-xl prose-h3:text-xl prose-h4:text-xl prose-h5:text-xl prose-h6:text-lg prose-a:text-black prose-a:underline prose-a:hover:text-neutral-300 prose-strong:text-black prose-ol:mt-4 prose-ol:list-decimal prose-ol:pl-6 prose-ul:mt-4 prose-ul:list-disc prose-ul:pl-6"

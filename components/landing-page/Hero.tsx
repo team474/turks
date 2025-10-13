@@ -19,6 +19,7 @@ import { PriceDisplay } from "@/components/landing-page/PriceDisplay";
 import { ProductActions } from "@/components/landing-page/ProductActions";
 import { motionDurations } from "@/lib/animation";
 import { mixWithWhite, mixWithBlack, saturateHex } from "@/lib/color";
+import { getStrainFontFamily } from "@/lib/constants";
 
 interface HeroProps {
   product: Product[];
@@ -46,6 +47,13 @@ export function Hero({ product }: HeroProps) {
       product: p
     }))
   ), [product]);
+  
+  // Get the strain index for font selection
+  const strainIndex = useMemo(() => {
+    return allStrains.findIndex(s => s.name === selectedName);
+  }, [allStrains, selectedName]);
+  
+  const fontFamily = getStrainFontFamily(strainIndex >= 0 ? strainIndex : 0);
   // const prefersReducedMotion = useReducedMotion();
 
   const { caseColor, effects, terpenes } = useProductMeta(featureProduct);
@@ -165,12 +173,25 @@ export function Hero({ product }: HeroProps) {
   // avoid early-return before hooks to keep hook order consistent
 
   // Helpers to build a 3-stop gradient around the case color
-  const backgroundGradient = gradientAround(caseColor || '#FFFFFF', 5);
+  const backgroundGradient = gradientAround(caseColor || '#FFFFFF', 15);
   const base = caseColor || '#1D431D';
   const ctaBg = mixWithWhite(base, 20);
   const ctaBorder = saturateHex(mixWithBlack(base, 68), 38);
-  const checkoutBg = saturateHex(mixWithBlack(base, 30), 30);
+  const checkoutBg = saturateHex(mixWithBlack(base, 20), 35); // Lighter background
+  const checkoutText = saturateHex(mixWithBlack(base, 85), 50); // Darker text for contrast
   const iconSaturated = saturateHex(mixWithBlack(base, 30), 38);
+  
+  // Convert base color to rgba with low opacity for section background
+  const hexToRgba = (hex: string, alpha: number): string => {
+    const rgb = mixWithWhite(hex, 0); // Just to validate/normalize the hex
+    const match = rgb.match(/^#([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})$/);
+    if (!match || !match[1] || !match[2] || !match[3]) return `rgba(255, 255, 255, ${alpha})`;
+    const r = parseInt(match[1], 16);
+    const g = parseInt(match[2], 16);
+    const b = parseInt(match[3], 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
+  const sectionBg = hexToRgba(base, 0.12); // 12% opacity of the product color
 
   // Sync CSS variables so other buttons (About, CTA) match the hero button colors
   useEffect(() => {
@@ -191,6 +212,15 @@ export function Hero({ product }: HeroProps) {
       className="grid grid-cols-1 lg:grid-cols-2 items-start gap-6 sm:gap-7.5"
       style={{ willChange: 'transform, opacity' }}
     >
+      {/* Title - shows above image on mobile, stays in right column on desktop */}
+      <motion.h1 variants={heroChild} className="text-[34px] sm:text-[42px] leading-[120%] uppercase lg:whitespace-nowrap lg:hidden text-center">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span key={selectedName || 'none'} variants={heroFade} initial="initial" animate="animate" exit="exit" className="inline-block" style={{ fontFamily, color: ctaBorder }}>
+            {selectedName || 'Select a strain'}
+          </motion.span>
+        </AnimatePresence>
+      </motion.h1>
+
       <motion.div variants={heroChild} className="flex flex-col items-start gap-3 sm:gap-5">
         <ProductImageGallery
           images={images as { url: string; altText?: string | null; width: number; height: number }[]}
@@ -202,19 +232,21 @@ export function Hero({ product }: HeroProps) {
       </motion.div>
 
       <div className="flex flex-col items-center sm:items-start gap-5 sm:gap-7.5">
-        <motion.h1 variants={heroChild} className="text-[26px] sm:text-[42px] leading-[120%] text-[#101010] uppercase font-vast-shadow">
+        {/* Title - hidden on mobile, shows on desktop */}
+        <motion.h1 variants={heroChild} className="hidden lg:block text-[26px] sm:text-[42px] leading-[120%] uppercase lg:whitespace-nowrap">
           <AnimatePresence mode="wait" initial={false}>
-            <motion.span key={selectedName || 'none'} variants={heroFade} initial="initial" animate="animate" exit="exit" className="inline-block text-center sm:text-left">
+            <motion.span key={selectedName || 'none'} variants={heroFade} initial="initial" animate="animate" exit="exit" className="inline-block text-center sm:text-left" style={{ fontFamily, color: ctaBorder }}>
               {selectedName || 'Select a strain'}
             </motion.span>
           </AnimatePresence>
         </motion.h1>
 
-        <motion.div variants={heroChild}>
+        <motion.div variants={heroChild} className="-mt-2 sm:-mt-3">
           <StrainSelector
             items={allStrains.map(({ name, color }) => ({ name, color }))}
             selectedName={selectedName}
             onSelect={onSelectDebounced}
+            titleColor={ctaBorder}
           />
         </motion.div>
 
@@ -224,38 +256,29 @@ export function Hero({ product }: HeroProps) {
             colorHex={caseColor}
             effects={effects}
             terpenes={terpenes}
+            description={featureProduct?.descriptionHtml || featureProduct?.description || ''}
+            strainIndex={strainIndex >= 0 ? strainIndex : 0}
           />
         </motion.div>
 
-        <motion.div variants={heroChild} className="flex flex-col items-start gap-2 sm:gap-4 w-full">
-          <p className="text-base sm:text-xl font-bold leading-[120%] uppercase text-[#101010]">Description</p>
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={featureProduct?.id || 'none'}
-              variants={heroFade}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              className="text-sm sm:text-base font-normal leading-[150%] text-[#101010]"
-              dangerouslySetInnerHTML={{ __html: featureProduct?.descriptionHtml || featureProduct?.description || '' }}
-            />
-          </AnimatePresence>
-        </motion.div>
-
-        <motion.div variants={heroChild} className="flex justify-between items-center w-full">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div key={`${featureProduct?.priceRange?.minVariantPrice?.currencyCode}-${featureProduct?.priceRange?.minVariantPrice?.amount}`} variants={heroFade} initial="initial" animate="animate" exit="exit">
-              <div style={{ color: ctaBorder }}>
-                <PriceDisplay amount={featureProduct?.priceRange?.minVariantPrice?.amount} currencyCode={featureProduct?.priceRange?.minVariantPrice?.currencyCode} />
-              </div>
-            </motion.div>
-          </AnimatePresence>
-          <QuantityControl value={currentQuantity} onIncrement={() => updateQuantity('increment')} onDecrement={() => updateQuantity('decrement')} bgColor={ctaBg} borderColor={ctaBorder} iconColor={iconSaturated} textColor={ctaBorder} />
-        </motion.div>
-
-        {/* Action Buttons */}
-        <motion.div variants={heroChild}>
-          <ProductActions onAddToCart={addToCartAction} onCheckout={() => redirectToCheckout()} checkoutDisabled={cart?.lines.length === 0} ctaBg={ctaBg} ctaBorder={ctaBorder} checkoutBg={checkoutBg} />
+        {/* Combined Price, Quantity & Actions Container */}
+        <motion.div 
+          variants={heroChild} 
+          className="w-full rounded-2xl sm:rounded-3xl border-2 p-4 sm:p-6 flex flex-col gap-4"
+          style={{ borderColor: ctaBorder, backgroundColor: sectionBg }}
+        >
+          <div className="flex justify-between items-center w-full gap-3">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div key={`${featureProduct?.priceRange?.minVariantPrice?.currencyCode}-${featureProduct?.priceRange?.minVariantPrice?.amount}`} variants={heroFade} initial="initial" animate="animate" exit="exit">
+                <div style={{ color: ctaBorder }}>
+                  <PriceDisplay amount={featureProduct?.priceRange?.minVariantPrice?.amount} currencyCode={featureProduct?.priceRange?.minVariantPrice?.currencyCode} />
+                </div>
+              </motion.div>
+            </AnimatePresence>
+            <QuantityControl value={currentQuantity} onIncrement={() => updateQuantity('increment')} onDecrement={() => updateQuantity('decrement')} bgColor={ctaBg} borderColor={ctaBorder} iconColor={iconSaturated} textColor={ctaBorder} />
+          </div>
+          
+          <ProductActions onAddToCart={addToCartAction} onCheckout={() => redirectToCheckout()} checkoutDisabled={cart?.lines.length === 0} ctaBg={ctaBg} ctaBorder={ctaBorder} checkoutBg={checkoutBg} checkoutText={checkoutText} />
         </motion.div>
       </div>
     </motion.div>

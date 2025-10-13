@@ -10,7 +10,20 @@ import { GeistSans } from "geist/font/sans";
 import { getCart } from "lib/shopify";
 import { baseUrl } from "lib/utils";
 import type { Metadata } from "next";
-import { Jura, Oi, Poppins, Vast_Shadow } from "next/font/google";
+import { 
+  Jura, 
+  Oi, 
+  Poppins, 
+  Vast_Shadow,
+  Rubik_Bubbles,
+  Bungee_Shade,
+  Monoton,
+  Nosifer,
+  Sixtyfour,
+  Fascinate,
+  Atomic_Age,
+  Cinzel_Decorative
+} from "next/font/google";
 import { ReactNode } from "react";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/next"
@@ -45,6 +58,63 @@ const oi = Oi({
   weight: ["400"],
 });
 
+// Strain-specific fonts
+const rubikBubbles = Rubik_Bubbles({
+  subsets: ["latin"],
+  variable: "--font-rubik-bubbles",
+  display: "swap",
+  weight: ["400"],
+});
+
+const bungeeShade = Bungee_Shade({
+  subsets: ["latin"],
+  variable: "--font-bungee-shade",
+  display: "swap",
+  weight: ["400"],
+});
+
+const monoton = Monoton({
+  subsets: ["latin"],
+  variable: "--font-monoton",
+  display: "swap",
+  weight: ["400"],
+});
+
+const nosifer = Nosifer({
+  subsets: ["latin"],
+  variable: "--font-nosifer",
+  display: "swap",
+  weight: ["400"],
+});
+
+const sixtyfour = Sixtyfour({
+  subsets: ["latin"],
+  variable: "--font-sixtyfour",
+  display: "swap",
+  weight: ["400"],
+});
+
+const fascinate = Fascinate({
+  subsets: ["latin"],
+  variable: "--font-fascinate",
+  display: "swap",
+  weight: ["400"],
+});
+
+const atomicAge = Atomic_Age({
+  subsets: ["latin"],
+  variable: "--font-atomic-age",
+  display: "swap",
+  weight: ["400"],
+});
+
+const cinzelDecorative = Cinzel_Decorative({
+  subsets: ["latin"],
+  variable: "--font-cinzel-decorative",
+  display: "swap",
+  weight: ["700"],
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
@@ -69,8 +139,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable} ${jura.variable} ${poppins.variable} ${vast_shadow.variable} ${oi.variable}`}
-      suppressHydrationWarning
+      className={`${GeistSans.variable} ${jura.variable} ${poppins.variable} ${vast_shadow.variable} ${oi.variable} ${rubikBubbles.variable} ${bungeeShade.variable} ${monoton.variable} ${nosifer.variable} ${sixtyfour.variable} ${fascinate.variable} ${atomicAge.variable} ${cinzelDecorative.variable}`}
     >
       <body>
         {/* <ThemeProvider attribute="class" enableSystem> */}

@@ -3,9 +3,11 @@
 import CartModal from "components/cart/modal";
 import { Menu } from "lib/shopify/types";
 import Link from "next/link";
-import { Suspense } from "react";
+import Image from "next/image";
+import { Suspense, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import MobileMenu from "./mobile-menu";
+import logoSvg from "@/assets/logo.svg";
 
 const menu = [
   {
@@ -22,58 +24,104 @@ const menu = [
   },
 ];
 export function Navbar() {
-  return (
-    <motion.header
-      className="flex bg-[linear-gradient(to_right,_hsl(77,33%,80%),_hsl(77,33%,75%),_hsl(77,33%,70%))] md:bg-[linear-gradient(to_right,_hsl(77,33%,90%),_hsl(77,33%,75%),_hsl(77,33%,60%))] border-b border-b-[hsl(77,33%,65%)]"
-      style={{ backgroundSize: "300% 300%", backgroundPositionX: "0%" }}
-      animate={{ backgroundPositionX: ["0%", "100%", "0%"] }}
-      transition={{ duration: 30, ease: "linear", repeat: Infinity }}
-    >
-      <div className="flex w-full max-w-[1440px] mx-auto px-6 xl:px-34 py-6 justify-between items-center">
-        <h2 className="oi-regular text-[32px] font-normal leading-[120%] uppercase tracking-[0.64px] text-[#1D431D]">
-          <Link href="/" prefetch={true} className="inline-block">
-            TURK&apos;S
-          </Link>
-        </h2>
+  const [isScrolled, setIsScrolled] = useState(false);
 
-        <div className="block flex-none md:hidden">
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const shimmerAnimationProps = {
+    initial: { ['--x' as string]: '100%' },
+    animate: { ['--x' as string]: '-100%' },
+    transition: {
+      repeat: Infinity,
+      repeatType: 'loop' as const,
+      repeatDelay: 1,
+      type: 'spring' as const,
+      stiffness: 20,
+      damping: 15,
+      mass: 2,
+    },
+  };
+
+  return (
+    <>
+      <header
+        className="flex bg-[linear-gradient(to_right,_hsl(77,33%,78%),_hsl(77,33%,76%),_hsl(77,33%,74%))] md:bg-[linear-gradient(to_right,_hsl(77,33%,80%),_hsl(77,33%,77%),_hsl(77,33%,74%))] border-b border-[hsl(77,33%,65%)]"
+      >
+        <div className="flex w-full max-w-[1440px] mx-auto px-6 xl:px-34 py-6 justify-between md:justify-between items-center">
+        <div className="block flex-none md:hidden absolute left-6">
+          <Suspense fallback={null}>
+            <CartModal />
+          </Suspense>
+        </div>
+
+        <Link href="/" prefetch={true} className="inline-block mx-auto md:mx-0">
+          <div className="w-[80px] md:w-[100px]" style={{ filter: 'invert(20%) sepia(20%) saturate(1500%) hue-rotate(70deg) brightness(40%) contrast(95%)' }}>
+            <Image
+              src={logoSvg}
+              alt="TURK'S"
+              width={100}
+              height={60}
+              className="w-full h-auto"
+              priority
+            />
+          </div>
+        </Link>
+
+        <div className="block flex-none md:hidden absolute right-6">
           <Suspense fallback={null}>
             <MobileMenu menu={menu} />
           </Suspense>
         </div>
 
-        {menu.length ? (
-          <nav className="hidden md:flex items-center gap-10 lg:gap-12">
-            {menu.map((item: Menu) => (
-              <div key={item.title}>
-                <Link
-                  href={item.path}
-                  prefetch={true}
-                  className="text-[#1D431D] text-lg md:text-xl font-medium leading-[150%]"
-                >
-                  {item.title}
-                </Link>
-              </div>
-            ))}
-          </nav>
-        ) : null}
-
-        <div className="hidden md:flex justify-end items-end gap-6 lg:gap-8">
-          {/* <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="28"
-            height="28"
-            viewBox="0 0 28 28"
-            fill="none"
-          >
-            <path
-              d="M25.074 7.76563C24.837 7.49219 24.559 7.28255 24.24 7.13672C23.921 6.99089 23.5792 6.91797 23.2146 6.91797H10.6912C10.4542 6.91797 10.2491 7.00456 10.076 7.17774C9.90279 7.35091 9.8162 7.56511 9.8162 7.82031C9.8162 8.05729 9.90279 8.26237 10.076 8.43555C10.2491 8.60872 10.4542 8.69531 10.6912 8.69531H23.2146C23.3605 8.69531 23.4744 8.72721 23.5564 8.79102C23.6385 8.85482 23.7068 8.90495 23.7615 8.94141C23.798 8.9961 23.8344 9.06901 23.8709 9.16016C23.9073 9.2513 23.9165 9.36979 23.8982 9.51563L22.8045 17.3086C22.7498 17.6185 22.6085 17.8737 22.3807 18.0742C22.1528 18.2747 21.8839 18.375 21.574 18.375H8.85917C8.53104 18.375 8.25305 18.2656 8.02519 18.0469C7.79732 17.8281 7.66516 17.5547 7.6287 17.2266L6.50761 3.58203C6.48938 3.38151 6.4119 3.20378 6.27519 3.04883C6.13847 2.89388 5.97896 2.79818 5.79667 2.76172L3.36308 2.35156C3.1261 2.31511 2.90735 2.36524 2.70683 2.50196C2.5063 2.63867 2.38782 2.82552 2.35136 3.0625C2.3149 3.31771 2.36503 3.54557 2.50175 3.7461C2.63847 3.94662 2.82532 4.06511 3.06229 4.10156L4.81229 4.42969L5.8787 17.3906C5.95162 18.1745 6.27063 18.8353 6.83573 19.373C7.40084 19.9108 8.07531 20.1797 8.85917 20.1797H21.574C22.3214 20.1797 22.9731 19.929 23.5291 19.4277C24.0851 18.9264 24.4178 18.3112 24.5271 17.582L25.6482 9.76172C25.7029 9.39714 25.6801 9.04167 25.5799 8.69531C25.4796 8.34896 25.311 8.03906 25.074 7.76563ZM6.89042 23.8711C6.89042 23.3607 7.0636 22.9323 7.40995 22.5859C7.7563 22.2396 8.17558 22.0664 8.66776 22.0664C9.14172 22.0664 9.55188 22.2396 9.89823 22.5859C10.2446 22.9323 10.4178 23.3607 10.4178 23.8711C10.4178 24.3633 10.2446 24.7871 9.89823 25.1426C9.55188 25.498 9.14172 25.6758 8.66776 25.6758C8.17558 25.6758 7.7563 25.498 7.40995 25.1426C7.0636 24.7871 6.89042 24.3633 6.89042 23.8711ZM20.0154 23.8711C20.0154 23.3607 20.1886 22.9323 20.535 22.5859C20.8813 22.2396 21.3006 22.0664 21.7928 22.0664C22.285 22.0664 22.6997 22.2396 23.0369 22.5859C23.3741 22.9323 23.5428 23.3607 23.5428 23.8711C23.5428 24.3633 23.3741 24.7871 23.0369 25.1426C22.6997 25.498 22.285 25.6758 21.7928 25.6758C21.3006 25.6758 20.8813 25.498 20.535 25.1426C20.1886 24.7871 20.0154 24.3633 20.0154 23.8711ZM20.5896 12.1953C20.5896 12.4505 20.503 12.6647 20.3299 12.8379C20.1567 13.0111 19.9516 13.0977 19.7146 13.0977H16.4881C16.2329 13.0977 16.0232 13.0111 15.8592 12.8379C15.6951 12.6647 15.6131 12.4505 15.6131 12.1953C15.6131 11.9583 15.6951 11.7533 15.8592 11.5801C16.0232 11.4069 16.2329 11.3203 16.4881 11.3203H19.7146C19.9516 11.3203 20.1567 11.4069 20.3299 11.5801C20.503 11.7533 20.5896 11.9583 20.5896 12.1953Z"
-              fill="#1D431D"
-            />
-          </svg> */}
+        <div className="hidden md:flex items-center gap-8 lg:gap-10">
+          {menu.length ? (
+            <nav className="flex items-center gap-8 lg:gap-10">
+              {menu.map((item: Menu) => (
+                <div key={item.title}>
+                  <Link
+                    href={item.path}
+                    prefetch={true}
+                    className="text-[#1D431D] text-xl md:text-2xl font-medium leading-[150%]"
+                  >
+                    {item.title}
+                  </Link>
+                </div>
+              ))}
+            </nav>
+          ) : null}
           <CartModal />
         </div>
       </div>
-    </motion.header>
+    </header>
+
+      {/* Free Shipping Badge - Fixed and Floating */}
+      <div 
+        className={`fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-500 ease-out ${
+          isScrolled ? 'top-2' : 'top-[85px] md:top-[40px]'
+        }`}
+      >
+        <span className="relative inline-block overflow-hidden bg-[hsl(77,33%,77%)] text-[#374151] text-[10px] md:text-xs font-medium px-3 py-1 md:px-4 md:py-1.5 rounded-full border border-[#374151] shadow-md">
+          {/* Shimmer overlay */}
+          <motion.span
+            {...shimmerAnimationProps}
+            className="absolute inset-0 z-0 block rounded-[inherit] pointer-events-none"
+            style={{
+              backgroundImage:
+                'linear-gradient(-75deg, rgba(255,255,255,0) calc(var(--x) + 10%), rgba(255,255,255,0.14) calc(var(--x) + 20%), rgba(255,255,255,0) calc(var(--x) + 90%))',
+              mixBlendMode: 'screen',
+              opacity: 0.9,
+            }}
+          />
+          <span className="relative z-10">Free shipping on all orders!</span>
+        </span>
+      </div>
+    </>
   );
 }

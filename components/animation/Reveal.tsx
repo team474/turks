@@ -19,6 +19,27 @@ export function Reveal({
   once = true,
   amount = 0.3,
 }: RevealProps) {
+  const [shouldAnimate, setShouldAnimate] = React.useState(false);
+
+  React.useEffect(() => {
+    // Small delay to ensure smooth hydration, especially important on mobile
+    // This prevents the flash from opacity:0 during hydration
+    const timer = setTimeout(() => {
+      setShouldAnimate(true);
+    }, 50); // Small delay to prevent hydration flash on mobile
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // During SSR and initial hydration, render without motion to prevent flicker
+  if (!shouldAnimate) {
+    return (
+      <div className={className}>
+        {children}
+      </div>
+    );
+  }
+
   return (
     <LazyMotion features={domAnimation}>
       <m.div
@@ -27,7 +48,6 @@ export function Reveal({
         whileInView="animate"
         viewport={{ once, amount, margin: "0px 0px -5% 0px" }}
         className={className}
-        style={{ willChange: "transform, opacity" }}
       >
         {children}
       </m.div>

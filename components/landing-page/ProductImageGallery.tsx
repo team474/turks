@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react'
 import { MiniGradientFade } from '@/components/landing-page/MiniGradientFade'
 import { mixWithBlack } from '@/lib/color'
 import { BorderBeam } from '@/components/ui/border-beam'
+import logoSvg from '@/assets/logo.svg'
 
 interface GalleryImage {
   url: string
@@ -32,8 +33,8 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   // Keyboard navigation can be added on interactive elements (e.g., buttons) to avoid a11y violations
 
-  // Lengthen the crossfade between images
-  const imageFadeDuration = 1.1
+  // Image crossfade duration
+  const imageFadeDuration = 0.4
 
   useEffect(() => {
     const maxStart = Math.max(0, images.length - 3)
@@ -93,7 +94,7 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
       <motion.div
         className="relative rounded-2xl sm:rounded-4xl w-full h-[347px] sm:h-[615px] overflow-hidden border"
         style={{ background: gradientOverlay }}
-        animate={{ borderColor: mixWithBlack(borderColorHex || '#1D431D', 50) }}
+        animate={{ borderColor: mixWithBlack(borderColorHex || '#1D431D', 12) }}
         transition={{ duration: heroFadeDuration, ease: motionEasings.out }}
       >
         {/* gradient applied statically via background above */}
@@ -113,12 +114,33 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
                 alt={images[selectedIndex].altText || ''}
                 height={images[selectedIndex].height}
                 width={images[selectedIndex].width}
-                className="size-full object-cover"
+                className="size-full object-cover scale-125 sm:scale-100"
                 priority
               />
             </motion.div>
           )}
         </AnimatePresence>
+        {/* Logo watermark in bottom center */}
+        <motion.div 
+          className="absolute bottom-5 sm:bottom-8 left-1/2 -translate-x-1/2 w-16 sm:w-24 z-10 pointer-events-none"
+          animate={{ 
+            backgroundColor: mixWithBlack(borderColorHex || '#1D431D', 30)
+          }}
+          transition={{ duration: heroFadeDuration, ease: motionEasings.out }}
+          style={{
+            WebkitMaskImage: `url(${logoSvg.src})`,
+            WebkitMaskSize: 'contain',
+            WebkitMaskRepeat: 'no-repeat',
+            WebkitMaskPosition: 'center',
+            maskImage: `url(${logoSvg.src})`,
+            maskSize: 'contain',
+            maskRepeat: 'no-repeat',
+            maskPosition: 'center',
+            opacity: 0.25,
+            aspectRatio: '212/128'
+          }}
+        />
+        
         {/* Subtle border beam placed last to render above the image */}
         <>
           <BorderBeam
@@ -143,21 +165,28 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
       </motion.div>
 
       <div className="flex w-full items-center gap-3 sm:gap-5">
-        <button
+        <motion.button
           type="button"
           aria-label="Previous thumbnails"
-          className="px-2 py-1 rounded-md border border-[#1D431D]/30 text-[#1D431D] disabled:opacity-40"
+          className="flex items-center justify-center size-9 sm:size-11 rounded-full border-2 text-lg sm:text-xl font-bold transition-all duration-200"
+          style={{ 
+            borderColor: mixWithBlack(borderColorHex || '#1D431D', 18),
+            color: mixWithBlack(borderColorHex || '#1D431D', 40),
+            backgroundColor: borderColorHex ? `${borderColorHex}10` : 'rgba(29, 67, 29, 0.06)'
+          }}
           onClick={() => setThumbStartIndex((s) => Math.max(0, s - 1))}
           disabled={thumbStartIndex === 0}
+          whileHover={{ scale: thumbStartIndex === 0 ? 1 : 1.1 }}
+          whileTap={{ scale: thumbStartIndex === 0 ? 1 : 0.95 }}
         >
           ‹
-        </button>
+        </motion.button>
         <motion.div className="flex w-full items-center gap-5" layout>
           {images.slice(thumbStartIndex, thumbStartIndex + 3).map((img, i) => {
             const absoluteIndex = thumbStartIndex + i
             const isSelected = selectedIndex === absoluteIndex
             const baseBorder = borderColorHex || '#1D431D'
-            const tileBorder = isSelected ? mixWithBlack(baseBorder, 50) : mixWithBlack(baseBorder, 25)
+            const tileBorder = isSelected ? mixWithBlack(baseBorder, 18) : mixWithBlack(baseBorder, 8)
             return (
               <motion.button
                 key={absoluteIndex}
@@ -178,7 +207,7 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
                     alt={img.altText || ''}
                     height={img.height}
                     width={img.width}
-                    className="absolute inset-0 size-full object-contain z-[1]"
+                    className="absolute inset-0 size-full object-contain z-[1] scale-125 sm:scale-100"
                   />
                 )}
                 </>
@@ -186,15 +215,22 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
             )
           })}
         </motion.div>
-        <button
+        <motion.button
           type="button"
           aria-label="Next thumbnails"
-          className="px-2 py-1 rounded-md border border-[#1D431D]/30 text-[#1D431D] disabled:opacity-40"
+          className="flex items-center justify-center size-9 sm:size-11 rounded-full border-2 text-lg sm:text-xl font-bold transition-all duration-200"
+          style={{ 
+            borderColor: mixWithBlack(borderColorHex || '#1D431D', 18),
+            color: mixWithBlack(borderColorHex || '#1D431D', 40),
+            backgroundColor: borderColorHex ? `${borderColorHex}10` : 'rgba(29, 67, 29, 0.06)'
+          }}
           onClick={() => setThumbStartIndex((s) => Math.min(Math.max(0, images.length - 3), s + 1))}
           disabled={thumbStartIndex >= Math.max(0, images.length - 3)}
+          whileHover={{ scale: thumbStartIndex >= Math.max(0, images.length - 3) ? 1 : 1.1 }}
+          whileTap={{ scale: thumbStartIndex >= Math.max(0, images.length - 3) ? 1 : 0.95 }}
         >
           ›
-        </button>
+        </motion.button>
       </div>
     </div>
   )

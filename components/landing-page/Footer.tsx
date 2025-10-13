@@ -1,7 +1,9 @@
 import { getMenu, getMetaObject } from "@/lib/shopify";
 import type { Menu as MenuType, MetaObject } from "@/lib/shopify/types";
 import Link from "next/link";
+import Image from "next/image";
 import { Icon } from "../Icons";
+import logoSvg from "@/assets/logo.svg";
 
 const strains = [
   {
@@ -120,15 +122,15 @@ export async function Footer() {
       <div className="flex flex-col lg:flex-row py-7.5 items-start gap-12 border-t border-b border-[rgba(16,16,16,0.10)] lg:h-[530px]">
         <div className="flex flex-col justify-between items-start flex-1 gap-12.5">
           <div className="flex flex-col gap-8 sm:min-w-[405px]">
-            <p className="text-base font-normal leading-[150%] text-[#101010]">
+            <p className="text-base font-normal leading-[150%] text-[#1D431D]">
               {ctaText}
             </p>
 
             <div className="flex flex-col gap-1">
-              <p className="text-base font-medium leading-[150%] text-[#101010]">
+              <p className="text-base font-medium leading-[150%] text-[#1D431D]">
                 FDA disclaimer :
               </p>
-              <div className="text-sm font-normal leading-[150%] text-[#101010]">
+              <div className="text-sm font-normal leading-[150%] text-[#1D431D]">
                 {disclaimerText}
               </div>
             </div>
@@ -139,7 +141,7 @@ export async function Footer() {
               <input
                 type="text"
                 placeholder="Enter your email"
-                className="text-base font-normal leading-[150%] text-[#101010] bg-transparent outline-none w-full"
+                className="text-base font-normal leading-[150%] text-[#1D431D] bg-transparent outline-none w-full"
               />
             </div>
             <button className="flex px-8 py-4 justify-center items-center rounded-[48px] bg-[#1D431D]">
@@ -153,7 +155,7 @@ export async function Footer() {
         <span className="lg:hidden w-full h-px bg-[rgba(16,16,16,0.10)]" />
 
         <div className="flex w-full flex-col items-end justify-between h-full gap-18">
-          <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-10 text-[#101010]">
+          <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-10 text-[#1D431D]">
             <div className="flex flex-col items-start gap-8 flex-1">
               <p className="text-xl font-medium leading-[120%] uppercase">
                 Strains
@@ -218,16 +220,31 @@ export async function Footer() {
                 </Link>
               ))}
             </div>
-            <p className="text-xs sm:text-sm font-normal leading-[150%] uppercase">
+            <p className="text-xs sm:text-sm font-normal leading-[150%] uppercase text-[#1D431D]/50">
               © turk’s bud 2025
             </p>
           </div>
         </div>
       </div>
 
-      <p className="oi-regular text-[62px] md:text-[172px] font-normal text-[#1D431D] uppercase tracking-[3.44px] text-center leading-[normal]">
-        TURK’S
-      </p>
+      <div className="py-12 md:py-16">
+        <div 
+          className="w-[150px] md:w-[400px] mx-auto transition-all duration-700 ease-out hover:scale-110 hover:drop-shadow-[0_0_25px_rgba(29,67,29,0.5)] cursor-pointer" 
+          style={{ 
+            filter: 'invert(20%) sepia(20%) saturate(1500%) hue-rotate(70deg) brightness(40%) contrast(95%)',
+            animation: 'fadeInUp 1s ease-out, breathe 4s ease-in-out infinite, colorShift 8s ease-in-out infinite'
+          }}
+        >
+          <Image
+            src={logoSvg}
+            alt="TURK'S"
+            width={400}
+            height={240}
+            className="w-full h-auto"
+            priority
+          />
+        </div>
+      </div>
     </footer>
   );
 }

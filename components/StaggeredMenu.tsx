@@ -1,7 +1,8 @@
 'use client';
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 // Helper to set CSS custom property numbers without using 'any'
 function setCssNumberVar(targets: gsap.TweenTarget, varName: string, value: number) {
@@ -60,6 +61,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 }: StaggeredMenuProps) => {
   const [open, setOpen] = useState(false);
   const openRef = useRef(false);
+  const pathname = usePathname();
 
   const panelRef = useRef<HTMLDivElement | null>(null);
   const preLayersRef = useRef<HTMLDivElement | null>(null);
@@ -336,6 +338,19 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     animateColor(target);
     animateText(target);
   }, [playOpen, playClose, animateIcon, animateColor, animateText, onMenuOpen, onMenuClose]);
+
+  // Auto-close menu on route change
+  useEffect(() => {
+    if (openRef.current) {
+      openRef.current = false;
+      setOpen(false);
+      onMenuClose?.();
+      playClose();
+      animateIcon(false);
+      animateColor(false);
+      animateText(false);
+    }
+  }, [pathname, playClose, animateIcon, animateColor, animateText, onMenuClose]);
 
   return (
     <div

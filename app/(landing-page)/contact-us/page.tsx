@@ -4,7 +4,7 @@ import { CTA } from "@/components/landing-page/CTA";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Reveal } from "@/components/animation/Reveal";
-import { slowLeft } from "@/lib/animation";
+import { slowLeft, slowRight } from "@/lib/animation";
 import { ContactForm } from "@/components/landing-page/ContactForm";
 
 const contactInfo = [
@@ -38,16 +38,16 @@ export default function page() {
       <div style={styleVars} className="w-full max-w-[1170px] mx-auto">
         <div className="flex flex-col justify-center items-center gap-10 md:gap-14 z-10">
           <Reveal variants={slowLeft}>
-            <div className="w-full rounded-[20px] p-6 md:p-8 bg-[linear-gradient(to_bottom,_hsl(77,33%,94%),_hsl(77,33%,90%),_hsl(77,33%,86%))] md:bg-[linear-gradient(to_bottom,_hsl(77,33%,96%),_hsl(77,33%,92%),_hsl(77,33%,88%))] border border-[#1D431D]/20 border-b-[hsl(77,33%,70%)] [animation:var(--animate-bg-pan-y)] bg-[length:100%_200%] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] hover:border-[#1D431D] hover:brightness-[1.02]">
+            <div className="w-full rounded-[20px] p-6 md:p-8 bg-[linear-gradient(to_bottom,_hsl(77,33%,94%),_hsl(77,33%,90%),_hsl(77,33%,86%))] md:bg-[linear-gradient(to_bottom,_hsl(77,33%,96%),_hsl(77,33%,92%),_hsl(77,33%,88%))] border border-[#1D431D]/20 border-b-[hsl(77,33%,70%)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] hover:border-[#1D431D] hover:brightness-[1.02]">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
                 <div className="flex flex-col items-start gap-6 md:gap-8">
-                  <h2 className="text-xl w-full text-center md:text-left md:text-[28px] font-black leading-[120%] text-[#101010] uppercase font-vast-shadow">
+                  <h2 className="text-xl w-full text-center md:text-left md:text-[28px] leading-[120%] text-[#101010] uppercase font-vast-shadow">
                     Ready to Start Your Journey?
                   </h2>
                   <ContactForm />
                 </div>
                 <div className="flex flex-col gap-5 md:gap-6 md:pl-12 md:border-l md:border-l-[#1D431D]/15">
-                  <h3 className="text-lg md:text-2xl font-black leading-[120%] text-[#101010] uppercase font-vast-shadow">
+                  <h3 className="text-lg md:text-2xl leading-[120%] text-[#101010] uppercase font-vast-shadow">
                     Contact Information
                   </h3>
                   <div className="grid grid-cols-1 gap-4">
@@ -66,7 +66,7 @@ export default function page() {
                           {item.icon}
                         </div>
                         <div className="flex flex-col gap-1">
-                          <h4 className="text-base md:text-xl font-black leading-[120%] text-[#101010] uppercase font-vast-shadow">
+                          <h4 className="text-base md:text-xl leading-[120%] text-[#101010] uppercase font-vast-shadow">
                             {item.title}
                           </h4>
                           <p className="text-sm md:text-base font-normal leading-[150%] text-[#101010]">
@@ -83,7 +83,9 @@ export default function page() {
         </div>
 
         <div className="mt-10">
-          <CTA />
+          <Reveal variants={slowRight} amount={0.3}>
+            <CTA />
+          </Reveal>
         </div>
       </div>
     </CompanyPage>

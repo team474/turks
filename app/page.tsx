@@ -12,7 +12,10 @@ import { Reveal } from "@/components/animation/Reveal";
 import { fadeOnly, slowUp, slowLeft, slowRight, slowDown } from "@/lib/animation";
 import { mixWithWhite, mixWithBlack, saturateHex } from "@/lib/color";
 import React from "react";
+import Image from "next/image";
+import logoSvg from "@/assets/logo.svg";
 
+import { SquiggleSeparator } from "@/components/landing-page/SquiggleSeparator";
 
 export const metadata: Metadata = {
   description:
@@ -55,14 +58,31 @@ export default async function HomePage() {
           {products && <Strains product={products}/>}
         </Reveal>
       </section>
+
+      <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] my-8">
+        <SquiggleSeparator className="w-full h-10" color="#1D431D" />
+      </div>
+
       <section className="relative w-full max-w-[1170px] mx-auto p-6 lg:p-4 xl:px-0 lg:py-18">
         <Reveal variants={slowRight} amount={0.3}>
           <About />
         </Reveal>
-        <p className="vast-shadow-regular absolute left-1/2 -translate-x-1/2 -bottom-4 md:-bottom-12.5 md:text-[220px] text-[100px] font-normal leading-[120%] text-[#101010] uppercase text-center opacity-2 pointer-events-none select-none">
-          TURK&apos;S
-        </p>
+        <div className="absolute left-1/2 -translate-x-1/2 -bottom-14 w-[250px] md:w-[660px] opacity-20 pointer-events-none select-none">
+          <Image
+            src={logoSvg}
+            alt="TURK'S"
+            width={660}
+            height={400}
+            className="w-full h-auto"
+            style={{ filter: 'invert(88%) sepia(12%) saturate(682%) hue-rotate(25deg) brightness(96%) contrast(88%)' }}
+          />
+        </div>
       </section>
+
+      <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] my-14 md:my-18">
+        <SquiggleSeparator className="w-full h-10" color="#1D431D" />
+      </div>
+
       <section className="relative w-full max-w-[1170px] mx-auto p-6 lg:p-4 xl:px-0 lg:py-18">
         <Icon.leafIcon className="absolute top-15 md:top-7.5 right-5 size-12 md:size-18" />
         <Icon.pipeIcon className="absolute top-15 md:-top-10 left-5 size-14 md:size-30" />
@@ -77,7 +97,11 @@ export default async function HomePage() {
         </Reveal>
       </section>
 
-      <section className="relative w-full max-w-[1170px] mx-auto pt-14 pb-6 px-8 lg:py-18 overflow-hidden">
+      <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] my-8">
+        <SquiggleSeparator className="w-full h-10" color="#1D431D" />
+      </div>
+
+      <section className="relative w-full max-w-[1170px] mx-auto pt-14 pb-6 px-8 lg:pt-18 overflow-hidden">
         <Icon.leafIcon className="absolute left-5 z-0 pointer-events-none
           top-30
           md:top-6

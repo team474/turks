@@ -1,7 +1,7 @@
 
 'use client'
 
-import { mixWithWhite, mixWithBlack, saturateHex } from '@/lib/color'
+import { mixWithBlack, saturateHex, gradientAround } from '@/lib/color'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface StrainSelectorItem {
@@ -15,21 +15,27 @@ interface StrainSelectorProps {
   selectedName?: string | null;
   onSelect: (name: string) => void;
   className?: string;
+  titleColor?: string;
 }
 
-export function StrainSelector({ title = 'Select Strain', items, selectedName, onSelect, className }: StrainSelectorProps) {
+export function StrainSelector({ title = 'Select Strain', items, selectedName, onSelect, className, titleColor }: StrainSelectorProps) {
 
   return (
     <div className={`flex flex-col items-center sm:items-start gap-4 w-full ${className ?? ''}`} role="radiogroup" aria-label={title}>
-      <p className="text-lg sm:text-2xl font-bold leading-[120%] uppercase text-[#101010] text-center sm:text-left">
+      <motion.p 
+        className="text-lg sm:text-2xl font-bold leading-[120%] uppercase text-center sm:text-left"
+        animate={{ color: titleColor || '#101010' }}
+        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      >
         {title}
-      </p>
+      </motion.p>
       <div className="grid grid-cols-[max-content_max-content] justify-center gap-x-6 gap-y-3 sm:flex sm:flex-wrap sm:justify-start sm:gap-4 w-full">
         {items.slice(0, 6).map((item, index) => {
           const isSelected = selectedName === item.name;
           const baseColor = item.color || '#FFFFFF';
-          const backgroundColor = isSelected ? mixWithWhite(baseColor, 15) : baseColor;
-          const borderColor = mixWithBlack(backgroundColor, 12);
+          const gradientIntensity = isSelected ? 8 : 5;
+          const backgroundGradient = gradientAround(baseColor, gradientIntensity);
+          const borderColor = mixWithBlack(baseColor, 12);
           // StrainsInfo color system
           const panelDarker = mixWithBlack(baseColor, 27);
           const saturated = saturateHex(panelDarker, 30); // "saturated"
@@ -40,11 +46,11 @@ export function StrainSelector({ title = 'Select Strain', items, selectedName, o
             <motion.button
               key={`${item.name}-${index}`}
               onClick={() => onSelect(item.name)}
-              style={{ backgroundColor, border: `1px solid ${borderColor}` }}
+              style={{ background: backgroundGradient, border: `1px solid ${borderColor}` }}
               className={`flex px-3.5 sm:px-4 py-2 sm:py-3 gap-2 sm:gap-3 items-center rounded-full transition-all duration-200 ease-out hover:shadow-lg hover:-translate-y-0.5 hover:brightness-105`}
               role="radio"
               aria-checked={isSelected}
-              animate={{ borderColor, backgroundColor }}
+              animate={{ borderColor }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

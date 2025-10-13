@@ -55,3 +55,19 @@ export const SHOPIFY_GRAPHQL_API_ENDPOINT = "/api/2025-10/graphql.json";
 export const currencyCodeMap = {
   'USD' : "$",
 }
+
+// Strain-specific font mapping (cycles through 6 fonts for 6 strains, with 2 fallbacks)
+const STRAIN_FONT_VARS = [
+  'var(--font-rubik-bubbles)',
+  'var(--font-bungee-shade)',
+  'var(--font-monoton)',
+  'var(--font-nosifer)',
+  'var(--font-sixtyfour)',
+  'var(--font-fascinate)',
+  'var(--font-atomic-age)',
+  'var(--font-cinzel-decorative)',
+] as const;
+
+export function getStrainFontFamily(index: number): string {
+  return STRAIN_FONT_VARS[index % STRAIN_FONT_VARS.length] || 'var(--font-rubik-bubbles)';
+}

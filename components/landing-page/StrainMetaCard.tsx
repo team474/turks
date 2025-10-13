@@ -1,16 +1,19 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { gradientAround, mixWithBlack } from '@/lib/color'
+import { gradientAround, mixWithBlack, saturateHex } from '@/lib/color'
 import { BorderBeam } from '@/components/ui/border-beam'
 import { listItem, listStagger, colorBlend } from '@/lib/animation'
+import { getStrainFontFamily } from '@/lib/constants'
 
 interface StrainMetaCardProps {
   name: string;
   colorHex?: string | null;
   effects: string[];
   terpenes: string[];
+  description?: string;
   className?: string;
+  strainIndex?: number;
 }
 
 function generateShortName(name: string): string {
@@ -38,9 +41,12 @@ function generateShortName(name: string): string {
 
 // color helpers now imported from lib/color
 
-export function StrainMetaCard({ name, colorHex, effects, terpenes, className }: StrainMetaCardProps) {
+export function StrainMetaCard({ name, colorHex, effects, terpenes, description, className, strainIndex = 0 }: StrainMetaCardProps) {
   const backgroundGradient = gradientAround(colorHex || '#FFFFFF', 15);
   const borderColor = mixWithBlack(colorHex || '#FFFFFF', 12);
+  const fontFamily = getStrainFontFamily(strainIndex);
+  const base = colorHex || '#1D431D';
+  const textColor = saturateHex(mixWithBlack(base, 82), 45); // Darker for better contrast
   const wrapperStyle: React.CSSProperties & { ['--primary']?: string } = {
     borderWidth: 1,
     borderStyle: 'solid',
@@ -77,7 +83,7 @@ export function StrainMetaCard({ name, colorHex, effects, terpenes, className }:
 
   return (
     <motion.div
-      className={`relative overflow-hidden flex gap-1 sm:gap-1.5 rounded-2xl w-full min-h-[135px] sm:min-h-[176px] p-2 sm:p-3 hover:shadow-lg transition-all duration-300 ease-out ${className ?? ''}`}
+      className={`relative overflow-hidden flex gap-1 sm:gap-1.5 rounded-2xl w-full min-h-[180px] sm:min-h-[240px] p-2 sm:p-3 hover:shadow-lg transition-all duration-300 ease-out ${className ?? ''}`}
       style={wrapperStyle}
       animate={{ borderColor }}
       transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
@@ -94,7 +100,7 @@ export function StrainMetaCard({ name, colorHex, effects, terpenes, className }:
           opacity: 0.9,
         }}
       />
-      {/* Two subtle beams, same direction, opposite starting positions */}
+      {/* Two subtle beams, reversed direction, opposite starting positions */}
       <>
         <BorderBeam
           size={140}
@@ -104,6 +110,7 @@ export function StrainMetaCard({ name, colorHex, effects, terpenes, className }:
           colorFrom={mixWithBlack(borderColor, 28)}
           colorTo={mixWithBlack(borderColor, 55)}
           style={{ opacity: 0.55 }}
+          reverse={true}
         />
         <BorderBeam
           size={140}
@@ -113,52 +120,114 @@ export function StrainMetaCard({ name, colorHex, effects, terpenes, className }:
           colorFrom={mixWithBlack(borderColor, 28)}
           colorTo={mixWithBlack(borderColor, 55)}
           style={{ opacity: 0.55 }}
+          reverse={true}
         />
       </>
-      <div className="relative z-10 flex w-full gap-1 sm:gap-1.5">
-      <div className="relative flex p-4 sm:p-10 justify-center items-center gap-2.5 flex-1 rounded-2xl font-medium uppercase text-[#202020]" style={{ background: 'transparent' }}>
-        <p className="text-xs sm:text-sm font-semibold absolute top-2.5 left-2.5">Hybrid</p>
-        <p className="text-xs sm:text-sm font-semibold absolute bottom-2.5 right-2.5">{name}</p>
-        <p className="text-[32px] sm:text-[44px] leading-[120%]">{generateShortName(name)}</p>
-      </div>
-      <span className="w-px self-center h-[70%] bg-[#1010101A]"></span>
+      <div className="relative z-10 flex flex-col w-full gap-3 sm:gap-4">
+        {/* Top section with strain info, effects, and flavors */}
+        <div className="flex w-full gap-1 sm:gap-1.5">
+          <div className="relative flex p-4 sm:p-10 justify-center items-center gap-2.5 flex-1 rounded-2xl font-medium uppercase" style={{ background: 'transparent' }}>
+            <motion.p 
+              className="text-xs sm:text-sm font-semibold absolute top-2.5 left-2.5"
+              animate={{ color: textColor }}
+              transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
+            >
+              Hybrid
+            </motion.p>
+            <motion.p 
+              className="text-xs sm:text-sm font-semibold absolute bottom-2.5 right-2.5"
+              animate={{ color: textColor }}
+              transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {name}
+            </motion.p>
+            <motion.p 
+              className="text-[32px] sm:text-[44px] leading-[120%]" 
+              style={{ fontFamily }} 
+              animate={{ color: textColor }}
+              transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {generateShortName(name)}
+            </motion.p>
+          </div>
+          <span className="w-px self-center h-[70%] bg-[#1010101A]"></span>
 
-      <div className="flex p-2 sm:p-4 flex-col items-start gap-3 sm:gap-4 flex-1">
-        <p className="text-sm sm:text-lg font-bold leading-[120%] uppercase text-[#101010]">
-          Effects
-        </p>
-        <span className="w-full h-px min-h-px bg-[#1010101A]"></span>
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div key={`effects-${name}`} className="flex flex-col gap-4 items-start" variants={listStagger} initial="initial" animate="animate" exit="exit">
-            {effects.map((item, index) => (
-              <motion.div key={index} className="flex items-center gap-2" variants={listItem}>
-                <p className="text-sm sm:text-lg font-normal leading-[150%] text-center text-[#101010]">
-                  {item}
-                </p>
+          <div className="flex p-2 sm:p-4 flex-col items-start gap-3 sm:gap-4 flex-1">
+            <motion.p 
+              className="text-sm sm:text-lg font-bold leading-[120%] uppercase"
+              animate={{ color: textColor }}
+              transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
+            >
+              Effects
+            </motion.p>
+            <span className="w-full h-px min-h-px bg-[#1010101A]"></span>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div key={`effects-${name}`} className="flex flex-col gap-4 items-start" variants={listStagger} initial="initial" animate="animate" exit="exit">
+                {effects.map((item, index) => (
+                  <motion.div key={index} className="flex items-center gap-2" variants={listItem}>
+                    <motion.p 
+                      className="text-sm sm:text-lg font-normal leading-[150%] text-center"
+                      animate={{ color: textColor }}
+                      transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      {item}
+                    </motion.p>
+                  </motion.div>
+                ))}
               </motion.div>
-            ))}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-      <span className="w-px self-center h-[70%] bg-[#1010101A]"></span>
+            </AnimatePresence>
+          </div>
+          <span className="w-px self-center h-[70%] bg-[#1010101A]"></span>
 
-      <div className="flex p-2 sm:p-4 flex-col items-start gap-3 sm:gap-4 flex-1">
-        <p className="text-sm sm:text-lg font-bold leading-[120%] uppercase text-[#101010]">
-          Flavors
-        </p>
-        <span className="w-full h-px min-h-px bg-[#1010101A]"></span>
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div key={`terpenes-${name}`} className="flex flex-col gap-4 items-start" variants={listStagger} initial="initial" animate="animate" exit="exit">
-            {terpenes.map((item, index) => (
-              <motion.div key={index} className="flex items-center gap-2" variants={listItem}>
-                <p className="text-sm sm:text-lg font-normal leading-[150%] text-center text-[#101010]">
-                  {item}
-                </p>
+          <div className="flex p-2 sm:p-4 flex-col items-start gap-3 sm:gap-4 flex-1">
+            <motion.p 
+              className="text-sm sm:text-lg font-bold leading-[120%] uppercase"
+              animate={{ color: textColor }}
+              transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
+            >
+              Flavors
+            </motion.p>
+            <span className="w-full h-px min-h-px bg-[#1010101A]"></span>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div key={`terpenes-${name}`} className="flex flex-col gap-4 items-start" variants={listStagger} initial="initial" animate="animate" exit="exit">
+                {terpenes.map((item, index) => (
+                  <motion.div key={index} className="flex items-center gap-2" variants={listItem}>
+                    <motion.p 
+                      className="text-sm sm:text-lg font-normal leading-[150%] text-center"
+                      animate={{ color: textColor }}
+                      transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      {item}
+                    </motion.p>
+                  </motion.div>
+                ))}
               </motion.div>
-            ))}
-          </motion.div>
-        </AnimatePresence>
-      </div>
+            </AnimatePresence>
+          </div>
+        </div>
+        
+        {/* Description section below with divider */}
+        {description && (
+          <>
+            <span className="w-full h-px bg-[#1010101A]"></span>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div 
+                key={`description-${name}`}
+                className="px-2 sm:px-4 pb-2 sm:pb-3"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0, color: textColor }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div 
+                  className="text-sm sm:text-base font-normal leading-[150%]" 
+                  dangerouslySetInnerHTML={{ __html: description }} 
+                  suppressHydrationWarning
+                />
+              </motion.div>
+            </AnimatePresence>
+          </>
+        )}
       </div>
     </motion.div>
   );

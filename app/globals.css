@@ -182,6 +182,56 @@ button {
   font-style: normal;
 }
 
+/* Strain-specific font classes */
+.rubik-bubbles-regular {
+  font-family: var(--font-rubik-bubbles), system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.bungee-shade-regular {
+  font-family: var(--font-bungee-shade), sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.monoton-regular {
+  font-family: var(--font-monoton), sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.nosifer-regular {
+  font-family: var(--font-nosifer), sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.sixtyfour-regular {
+  font-family: var(--font-sixtyfour), sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.fascinate-regular {
+  font-family: var(--font-fascinate), system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.atomic-age-regular {
+  font-family: var(--font-atomic-age), system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.cinzel-decorative-bold {
+  font-family: var(--font-cinzel-decorative), serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
 @theme inline {
   --animate-rippling: rippling var(--duration) ease-out;
   @keyframes rippling {
@@ -218,5 +268,40 @@ button {
   @keyframes bg-pan-y {
   0% { background-position: 50% 0%; }
   100% { background-position: 50% 100%; }
+  }
+  @keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    }
+  }
+  @keyframes breathe {
+  0%, 100% {
+    transform: scale(1);
+    }
+  50% {
+    transform: scale(1.02);
+    }
+  }
+  @keyframes colorShift {
+  0% {
+    filter: invert(20%) sepia(20%) saturate(1500%) hue-rotate(70deg) brightness(40%) contrast(95%);
+    }
+  25% {
+    filter: invert(25%) sepia(30%) saturate(1600%) hue-rotate(75deg) brightness(45%) contrast(100%);
+    }
+  50% {
+    filter: invert(20%) sepia(25%) saturate(1700%) hue-rotate(80deg) brightness(42%) contrast(98%);
+    }
+  75% {
+    filter: invert(25%) sepia(30%) saturate(1600%) hue-rotate(75deg) brightness(45%) contrast(100%);
+    }
+  100% {
+    filter: invert(20%) sepia(20%) saturate(1500%) hue-rotate(70deg) brightness(40%) contrast(95%);
+    }
   }
 }

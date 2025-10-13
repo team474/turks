@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
+import { gradientAround } from '@/lib/color'
 
 interface QuantityControlProps {
   value: number;
@@ -13,8 +14,10 @@ interface QuantityControlProps {
 }
 
 export function QuantityControl({ value, onIncrement, onDecrement, bgColor, borderColor, iconColor, textColor }: QuantityControlProps) {
+  const backgroundGradient = gradientAround(bgColor || '#FFFFFF', 8);
+  
   return (
-    <div className="flex p-2 sm:p-3 justify-center items-center gap-3 sm:gap-4 rounded-full transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md" style={{ backgroundColor: bgColor, border: borderColor ? `1px solid ${borderColor}` : undefined, color: iconColor ?? borderColor }}>
+    <div className="flex p-2 sm:p-3 justify-center items-center gap-3 sm:gap-4 rounded-full transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md" style={{ background: backgroundGradient, border: borderColor ? `1px solid ${borderColor}` : undefined, color: iconColor ?? borderColor }}>
       <button
         type="button"
         onClick={onDecrement}

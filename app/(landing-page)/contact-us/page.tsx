@@ -23,7 +23,7 @@ const contactInfo = [
   {
     title: "Address",
     icon: <Icon.mapPinIcon />,
-    value: "Cherry Hill Township, NJ 08003",
+    value: "PO Box 26, Palmyra, NJ 08065",
     href: "https://www.google.com/maps/place/Cherry+Hill+Township,+NJ+08003/@39.8729013,-75.0091485,13z/data=!3m1!4b1!4m6!3m5!1s0x89c6c666764406e1:0x830564154214506f!8m2!3d39.8729013!4d-75.0091485!16s%2Fg%2F11f5xk3319?entry=ttu&g_ep=EgoyMDI1MTAyMi4wIKXMDSoASAFQAw%3D%3D",
   },
 ];

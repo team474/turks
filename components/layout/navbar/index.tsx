@@ -96,7 +96,7 @@ export function Navbar() {
               ))}
             </nav>
           ) : null}
-          <CartModal />
+          {/* <CartModal /> */}
         </div>
       </div>
     </header>

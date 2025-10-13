@@ -55,7 +55,10 @@ const productFragment = /* GraphQL */ `
       { namespace: "custom", key: "terpenes" },
       { namespace: "custom", key: "effects" },
       { namespace: "custom", key: "case_color" },
-      { namespace: "custom", key: "category" }
+      { namespace: "custom", key: "category" },
+      { namespace: "custom", key: "concentration" },
+      { namespace: "custom", key: "indica" },
+      { namespace: "custom", key: "sativa" },
     ]) {
       key
       value

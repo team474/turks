@@ -32,7 +32,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <div className="max-w-[1170px] mx-auto p-6 lg:p-4 xl:px-0 lg:py-18 flex flex-col gap-10 md:gap-30">
       <div className="relative justify-center items-center gap-3 md:gap-8 flex flex-col">
-        <h1 className="text-[26px] md:text-5xl font-black leading-[120%] text-[#101010] uppercase text-center font-playfair-display-sc">
+        <h1 className="text-[26px] md:text-5xl leading-[120%] text-[#101010] uppercase text-center font-vast-shadow">
           {article.title}
         </h1>
         <div className="flex gap-3 z-10">
@@ -85,7 +85,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <span className="text-sm font-normal leading-[150%] text-[#101010] uppercase">
                 {publisheddate(article.publishedAt)}
               </span>
-              <h1 className="text-[32px] font-black leading-[120%] uppercase font-playfair-display-sc text-[#101010]">
+              <h1 className="text-[32px] leading-[120%] uppercase font-vast-shadow text-[#101010]">
                 {article.title}
               </h1>
             </div>
@@ -101,7 +101,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
 
         <div className="flex lg:max-w-[370px] w-full h-fit flex-col items-start gap-6 bg-[#E3EAD5] p-5 rounded-[20px]">
-          <p className="text-2xl font-black leading-[120%] uppercase font-playfair-display-sc text-[#101010]">
+          <p className="text-2xl leading-[120%] uppercase font-vast-shadow text-[#101010]">
             Recent Blogs{" "}
           </p>
 

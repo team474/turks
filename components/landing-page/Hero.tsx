@@ -202,7 +202,7 @@ export function Hero({ product }: HeroProps) {
       </motion.div>
 
       <div className="flex flex-col items-center sm:items-start gap-5 sm:gap-7.5">
-        <motion.h1 variants={heroChild} className="text-[26px] sm:text-[42px] font-black leading-[120%] text-[#101010] uppercase font-playfair-display-sc">
+        <motion.h1 variants={heroChild} className="text-[26px] sm:text-[42px] leading-[120%] text-[#101010] uppercase font-vast-shadow">
           <AnimatePresence mode="wait" initial={false}>
             <motion.span key={selectedName || 'none'} variants={heroFade} initial="initial" animate="animate" exit="exit" className="inline-block text-center sm:text-left">
               {selectedName || 'Select a strain'}

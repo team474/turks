@@ -21,13 +21,13 @@ export async function CTA() {
   }
 
   return (
-    <div className="relative max-w-[1170px] flex flex-col items-center sm:flex-row rounded-4xl bg-[#DFF552] gap-6 sm:gap-0 pb-0 p-6 sm:pb-6 lg:px-17.5 lg:py-10 overflow-hidden">
+    <div className="relative max-w-[1170px] flex flex-col items-center sm:flex-row rounded-4xl bg-[#DBEEC8] border border-[#1D431D] gap-6 sm:gap-0 pb-0 p-6 sm:pb-6 lg:px-17.5 lg:py-10 overflow-hidden">
       <div className="relative flex flex-1 flex-col items-start gap-6 md:gap-12">
         <div className="flex flex-col items-start gap-5">
-          <h2 className="text-[26px] md:text-4xl lg:text-5xl font-black leading-[120%] text-[#101010] uppercase font-playfair-display-sc">
+          <h2 className="text-[26px] md:text-4xl lg:text-5xl leading-[120%] text-[#1D431D] uppercase font-vast-shadow">
             {ctaHeader}
           </h2>
-          <p className="text-base md:text-xl font-normal leading-[150%] text-[#101010] max-w-[620px]">
+          <p className="text-base md:text-xl font-normal leading-[150%] text-[#1D431D] max-w-[620px]">
             {ctaDescription}
           </p>
         </div>

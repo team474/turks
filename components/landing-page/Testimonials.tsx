@@ -118,7 +118,7 @@ export async function Testimonials() {
   return (
     <div className="flex flex-col gap-6 md:gap-12 items-center">
       <div className="flex max-w-[1170px] mx-auto flex-col justify-center items-center gap-3 md:gap-5">
-        <h2 className="text-[26px] md:text-5xl font-black leading-[120%] text-[#101010] uppercase text-center font-playfair-display-sc">
+        <h2 className="text-[26px] md:text-5xl leading-[120%] text-[#101010] uppercase text-center font-vast-shadow">
           {mainHeader}
         </h2>
         <p className="text-center text-base md:text-xl font-normal leading-[150%] text-[#101010]">

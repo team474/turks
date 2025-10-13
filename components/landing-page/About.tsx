@@ -49,7 +49,7 @@ export async function About() {
           </div>
           <div className="p-6 md:p-8 lg:p-10 relative z-10">
             <div className="flex flex-col justify-center gap-4">
-              <h2 className="text-5xl font-black leading-[120%] text-[#101010] uppercase text-start font-playfair-display-sc">
+              <h2 className="text-5xl leading-[120%] text-[#101010] uppercase text-start font-vast-shadow">
                 Turk&apos;s
               </h2>
               <span className="h-[2px] w-12 rounded-full bg-[var(--about-accent-text)] mt-1 transition-all duration-300 group-hover:w-16" />

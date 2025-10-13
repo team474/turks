@@ -59,13 +59,13 @@ export default async function HomePage() {
         <Reveal variants={slowRight} amount={0.3}>
           <About />
         </Reveal>
-        <p className="oi-regular absolute left-1/2 -translate-x-1/2 -bottom-4 md:-bottom-12.5 md:text-[220px] text-[100px] font-normal leading-[120%] text-[#101010] uppercase text-center opacity-2 pointer-events-none select-none">
+        <p className="vast-shadow-regular absolute left-1/2 -translate-x-1/2 -bottom-4 md:-bottom-12.5 md:text-[220px] text-[100px] font-normal leading-[120%] text-[#101010] uppercase text-center opacity-2 pointer-events-none select-none">
           TURK&apos;S
         </p>
       </section>
       <section className="relative w-full max-w-[1170px] mx-auto p-6 lg:p-4 xl:px-0 lg:py-18">
-        <Icon.leafIcon className="absolute -top-15 md:-top-7.5 right-5 size-12 md:size-18" />
-        <Icon.pipeIcon className="absolute top-[-70] md:-top-11 left-5 size-14 md:size-30" />
+        <Icon.leafIcon className="absolute top-15 md:top-7.5 right-5 size-12 md:size-18" />
+        <Icon.pipeIcon className="absolute top-15 md:-top-10 left-5 size-14 md:size-30" />
         <Reveal variants={slowDown} amount={0.3}>
           <Testimonials />
         </Reveal>
@@ -78,8 +78,12 @@ export default async function HomePage() {
       </section>
 
       <section className="relative w-full max-w-[1170px] mx-auto pt-14 pb-6 px-8 lg:py-18 overflow-hidden">
-        <Icon.leafIcon className="absolute top-9.5 left-5 z-0 pointer-events-none" />
-        <Icon.pipeIcon className="absolute top-12 right-5 scale-x-[-1] z-0 pointer-events-none" />
+        <Icon.leafIcon className="absolute left-5 z-0 pointer-events-none
+          top-30
+          md:top-6
+          lg:top-0
+        " />
+        <Icon.pipeIcon className="absolute top-35 md:top-40 right-5 scale-x-[-1] z-0 pointer-events-none" />
         <Reveal variants={slowLeft} amount={0.3}>
           <Blog />
         </Reveal>

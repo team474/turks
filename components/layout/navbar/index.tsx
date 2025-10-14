@@ -40,7 +40,7 @@ export function Navbar() {
   return (
     <>
       {/* Free Shipping Banner */}
-      <div className="relative w-full bg-[#1D431D] overflow-hidden">
+      <div className="relative w-full bg-[#101010] overflow-hidden">
         {/* Shimmer overlay */}
         <motion.span
           {...shimmerAnimationProps}

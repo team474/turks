@@ -15,7 +15,7 @@ import {
   Oi, 
   Poppins, 
   Vast_Shadow,
-  Rubik_Bubbles,
+  Danfo,
   Bungee_Shade,
   Monoton,
   Nosifer,
@@ -59,9 +59,9 @@ const oi = Oi({
 });
 
 // Strain-specific fonts
-const rubikBubbles = Rubik_Bubbles({
+const danfo = Danfo({
   subsets: ["latin"],
-  variable: "--font-rubik-bubbles",
+  variable: "--font-danfo",
   display: "swap",
   weight: ["400"],
 });
@@ -139,7 +139,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable} ${jura.variable} ${poppins.variable} ${vast_shadow.variable} ${oi.variable} ${rubikBubbles.variable} ${bungeeShade.variable} ${monoton.variable} ${nosifer.variable} ${sixtyfour.variable} ${fascinate.variable} ${atomicAge.variable} ${cinzelDecorative.variable}`}
+      className={`${GeistSans.variable} ${jura.variable} ${poppins.variable} ${vast_shadow.variable} ${oi.variable} ${danfo.variable} ${bungeeShade.variable} ${monoton.variable} ${nosifer.variable} ${sixtyfour.variable} ${fascinate.variable} ${atomicAge.variable} ${cinzelDecorative.variable}`}
     >
       <body>
         {/* <ThemeProvider attribute="class" enableSystem> */}

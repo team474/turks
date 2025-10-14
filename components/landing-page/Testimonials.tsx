@@ -10,12 +10,6 @@ const getFieldValue = (metaObject: MetaObject, key: string): string => {
   return field?.value || "";
 };
 
-// Helper function to get user image URL from MetaObject
-const getUserImageUrl = (metaObject: MetaObject): string => {
-  const field = metaObject.fields.find((field) => field.key === "user_image");
-  return field?.reference?.image?.url || "";
-};
-
 // Helper function to render stars based on rating
 const renderStars = (rating: number, className: string = "fill-[#1D431D]") => {
   const stars = [];
@@ -136,7 +130,6 @@ export async function Testimonials() {
               "comment_days_ago"
             );
             const stars = parseInt(getFieldValue(testimonial, "stars")) || 5;
-            const userImageUrl = getUserImageUrl(testimonial);
             const initials = getInitials(userName || "");
             const publishedISO = inferDateFromDaysAgo(commentDaysAgo);
             const reviewLd = {
@@ -165,20 +158,9 @@ export async function Testimonials() {
                   {/* Mobile: two-column layout with avatar on left and content on right */}
                   <div className="grid grid-cols-[72px_1fr] items-start gap-3 w-full md:hidden">
                     <div className="size-[72px] shrink-0 rounded-full shadow-[0_4px_14px_0_rgba(0,0,0,0.05)] overflow-hidden bg-[#E3EAD5]">
-                      {userImageUrl ? (
-                        <Image
-                          src={userImageUrl}
-                          alt={userName || "User avatar"}
-                          width={72}
-                          height={72}
-                          sizes="72px"
-                          className="block w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-[#E3EAD5] flex items-center justify-center text-[#1D431D] font-semibold">
-                          {initials}
-                        </div>
-                      )}
+                      <div className="w-full h-full bg-[#E3EAD5] flex items-center justify-center text-[#1D431D] font-semibold text-2xl">
+                        {initials}
+                      </div>
                     </div>
                     <div className="flex flex-col items-start gap-2 justify-center w-full">
                       <div className="flex w-full items-start justify-between gap-2">
@@ -231,20 +213,9 @@ export async function Testimonials() {
 
                 <div className="hidden md:flex flex-col justify-center items-center gap-6.5">
                   <div className="size-[72px] md:size-[100px] shrink-0 rounded-full shadow-[0_4px_14px_0_rgba(0,0,0,0.05)] overflow-hidden bg-[#E3EAD5]">
-                    {userImageUrl ? (
-                      <Image
-                        src={userImageUrl}
-                        alt={userName || "User avatar"}
-                        width={100}
-                        height={100}
-                        sizes="(min-width: 768px) 100px, 72px"
-                        className="block w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-[#E3EAD5] flex items-center justify-center text-[#1D431D] font-semibold">
-                        {initials}
-                      </div>
-                    )}
+                    <div className="w-full h-full bg-[#E3EAD5] flex items-center justify-center text-[#1D431D] font-semibold text-3xl">
+                      {initials}
+                    </div>
                   </div>
                   <div className="flex justify-center items-center gap-1 flex-col">
                     <cite className="text-lg md:text-2xl font-medium leading-[120%] text-[#101010] uppercase not-italic">

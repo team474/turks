@@ -3,7 +3,8 @@ import type { Menu as MenuType, MetaObject } from "@/lib/shopify/types";
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "../Icons";
-import logoSvg from "@/assets/logo.svg";
+import logomarkSvg from "@/assets/turk's logo-mark.svg";
+import wordmarkSvg from "@/assets/turks-wordmark.svg";
 
 const strains = [
   {
@@ -229,19 +230,38 @@ export async function Footer() {
 
       <div className="py-12 md:py-16">
         <div 
-          className="w-[150px] md:w-[400px] mx-auto transition-all duration-700 ease-out hover:scale-110 hover:drop-shadow-[0_0_25px_rgba(29,67,29,0.5)] cursor-pointer" 
+          className="flex flex-row items-center justify-center gap-6 md:gap-8 mx-auto transition-all duration-700 ease-out hover:scale-110 hover:drop-shadow-[0_0_25px_rgba(29,67,29,0.5)] cursor-pointer" 
           style={{ 
-            filter: 'invert(20%) sepia(20%) saturate(1500%) hue-rotate(70deg) brightness(40%) contrast(95%)',
-            animation: 'fadeInUp 1s ease-out, breathe 4s ease-in-out infinite, colorShift 8s ease-in-out infinite'
+            animation: 'fadeInUp 1s ease-out, breathe 4s ease-in-out infinite'
           }}
         >
-          <Image
-            src={logoSvg}
-            alt="TURK'S"
-            width={400}
-            height={240}
-            className="w-full h-auto"
-            priority
+          {/* Logomark */}
+          <div className="w-[100px] md:w-[140px]" style={{ filter: 'drop-shadow(0 2px 4px rgba(29,67,29,0.3))' }}>
+            <Image
+              src={logomarkSvg}
+              alt="TURK'S Logo"
+              width={140}
+              height={140}
+              className="w-full h-auto"
+              priority
+            />
+          </div>
+          
+          {/* Wordmark */}
+          <div 
+            className="w-[240px] md:w-[400px]" 
+            style={{ 
+              backgroundColor: '#1D431D',
+              WebkitMaskImage: `url(${wordmarkSvg.src})`,
+              WebkitMaskSize: 'contain',
+              WebkitMaskRepeat: 'no-repeat',
+              WebkitMaskPosition: 'center',
+              maskImage: `url(${wordmarkSvg.src})`,
+              maskSize: 'contain',
+              maskRepeat: 'no-repeat',
+              maskPosition: 'center',
+              aspectRatio: '3/1'
+            }}
           />
         </div>
       </div>

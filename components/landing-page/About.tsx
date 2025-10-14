@@ -1,5 +1,5 @@
 import about from "@/assets/about-image.png";
-import logoSvg from "@/assets/logo.svg";
+import wordmarkSvg from "@/assets/turks-wordmark.svg";
 import { RichTextRenderer } from "@/lib/rich-text-renderer";
 import { getMetaObject } from "@/lib/shopify";
 import Image from "next/image";
@@ -50,15 +50,21 @@ export async function About() {
           </div>
           <div className="p-6 md:p-8 lg:p-10 relative z-10">
             <div className="flex flex-col justify-center items-center gap-4">
-              <div className="w-[140px] md:w-[180px]" style={{ filter: 'invert(20%) sepia(20%) saturate(1500%) hue-rotate(70deg) brightness(40%) contrast(95%)' }}>
-                <Image
-                  src={logoSvg}
-                  alt="TURK'S"
-                  width={180}
-                  height={108}
-                  className="w-full h-auto"
-                />
-              </div>
+              <div 
+                className="w-[140px] md:w-[180px]" 
+                style={{ 
+                  backgroundColor: '#1D431D',
+                  WebkitMaskImage: `url(${wordmarkSvg.src})`,
+                  WebkitMaskSize: 'contain',
+                  WebkitMaskRepeat: 'no-repeat',
+                  WebkitMaskPosition: 'center',
+                  maskImage: `url(${wordmarkSvg.src})`,
+                  maskSize: 'contain',
+                  maskRepeat: 'no-repeat',
+                  maskPosition: 'center',
+                  aspectRatio: '3/1'
+                }}
+              />
               <span className="h-[2px] w-12 rounded-full bg-[var(--about-accent-text)] mt-1 transition-all duration-300 group-hover:w-16" />
               <RichTextRenderer
                 content={aboutText || "No disclaimer text available"}

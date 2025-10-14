@@ -47,7 +47,7 @@ export function ProductActions({ onAddToCart, onCheckout, checkoutDisabled, ctaB
         }}
         disabled={checkoutDisabled}
       >
-        <p className="text-lg sm:text-xl font-bold leading-[150%] uppercase text-center whitespace-nowrap">
+        <p className="text-base sm:text-lg font-bold leading-[150%] uppercase text-center whitespace-nowrap">
           Checkout
         </p>
       </button>

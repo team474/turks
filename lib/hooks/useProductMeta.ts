@@ -17,9 +17,6 @@ export function useProductMeta(product: Product | null) {
     const sativa = get('sativa');
     const flavors = get('flavors');
 
-    console.log("flovorts", flavors);
-    
-
     const effects = effectsValue ? (JSON.parse(effectsValue) as string[]) : [];
     const terpenes = terpenesValue ? (JSON.parse(terpenesValue) as string[]) : [];
 

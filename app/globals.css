@@ -183,10 +183,13 @@ button {
 }
 
 /* Strain-specific font classes */
-.rubik-bubbles-regular {
-  font-family: var(--font-rubik-bubbles), system-ui;
+.danfo-regular {
+  font-family: var(--font-danfo), serif;
+  font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
+  font-variation-settings:
+    "ELSH" 0;
 }
 
 .bungee-shade-regular {

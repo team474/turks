@@ -25,13 +25,22 @@ export function SquiggleSeparator({
   const [path1, setPath1] = useState("M0 40 C 80 5, 160 75, 240 40 S 400 5, 480 40 640 75, 720 40 880 5, 960 40 1120 75, 1200 40");
   const [path2, setPath2] = useState("M0 40 C 80 5, 160 75, 240 40 S 400 5, 480 40 640 75, 720 40 880 5, 960 40 1120 75, 1200 40");
   const rafRef = useRef<number | undefined>(undefined);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     if (!animate) return;
 
     let time = 0;
     const animateWave = () => {
-      time += 0.008; // Slower speed (was 0.015)
+      // Faster on mobile (0.016), slower on desktop (0.008)
+      time += isMobile ? 0.016 : 0.008;
       
       // Generate wave path with sine functions for smooth, organic movement
       const generatePath = (offset: number, amplitude: number) => {
@@ -70,7 +79,7 @@ export function SquiggleSeparator({
         cancelAnimationFrame(rafRef.current);
       }
     };
-  }, [animate]);
+  }, [animate, isMobile]);
 
   return (
     <svg

@@ -3,11 +3,9 @@
 import CartModal from "components/cart/modal";
 import { Menu } from "lib/shopify/types";
 import Link from "next/link";
-import Image from "next/image";
 import { Suspense } from "react";
 import { motion } from "framer-motion";
 import MobileMenu from "./mobile-menu";
-import logomarkSvg from "@/assets/turk's logo-mark.svg";
 import wordmarkSvg from "@/assets/turks-wordmark.svg";
 
 const menu = [
@@ -69,17 +67,7 @@ export function Navbar() {
           </Suspense>
         </div>
 
-        <Link href="/" prefetch={true} className="flex items-center gap-3 sm:gap-4 mx-auto md:mx-0">
-          <div className="w-[48px] sm:w-[64px]">
-            <Image
-              src={logomarkSvg}
-              alt="TURK'S Logo"
-              width={64}
-              height={64}
-              className="w-full h-auto"
-              priority
-            />
-          </div>
+        <Link href="/" prefetch={true} className="mx-auto md:mx-0">
           <div 
             className="w-[120px] sm:w-[140px]" 
             style={{ 

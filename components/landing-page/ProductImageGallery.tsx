@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react'
 import { MiniGradientFade } from '@/components/landing-page/MiniGradientFade'
 import { mixWithBlack } from '@/lib/color'
 import { BorderBeam } from '@/components/ui/border-beam'
-import logoSvg from '@/assets/logo.svg'
+import wordmarkSvg from "@/assets/turks-wordmark.svg"
 
 interface GalleryImage {
   url: string
@@ -122,22 +122,22 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
         </AnimatePresence>
         {/* Logo watermark in bottom center */}
         <motion.div 
-          className="absolute bottom-5 sm:bottom-8 left-1/2 -translate-x-1/2 w-16 sm:w-24 z-10 pointer-events-none"
+          className="absolute bottom-5 sm:bottom-8 left-1/2 -translate-x-1/2 w-24 sm:w-32 z-10 pointer-events-none"
           animate={{ 
-            backgroundColor: mixWithBlack(borderColorHex || '#1D431D', 30)
+            backgroundColor: '#1D431D'
           }}
           transition={{ duration: heroFadeDuration, ease: motionEasings.out }}
           style={{
-            WebkitMaskImage: `url(${logoSvg.src})`,
+            WebkitMaskImage: `url(${wordmarkSvg.src})`,
             WebkitMaskSize: 'contain',
             WebkitMaskRepeat: 'no-repeat',
             WebkitMaskPosition: 'center',
-            maskImage: `url(${logoSvg.src})`,
+            maskImage: `url(${wordmarkSvg.src})`,
             maskSize: 'contain',
             maskRepeat: 'no-repeat',
             maskPosition: 'center',
             opacity: 0.25,
-            aspectRatio: '212/128'
+            aspectRatio: '3/1'
           }}
         />
         

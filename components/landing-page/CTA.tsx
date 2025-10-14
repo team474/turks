@@ -32,7 +32,7 @@ export async function CTA() {
           </p>
         </div>
 
-        <Button title="GET IN TOUCH" link="/contact-us" />
+        <Button title="REACH OUT" link="/contact-us" />
 
         <Icon.leafIcon className="absolute -bottom-10 sm:-bottom-5 right-50 sm:right-20 md:right-68 size-14 sm:size-18 -rotate-[60deg]" />
         <Icon.leafIcon className="absolute bottom-10 right-10 size-14 sm:size-18" />

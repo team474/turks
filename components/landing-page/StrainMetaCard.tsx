@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { gradientAround, mixWithBlack, saturateHex } from '@/lib/color'
 import { BorderBeam } from '@/components/ui/border-beam'
 import { listItem, listStagger, colorBlend } from '@/lib/animation'
-import { getStrainFontFamily } from '@/lib/constants'
 
 interface StrainMetaCardProps {
   name: string;
@@ -13,38 +12,12 @@ interface StrainMetaCardProps {
   terpenes: string[];
   description?: string;
   className?: string;
-  strainIndex?: number;
+  concentration?: string | null;
 }
 
-function generateShortName(name: string): string {
-  if (!name) return "";
-  const words = name.trim().split(/\s+/).filter(Boolean);
-  if (words.length === 0) return "";
-
-  if (words.length === 1) {
-    const w = words[0];
-    return (w?.slice(0, 3) || "").toUpperCase().padEnd(3, "_");
-  }
-
-  if (words.length === 2) {
-    const first = words[0]?.[0] ?? "";
-    const second = words[1]?.slice(0, 2) ?? "";
-    return (first + second).toUpperCase();
-  }
-
-  return words
-    .slice(0, 3)
-    .map((w) => w?.[0] ?? "")
-    .join("")
-    .toUpperCase();
-}
-
-// color helpers now imported from lib/color
-
-export function StrainMetaCard({ name, colorHex, effects, terpenes, description, className, strainIndex = 0 }: StrainMetaCardProps) {
+export function StrainMetaCard({ name, colorHex, effects, terpenes, description, className, concentration }: StrainMetaCardProps) {
   const backgroundGradient = gradientAround(colorHex || '#FFFFFF', 15);
   const borderColor = mixWithBlack(colorHex || '#FFFFFF', 12);
-  const fontFamily = getStrainFontFamily(strainIndex);
   const base = colorHex || '#1D431D';
   const textColor = saturateHex(mixWithBlack(base, 82), 45); // Darker for better contrast
   const wrapperStyle: React.CSSProperties & { ['--primary']?: string } = {
@@ -141,14 +114,22 @@ export function StrainMetaCard({ name, colorHex, effects, terpenes, description,
             >
               {name}
             </motion.p>
-            <motion.p 
-              className="text-[32px] sm:text-[44px] leading-[120%]" 
-              style={{ fontFamily }} 
-              animate={{ color: textColor }}
-              transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
-            >
-              {generateShortName(name)}
-            </motion.p>
+            <div className="flex items-baseline gap-1.5">
+              <motion.p 
+                className="text-[32px] sm:text-[44px] leading-[120%] font-bold" 
+                animate={{ color: textColor }}
+                transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
+              >
+                {concentration || '23.4'}
+              </motion.p>
+              <motion.p 
+                className="text-xs sm:text-sm font-semibold"
+                animate={{ color: textColor }}
+                transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
+              >
+                THC
+              </motion.p>
+            </div>
           </div>
           <span className="w-px self-center h-[70%] bg-[#1010101A]"></span>
 

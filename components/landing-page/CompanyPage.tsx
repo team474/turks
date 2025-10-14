@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { Icon } from "../Icons";
-import logoSvg from "@/assets/logo.svg";
+import wordmarkSvg from "@/assets/turks-wordmark.svg";
 
 export function CompanyPage({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -10,14 +10,14 @@ export function CompanyPage({ title, children }: { title: string; children: Reac
         <h1 className="text-5xl md:text-7xl leading-[120%] text-[#101010] uppercase text-center font-vast-shadow">
           {title}
         </h1>
-        <div className="absolute left-1/2 -translate-x-1/2 -bottom-28 md:-bottom-65 w-[250px] md:w-[660px] opacity-20 pointer-events-none select-none">
+        <div className="absolute left-1/2 -translate-x-1/2 -bottom-8 md:-bottom-20 w-[300px] md:w-[760px] opacity-25 pointer-events-none select-none">
           <Image
-            src={logoSvg}
+            src={wordmarkSvg}
             alt="TURK'S"
-            width={660}
-            height={400}
+            width={760}
+            height={230}
             className="w-full h-auto"
-            style={{ filter: 'invert(88%) sepia(12%) saturate(682%) hue-rotate(25deg) brightness(96%) contrast(88%)' }}
+            style={{ filter: 'invert(88%) sepia(12%) saturate(682%) hue-rotate(25deg) brightness(96%) contrast(88%) drop-shadow(0 2px 4px rgba(29,67,29,0.1))' }}
           />
         </div>
         <Icon.leafIcon className="absolute top-10 left-2 lg:top-[24px] sm:left-5 size-12 md:size-18" />

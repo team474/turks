@@ -13,7 +13,7 @@ import { fadeOnly, slowUp, slowLeft, slowRight, slowDown } from "@/lib/animation
 import { mixWithWhite, mixWithBlack, saturateHex } from "@/lib/color";
 import React from "react";
 import Image from "next/image";
-import logoSvg from "@/assets/logo.svg";
+import wordmarkSvg from "@/assets/turks-wordmark.svg";
 
 import { SquiggleSeparator } from "@/components/landing-page/SquiggleSeparator";
 
@@ -28,8 +28,6 @@ export const metadata: Metadata = {
 export default async function HomePage() {
 
   const products = await getProducts({});
-
-  console.log("prod", products);
   
   // derive initial CTA colors from first product to avoid FOUC
   const base = (products?.[0]?.metafields?.find((m) => m.key === 'case_color')?.value) || '#1D431D';
@@ -69,12 +67,12 @@ export default async function HomePage() {
         </Reveal>
         <div className="absolute left-1/2 -translate-x-1/2 -bottom-14 w-[250px] md:w-[660px] opacity-20 pointer-events-none select-none">
           <Image
-            src={logoSvg}
+            src={wordmarkSvg}
             alt="TURK'S"
             width={660}
-            height={400}
+            height={200}
             className="w-full h-auto"
-            style={{ filter: 'invert(88%) sepia(12%) saturate(682%) hue-rotate(25deg) brightness(96%) contrast(88%)' }}
+            style={{ filter: 'invert(88%) sepia(12%) saturate(682%) hue-rotate(25deg) brightness(96%) contrast(88%) drop-shadow(0 2px 4px rgba(29,67,29,0.1))' }}
           />
         </div>
       </section>

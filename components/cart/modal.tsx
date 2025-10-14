@@ -79,19 +79,7 @@ export default function CartModal() {
     };
   }, [cart]); // Add cart to dependencies to ensure we have the latest state
 
-  // Log cart changes for debugging
-  useEffect(() => {
-    console.log('Cart state updated:', {
-      totalItems: cart?.totalQuantity,
-      items: cart?.lines?.map(item => ({
-        id: item.merchandise.id,
-        name: item.merchandise.product.title,
-        quantity: item.quantity,
-        price: item.cost.totalAmount.amount
-      }))
-    });
-  }, [cart]);
-
+  
   // Manage mount-time entrance animation for cart items
   useEffect(() => {
     if (isOpen) {

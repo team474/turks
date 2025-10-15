@@ -58,7 +58,7 @@ export const currencyCodeMap = {
 
 // Strain-specific font mapping (cycles through 6 fonts for 6 strains, with 2 fallbacks)
 const STRAIN_FONT_VARS = [
-  'var(--font-danfo)',
+  'var(--font-shrikhand)',
   'var(--font-bungee-shade)',
   'var(--font-monoton)',
   'var(--font-nosifer)',
@@ -69,5 +69,5 @@ const STRAIN_FONT_VARS = [
 ] as const;
 
 export function getStrainFontFamily(index: number): string {
-  return STRAIN_FONT_VARS[index % STRAIN_FONT_VARS.length] || 'var(--font-danfo)';
+  return STRAIN_FONT_VARS[index % STRAIN_FONT_VARS.length] || 'var(--font-shrikhand)';
 }

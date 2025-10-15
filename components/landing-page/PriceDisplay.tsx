@@ -14,7 +14,7 @@ export function PriceDisplay({ amount, currencyCode }: PriceDisplayProps) {
   const displayAmount = amount ? Math.floor(Number(amount)) : amount
   
   return (
-    <p className="text-[22px] sm:text-[40px] leading-[120%] uppercase">
+    <p className="text-[28px] sm:text-[40px] leading-[120%] uppercase min-w-[140px] sm:min-w-[200px]">
       <span className="font-bold">{prefix}{displayAmount}</span>
       <span className="font-light">/OZ</span>
     </p>

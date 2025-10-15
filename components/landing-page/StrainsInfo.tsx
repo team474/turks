@@ -2,7 +2,7 @@
 
 import { Metafield, Product } from "@/lib/shopify/types";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
-import { mixWithBlack, saturateHex, mixWithWhite } from "@/lib/color";
+import { mixWithBlack, saturateHex, mixWithWhite, hexToRgb } from "@/lib/color";
 import Image from "next/image";
 import { Button } from "./Button";
 import { useEffect, useState, type CSSProperties } from "react";
@@ -23,12 +23,18 @@ export function StrainsInfo({ product }: infoProps) {
     description: string;
     image: string;
     color: string;
+    concentration?: string;
+    indica?: string;
+    sativa?: string;
   }> {
     return products?.map((product: Product) => {
       // Find metafields with proper type safety
       const caseColorMetafield = product.metafields?.find((mf: Metafield) => mf.key === 'case_color');
       const terpenesMetafield = product.metafields?.find((mf: Metafield) => mf.key === 'terpenes');
       const category = product.metafields?.find((mf: Metafield) => mf.key === 'category');
+      const concentration = product.metafields?.find((mf: Metafield) => mf.key === 'concentration')?.value;
+      const indica = product.metafields?.find((mf: Metafield) => mf.key === 'indica')?.value;
+      const sativa = product.metafields?.find((mf: Metafield) => mf.key === 'sativa')?.value;
 
       // Parse terpenes from metafield
       let terpenes: string[] = [];
@@ -52,7 +58,10 @@ export function StrainsInfo({ product }: infoProps) {
         flavor: terpenes,
         description: product.description,
         image: productImage,
-        color: caseColorMetafield?.value || "#FFFFFF"
+        color: caseColorMetafield?.value || "#FFFFFF",
+        concentration,
+        indica,
+        sativa
       };
     });
   }
@@ -118,6 +127,29 @@ export function StrainsInfo({ product }: infoProps) {
           const textIconColor = saturateHex(textIconDarker, 38);
           const arrowBorder = textIconColor;
           const arrowBg = mixWithWhite(baseColor, 70);
+          const parsePct = (v?: string) => {
+            if (!v) return null;
+            const cleaned = v.replace(/[^0-9.]/g, '');
+            const num = parseFloat(cleaned);
+            return Number.isFinite(num) ? num : null;
+          };
+          const thc = parsePct(item.concentration);
+          let indica = parsePct(item.indica);
+          let sativa = parsePct(item.sativa);
+          if (indica !== null && (sativa === null || !Number.isFinite(sativa))) sativa = Math.max(0, Math.min(100, 100 - indica));
+          if (sativa !== null && (indica === null || !Number.isFinite(indica))) indica = Math.max(0, Math.min(100, 100 - sativa));
+          if (indica !== null && sativa !== null) {
+            const sum = indica + sativa;
+            if (sum > 0 && sum !== 100) {
+              indica = (indica / sum) * 100;
+              sativa = (sativa / sum) * 100;
+            }
+          }
+          const rgb = hexToRgb(baseColor);
+          const overlayBg = rgb ? `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.18)` : 'rgba(0,0,0,0.18)';
+          const overlayText = mixWithBlack(baseColor, 75);
+          const chipBg = mixWithWhite(baseColor, 80);
+          const chipBorder = mixWithBlack(baseColor, 25);
           return (
             <CarouselItem
               key={index}
@@ -137,6 +169,28 @@ export function StrainsInfo({ product }: infoProps) {
                 } as CSSProperties}
                 className="group relative flex w-full max-w-none sm:max-w-[420px] md:max-w-[420px] aspect-[3/4] sm:aspect-[4/5] md:aspect-[9/16] p-1.5 sm:p-2 flex-col items-center justify-end shrink-0 gap-2 sm:gap-3 md:gap-4 rounded-3xl border border-solid overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
               >
+                {(thc !== null || indica !== null || sativa !== null) && (
+                  <div className="w-full p-3 sm:p-4" style={{ backgroundColor: overlayBg, color: overlayText }}>
+                    <div className="flex items-start justify-between gap-3 sm:gap-4 w-full">
+                      {thc !== null && (
+                        <div className="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm sm:text-base font-semibold" style={{ backgroundColor: chipBg, borderColor: chipBorder }}>
+                          <span>THC</span>
+                          <span>{`${Math.round(thc)}%`}</span>
+                        </div>
+                      )}
+                      {(indica !== null || sativa !== null) && (
+                        <div className="inline-flex flex-col items-end gap-1 sm:gap-1.5 ml-auto">
+                          <div className="text-xs sm:text-sm whitespace-nowrap opacity-90">
+                            {`Indica ${Math.round(indica || 0)}% · Sativa ${Math.round(sativa || 0)}%`}
+                          </div>
+                          <div className="h-1.5 rounded-full bg-white/40 overflow-hidden w-full">
+                            <div className="h-full" style={{ width: `${Math.max(0, Math.min(100, Math.round(indica || 0)))}%`, backgroundColor: mixWithBlack(baseColor, 25) }} />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
                 <div className="relative w-full flex-1 min-h-0">
                   {item.image ? (
                     <Image
@@ -145,7 +199,7 @@ export function StrainsInfo({ product }: infoProps) {
                       loading="lazy"
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 640px, 480px"
-                      className="object-contain scale-[1.35] sm:scale-[1.2] md:scale-[1.25] transition-transform duration-300 ease-out group-hover:scale-125 opacity-0"
+                      className="object-cover scale-[1.4] sm:scale-[1.35] md:scale-[1.35] transition-transform duration-300 ease-out group-hover:scale-[1.5] opacity-0"
                       onLoadingComplete={(img) => {
                         img.classList.remove('opacity-0');
                         img.classList.add('opacity-100');

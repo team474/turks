@@ -15,7 +15,7 @@ import {
   Oi, 
   Poppins, 
   Vast_Shadow,
-  Danfo,
+  Shrikhand,
   Bungee_Shade,
   Monoton,
   Nosifer,
@@ -59,9 +59,9 @@ const oi = Oi({
 });
 
 // Strain-specific fonts
-const danfo = Danfo({
+const shrikhand = Shrikhand({
   subsets: ["latin"],
-  variable: "--font-danfo",
+  variable: "--font-shrikhand",
   display: "swap",
   weight: ["400"],
 });
@@ -139,7 +139,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${GeistSans.variable} ${jura.variable} ${poppins.variable} ${vast_shadow.variable} ${oi.variable} ${danfo.variable} ${bungeeShade.variable} ${monoton.variable} ${nosifer.variable} ${sixtyfour.variable} ${fascinate.variable} ${atomicAge.variable} ${cinzelDecorative.variable}`}
+      className={`${GeistSans.variable} ${jura.variable} ${poppins.variable} ${vast_shadow.variable} ${oi.variable} ${shrikhand.variable} ${bungeeShade.variable} ${monoton.variable} ${nosifer.variable} ${sixtyfour.variable} ${fascinate.variable} ${atomicAge.variable} ${cinzelDecorative.variable}`}
     >
       <body>
         {/* <ThemeProvider attribute="class" enableSystem> */}

@@ -56,7 +56,7 @@ export function Hero({ product }: HeroProps) {
   const fontFamily = getStrainFontFamily(strainIndex >= 0 ? strainIndex : 0);
   // const prefersReducedMotion = useReducedMotion();
 
-  const { caseColor, effects, terpenes, concentration } = useProductMeta(featureProduct);
+  const { caseColor, effects, terpenes, concentration, flavors, indica, sativa } = useProductMeta(featureProduct);
 
 
 
@@ -228,6 +228,9 @@ export function Hero({ product }: HeroProps) {
           onSelectIndex={(i) => setSelectedIndex(i)}
           gradientOverlay={backgroundGradient}
           borderColorHex={caseColor || '#1D431D'}
+          thcPercent={concentration}
+          indicaPercent={indica}
+          sativaPercent={sativa}
         />
       </motion.div>
 
@@ -258,16 +261,19 @@ export function Hero({ product }: HeroProps) {
             terpenes={terpenes}
             description={featureProduct?.descriptionHtml || featureProduct?.description || ''}
             concentration={concentration}
+            flavors={flavors}
           />
         </motion.div>
+      </div>
 
-        {/* Combined Price, Quantity & Actions Container */}
-        <motion.div 
-          variants={heroChild} 
-          className="w-full rounded-2xl sm:rounded-3xl border-2 p-4 sm:p-6 flex flex-col gap-4"
-          style={{ borderColor: ctaBorder, backgroundColor: sectionBg }}
-        >
-          <div className="flex justify-between items-center w-full gap-3">
+      {/* Combined Price, Quantity & Actions Container - Full Width on Desktop */}
+      <motion.div 
+        variants={heroChild} 
+        className="w-full lg:col-span-2 rounded-2xl sm:rounded-3xl border-2 p-4 sm:p-6 flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 lg:gap-8"
+        style={{ borderColor: ctaBorder, backgroundColor: sectionBg }}
+      >
+        <div className="flex justify-between lg:justify-start items-center gap-3 lg:gap-8">
+          <div className="min-w-[140px] sm:min-w-[200px]">
             <AnimatePresence mode="wait" initial={false}>
               <motion.div key={`${featureProduct?.priceRange?.minVariantPrice?.currencyCode}-${featureProduct?.priceRange?.minVariantPrice?.amount}`} variants={heroFade} initial="initial" animate="animate" exit="exit">
                 <div style={{ color: ctaBorder }}>
@@ -275,12 +281,12 @@ export function Hero({ product }: HeroProps) {
                 </div>
               </motion.div>
             </AnimatePresence>
-            <QuantityControl value={currentQuantity} onIncrement={() => updateQuantity('increment')} onDecrement={() => updateQuantity('decrement')} bgColor={ctaBg} borderColor={ctaBorder} iconColor={iconSaturated} textColor={ctaBorder} />
           </div>
-          
-          <ProductActions onAddToCart={addToCartAction} onCheckout={() => redirectToCheckout()} checkoutDisabled={cart?.lines.length === 0} ctaBg={ctaBg} ctaBorder={ctaBorder} checkoutBg={checkoutBg} checkoutText={checkoutText} />
-        </motion.div>
-      </div>
+          <QuantityControl value={currentQuantity} onIncrement={() => updateQuantity('increment')} onDecrement={() => updateQuantity('decrement')} bgColor={ctaBg} borderColor={ctaBorder} iconColor={iconSaturated} textColor={ctaBorder} />
+        </div>
+        
+        <ProductActions onAddToCart={addToCartAction} onCheckout={() => redirectToCheckout()} checkoutDisabled={cart?.lines.length === 0} ctaBg={ctaBg} ctaBorder={ctaBorder} checkoutBg={checkoutBg} checkoutText={checkoutText} />
+      </motion.div>
     </motion.div>
   );
 }

@@ -183,13 +183,10 @@ button {
 }
 
 /* Strain-specific font classes */
-.danfo-regular {
-  font-family: var(--font-danfo), serif;
-  font-optical-sizing: auto;
+.shrikhand-regular {
+  font-family: var(--font-shrikhand);
   font-weight: 400;
   font-style: normal;
-  font-variation-settings:
-    "ELSH" 0;
 }
 
 .bungee-shade-regular {
@@ -307,4 +304,22 @@ button {
     filter: invert(20%) sepia(20%) saturate(1500%) hue-rotate(70deg) brightness(40%) contrast(95%);
     }
   }
-}
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite
+;
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+    }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+    }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+    }
+  }}

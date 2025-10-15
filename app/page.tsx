@@ -27,7 +27,10 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
 
-  const products = await getProducts({});
+  const products = await getProducts({
+    sortKey: 'UPDATED_AT',
+    reverse: true  // Most recently updated first
+  });
   
   // derive initial CTA colors from first product to avoid FOUC
   const base = (products?.[0]?.metafields?.find((m) => m.key === 'case_color')?.value) || '#1D431D';

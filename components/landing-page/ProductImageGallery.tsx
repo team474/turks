@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { fadeOnly } from '@/lib/animation'
 import { useEffect, useRef, useState } from 'react'
 import { MiniGradientFade } from '@/components/landing-page/MiniGradientFade'
-import { mixWithBlack } from '@/lib/color'
+import { hexToRgb, mixWithBlack, mixWithWhite } from '@/lib/color'
 import { BorderBeam } from '@/components/ui/border-beam'
 import wordmarkSvg from "@/assets/turks-wordmark.svg"
 
@@ -23,9 +23,12 @@ interface ProductImageGalleryProps {
   onSelectIndex: (index: number) => void
   gradientOverlay?: string
   borderColorHex?: string
+  thcPercent?: string | number | null
+  indicaPercent?: string | number | null
+  sativaPercent?: string | number | null
 }
 
-export function ProductImageGallery({ images, selectedIndex, onSelectIndex, gradientOverlay, borderColorHex }: ProductImageGalleryProps) {
+export function ProductImageGallery({ images, selectedIndex, onSelectIndex, gradientOverlay, borderColorHex, thcPercent, indicaPercent, sativaPercent }: ProductImageGalleryProps) {
   const prefersReducedMotion = useReducedMotion()
   const [thumbStartIndex, setThumbStartIndex] = useState(0)
   const [isImageTransitioning, setIsImageTransitioning] = useState(false)
@@ -89,14 +92,102 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
     }
   }, [])
 
+  // Derive overlay visual tokens from provided border color
+  const baseColor = borderColorHex || '#1D431D'
+  const overlayBg = (() => {
+    const rgb = hexToRgb(baseColor)
+    if (!rgb) return 'rgba(0,0,0,0.18)'
+    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.18)`
+  })()
+  const overlayText = mixWithBlack(baseColor, 75)
+  const chipBg = mixWithWhite(baseColor, 80)
+  const chipBorder = mixWithBlack(baseColor, 25)
+
+  // Parse and normalize meta values
+  const parsePct = (v: string | number | null | undefined): number | null => {
+    if (v === null || v === undefined) return null
+    if (typeof v === 'number') return Number.isFinite(v) ? v : null
+    const cleaned = v.replace(/[^0-9.]/g, '')
+    const num = parseFloat(cleaned)
+    return Number.isFinite(num) ? num : null
+  }
+  const thc = parsePct(thcPercent)
+  let indica = parsePct(indicaPercent)
+  let sativa = parsePct(sativaPercent)
+  if (indica !== null && (sativa === null || !Number.isFinite(sativa))) {
+    sativa = Math.max(0, Math.min(100, 100 - indica))
+  }
+  if (sativa !== null && (indica === null || !Number.isFinite(indica))) {
+    indica = Math.max(0, Math.min(100, 100 - sativa))
+  }
+  // Normalize if both present but don't sum to 100
+  if (indica !== null && sativa !== null) {
+    const sum = indica + sativa
+    if (sum > 0 && sum !== 100) {
+      indica = (indica / sum) * 100
+      sativa = (sativa / sum) * 100
+    }
+  }
+
+  // Measure label width to size the progress bar to match the text length
+  const splitLabelRef = useRef<HTMLDivElement | null>(null)
+  const [splitLabelWidth, setSplitLabelWidth] = useState(0)
+  useEffect(() => {
+    const measure = () => {
+      if (splitLabelRef.current) {
+        setSplitLabelWidth(splitLabelRef.current.offsetWidth)
+      }
+    }
+    measure()
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', measure)
+      return () => window.removeEventListener('resize', measure)
+    }
+  }, [indica, sativa])
+
   return (
     <div className="flex flex-col items-start gap-3 sm:gap-5 w-full">
       <motion.div
-        className="relative rounded-2xl sm:rounded-4xl w-full h-[347px] sm:h-[615px] overflow-hidden border"
+        className="relative rounded-2xl sm:rounded-4xl w-full aspect-square overflow-hidden border"
         style={{ background: gradientOverlay }}
         animate={{ borderColor: mixWithBlack(borderColorHex || '#1D431D', 12) }}
         transition={{ duration: heroFadeDuration, ease: motionEasings.out }}
       >
+        {/* Top overlay with THC and Indica/Sativa split */}
+        {(thc !== null || indica !== null || sativa !== null) && (
+          <div
+            className="absolute top-0 left-0 right-0 z-20 p-3 sm:p-4 pointer-events-none"
+            style={{ backgroundColor: overlayBg }}
+          >
+            <div className="flex items-start justify-between gap-3 sm:gap-4 w-full" style={{ color: overlayText }}>
+              {thc !== null && (
+                <div
+                  className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm sm:text-base font-semibold"
+                  style={{ backgroundColor: chipBg, borderColor: chipBorder }}
+                >
+                  <span>THC</span>
+                  <span>{`${Math.round(thc)}%`}</span>
+                </div>
+              )}
+              {(indica !== null || sativa !== null) && (
+                <div className="flex flex-col items-end gap-1 sm:gap-1.5 ml-auto">
+                  <div ref={splitLabelRef} className="text-xs sm:text-sm whitespace-nowrap opacity-90">
+                    {`Indica ${Math.round(indica || 0)}% · Sativa ${Math.round(sativa || 0)}%`}
+                  </div>
+                  <div
+                    className="h-1.5 rounded-full bg-white/40 overflow-hidden"
+                    style={{ width: splitLabelWidth ? `${splitLabelWidth}px` : undefined }}
+                  >
+                    <div
+                      className="h-full"
+                      style={{ width: `${Math.max(0, Math.min(100, Math.round(indica || 0)))}%`, backgroundColor: mixWithBlack(baseColor, 25) }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         {/* gradient applied statically via background above */}
         <AnimatePresence mode="wait" initial={false}>
           {images[selectedIndex]?.url && (
@@ -114,7 +205,7 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
                 alt={images[selectedIndex].altText || ''}
                 height={images[selectedIndex].height}
                 width={images[selectedIndex].width}
-                className="size-full object-cover scale-125 sm:scale-100"
+                className="size-full object-cover scale-125"
                 priority
               />
             </motion.div>
@@ -191,7 +282,7 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
               <motion.button
                 key={absoluteIndex}
                 onClick={() => onSelectIndexSafe(absoluteIndex)}
-                className={`relative h-[100px] sm:h-[176px] flex-1 rounded-2xl sm:rounded-4xl overflow-hidden cursor-pointer transition-colors duration-200 ${isSelected ? 'border-2' : 'border'}`}
+                className={`relative aspect-square flex-1 rounded-2xl sm:rounded-4xl overflow-hidden cursor-pointer transition-colors duration-200 ${isSelected ? 'border-2' : 'border'}`}
                 style={{ borderColor: tileBorder }}
                 layout
                 animate={{ scale: isSelected ? 1.05 : 1 }}
@@ -207,7 +298,7 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
                     alt={img.altText || ''}
                     height={img.height}
                     width={img.width}
-                    className="absolute inset-0 size-full object-contain z-[1] scale-125 sm:scale-100"
+                    className="absolute inset-0 size-full object-cover z-[1]"
                   />
                 )}
                 </>

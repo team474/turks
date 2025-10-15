@@ -10,6 +10,12 @@ import {
   PointerEvent,
 } from "react";
 
+interface ResponsivePadding {
+  mobile?: number;
+  tablet?: number;
+  desktop?: number;
+}
+
 interface CurvedLoopProps {
   marqueeText?: string;
   speed?: number;
@@ -18,6 +24,11 @@ interface CurvedLoopProps {
   direction?: "left" | "right";
   interactive?: boolean;
   bgColor?: string;
+  bgStrokeWidth?: number;
+  bgOffsetY?: number;
+  autoBalancePadding?: boolean;
+  paddingTopOverride?: number | ResponsivePadding;
+  paddingBottomOverride?: number | ResponsivePadding;
 }
 
 const CurvedLoop: FC<CurvedLoopProps> = ({
@@ -28,6 +39,11 @@ const CurvedLoop: FC<CurvedLoopProps> = ({
   direction = "left",
   interactive = true,
   bgColor,
+  bgStrokeWidth = 80,
+  bgOffsetY = -15,
+  autoBalancePadding = true,
+  paddingTopOverride,
+  paddingBottomOverride,
 }) => {
   const text = useMemo(() => {
     const hasTrailing = /\s|\u00A0$/.test(marqueeText);
@@ -43,12 +59,16 @@ const CurvedLoop: FC<CurvedLoopProps> = ({
   const [offset, setOffset] = useState(0);
   const uid = useId();
   const pathId = `curve-${uid}`;
-  const pathD = `M-100,40 Q500,${40 + curveAmount} 1540,40`;
+  const baseY = 40;
+  const pathD = `M-100,${baseY} Q500,${baseY + curveAmount} 1540,${baseY}`;
+  const bgPathD = `M-100,${baseY + bgOffsetY} Q500,${baseY + curveAmount + bgOffsetY} 1540,${baseY + bgOffsetY}`;
 
   const dragRef = useRef(false);
   const lastXRef = useRef(0);
   const dirRef = useRef<"left" | "right">(direction);
   const velRef = useRef(0);
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const textLength = spacing;
   const totalText = textLength
@@ -94,6 +114,82 @@ const CurvedLoop: FC<CurvedLoopProps> = ({
     return () => cancelAnimationFrame(frame);
   }, [spacing, speed, ready]);
 
+  // Helper to resolve responsive padding value
+  const getResponsivePadding = (value: number | ResponsivePadding | undefined, autoValue: number): number => {
+    if (value === undefined) return autoValue;
+    if (typeof value === 'number') return value;
+    
+    // Responsive object - use media queries
+    const width = typeof window !== 'undefined' ? window.innerWidth : 1024;
+    if (width < 768) {
+      return value.mobile ?? value.tablet ?? value.desktop ?? autoValue;
+    } else if (width < 1024) {
+      return value.tablet ?? value.desktop ?? value.mobile ?? autoValue;
+    } else {
+      return value.desktop ?? value.tablet ?? value.mobile ?? autoValue;
+    }
+  };
+
+  // Auto-balance vertical padding so inside/outside spacing feels even
+  useEffect(() => {
+    if (!containerRef.current) return;
+    
+    const updatePadding = () => {
+      if (!containerRef.current) return;
+      
+      // Calculate auto values
+      const basePad = 16;
+      const insideExtra = Math.max(
+        0,
+        Math.abs(curveAmount) * 0.15 + (bgColor ? bgStrokeWidth * 0.2 : 0)
+      );
+      const autoTop = curveAmount < 0 ? basePad + insideExtra : basePad;
+      const autoBottom = curveAmount > 0 ? basePad + insideExtra : basePad;
+      
+      // Use overrides if provided, otherwise use auto-balance
+      let padTop: number;
+      let padBottom: number;
+      
+      if (paddingTopOverride !== undefined || paddingBottomOverride !== undefined) {
+        // Manual override mode (supports responsive)
+        padTop = getResponsivePadding(paddingTopOverride, autoTop);
+        padBottom = getResponsivePadding(paddingBottomOverride, autoBottom);
+      } else if (autoBalancePadding) {
+        // Auto-balance mode
+        padTop = autoTop;
+        padBottom = autoBottom;
+      } else {
+        // No auto-balance and no overrides
+        return;
+      }
+      
+      // Handle negative values with margin instead of padding
+      if (padTop < 0) {
+        containerRef.current.style.marginTop = `${padTop}px`;
+        containerRef.current.style.paddingTop = '0px';
+      } else {
+        containerRef.current.style.paddingTop = `${padTop}px`;
+        containerRef.current.style.marginTop = '0px';
+      }
+      
+      if (padBottom < 0) {
+        containerRef.current.style.marginBottom = `${padBottom}px`;
+        containerRef.current.style.paddingBottom = '0px';
+      } else {
+        containerRef.current.style.paddingBottom = `${padBottom}px`;
+        containerRef.current.style.marginBottom = '0px';
+      }
+    };
+    
+    updatePadding();
+    
+    // Update on window resize for responsive values
+    if (typeof paddingTopOverride === 'object' || typeof paddingBottomOverride === 'object') {
+      window.addEventListener('resize', updatePadding);
+      return () => window.removeEventListener('resize', updatePadding);
+    }
+  }, [autoBalancePadding, curveAmount, bgStrokeWidth, bgColor, paddingTopOverride, paddingBottomOverride]);
+
   const onPointerDown = (e: PointerEvent) => {
     if (!interactive) return;
     dragRef.current = true;
@@ -132,25 +228,18 @@ const CurvedLoop: FC<CurvedLoopProps> = ({
 
   return (
     <div
-      className="relative flex items-center justify-center w-full"
-      style={{ cursor: cursorStyle, visibility: ready ? "visible" : "hidden" }}
+      ref={containerRef}
+      className="relative flex items-center justify-center w-full transition-opacity duration-500 ease-in-out"
+      style={{ 
+        cursor: cursorStyle, 
+        opacity: ready ? 1 : 0,
+        pointerEvents: ready ? 'auto' : 'none'
+      }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}
       onPointerLeave={endDrag}
     >
-      {/* Background div behind the SVG */}
-      {bgColor && (
-        <div
-          className="absolute left-0 right-0 top-1/7 -translate-y-1/2"
-          style={{
-            backgroundColor: bgColor,
-            height: "100%",
-            zIndex: 0,
-          }}
-        />
-      )}
-
       <svg
         className="relative select-none w-full overflow-visible block text-[4rem] font-bold uppercase leading-none z-10"
         viewBox="0 0 1440 120"
@@ -171,6 +260,15 @@ const CurvedLoop: FC<CurvedLoopProps> = ({
             stroke="transparent"
           />
         </defs>
+        {bgColor && (
+          <path
+            d={bgPathD}
+            fill="none"
+            stroke={bgColor}
+            strokeWidth={bgStrokeWidth}
+            strokeLinecap="round"
+          />
+        )}
         {ready && (
           <text xmlSpace="preserve" className={`${className || "fill-white"}`}>
             <textPath

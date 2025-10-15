@@ -56,7 +56,7 @@ export function Hero({ product }: HeroProps) {
   const fontFamily = getStrainFontFamily(strainIndex >= 0 ? strainIndex : 0);
   // const prefersReducedMotion = useReducedMotion();
 
-  const { caseColor, effects, terpenes, concentration } = useProductMeta(featureProduct);
+  const { caseColor, effects, terpenes, concentration, indica, sativa } = useProductMeta(featureProduct);
 
 
 
@@ -228,6 +228,9 @@ export function Hero({ product }: HeroProps) {
           onSelectIndex={(i) => setSelectedIndex(i)}
           gradientOverlay={backgroundGradient}
           borderColorHex={caseColor || '#1D431D'}
+          thcPercent={concentration}
+          indicaPercent={indica}
+          sativaPercent={sativa}
         />
       </motion.div>
 

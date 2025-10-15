@@ -59,9 +59,17 @@ const CurvedLoop: FC<CurvedLoopProps> = ({
   const [offset, setOffset] = useState(0);
   const uid = useId();
   const pathId = `curve-${uid}`;
-  const baseY = 40;
+  const baseY = 60;
   const pathD = `M-100,${baseY} Q500,${baseY + curveAmount} 1540,${baseY}`;
   const bgPathD = `M-100,${baseY + bgOffsetY} Q500,${baseY + curveAmount + bgOffsetY} 1540,${baseY + bgOffsetY}`;
+  
+  // Calculate dynamic viewBox height based on curve
+  const padding = bgStrokeWidth / 2 + 20; // Half stroke width + buffer
+  const minY = Math.min(baseY, baseY + curveAmount, baseY + bgOffsetY, baseY + curveAmount + bgOffsetY) - padding;
+  const maxY = Math.max(baseY, baseY + curveAmount, baseY + bgOffsetY, baseY + curveAmount + bgOffsetY) + padding;
+  const viewBoxHeight = Math.ceil(maxY - minY);
+  const viewBoxY = Math.floor(minY);
+  const viewBoxStr = `0 ${viewBoxY} 1440 ${viewBoxHeight}`;
 
   const dragRef = useRef(false);
   const lastXRef = useRef(0);
@@ -241,8 +249,9 @@ const CurvedLoop: FC<CurvedLoopProps> = ({
       onPointerLeave={endDrag}
     >
       <svg
-        className="relative select-none w-full overflow-visible block text-[4rem] font-bold uppercase leading-none z-10"
-        viewBox="0 0 1440 120"
+        className="relative select-none w-full max-h-[80px] md:max-h-[100px] lg:max-h-[120px] overflow-visible block text-[2rem] md:text-[2.5rem] lg:text-[2.5rem] xl:text-[2.5rem] font-bold uppercase leading-none z-10"
+        viewBox={viewBoxStr}
+        preserveAspectRatio="xMidYMid slice"
       >
         <text
           ref={measureRef}

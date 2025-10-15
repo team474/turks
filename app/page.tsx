@@ -117,8 +117,8 @@ export default async function HomePage() {
         className="text-[#1D431D] fill-[#1D431D]"
         bgColor="#c4d499"
         bgStrokeWidth={80}
-        paddingTopOverride={{ mobile: 20, tablet: 10, desktop: -30 }}
-        paddingBottomOverride={{ mobile: 40, tablet: 50, desktop: 60 }}
+        paddingTopOverride={{ mobile: 30, tablet: 20, desktop: 20 }}
+        paddingBottomOverride={{ mobile: 50, tablet: 60, desktop: 0 }}
       />
       <section className="relative w-full max-w-[1200px] mx-auto py-6 px-8 lg:py-18 overflow-hidden">
         <Icon.leafIcon className="absolute top-3.5 lg:top-[24px] left-5 size-12 md:size-18" />
@@ -172,8 +172,8 @@ export default async function HomePage() {
         className="text-[#c4d499] fill-[#c4d499]"
         bgColor="#1D431D"
         bgStrokeWidth={80}
-        paddingTopOverride={{ mobile: 60, tablet: 80, desktop: 120 }}
-        paddingBottomOverride={{ mobile: 0, tablet: 0, desktop: -100 }}
+        paddingTopOverride={{ mobile: 40, tablet: 50, desktop: 0 }}
+        paddingBottomOverride={{ mobile: 0, tablet: 0, desktop: 0 }}
       />
 
       <section className="w-full max-w-[1170px] mx-auto pb-6 lg:p-4 xl:px-0 lg:py-10 overflow-hidden">

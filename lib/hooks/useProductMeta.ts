@@ -15,9 +15,11 @@ export function useProductMeta(product: Product | null) {
     const concentration = get('concentration');
     const indica = get('indica');
     const sativa = get('sativa');
+    const flavorValue = get('flavors');
 
     const effects = effectsValue ? (JSON.parse(effectsValue) as string[]) : [];
     const terpenes = terpenesValue ? (JSON.parse(terpenesValue) as string[]) : [];
+    const flavors = flavorValue ? (JSON.parse(flavorValue) as string[]) : [];
 
     return { 
       caseColor, 
@@ -26,7 +28,8 @@ export function useProductMeta(product: Product | null) {
       category, 
       concentration, 
       indica, 
-      sativa 
+      sativa,
+      flavors 
     };
   }, [product]);
 }

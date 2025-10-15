@@ -56,7 +56,7 @@ export function Hero({ product }: HeroProps) {
   const fontFamily = getStrainFontFamily(strainIndex >= 0 ? strainIndex : 0);
   // const prefersReducedMotion = useReducedMotion();
 
-  const { caseColor, effects, terpenes, concentration } = useProductMeta(featureProduct);
+  const { caseColor, effects, terpenes, concentration, flavors} = useProductMeta(featureProduct);
 
 
 
@@ -258,6 +258,7 @@ export function Hero({ product }: HeroProps) {
             terpenes={terpenes}
             description={featureProduct?.descriptionHtml || featureProduct?.description || ''}
             concentration={concentration}
+            flavors={flavors}
           />
         </motion.div>
 

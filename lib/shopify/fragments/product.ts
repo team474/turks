@@ -59,6 +59,7 @@ const productFragment = /* GraphQL */ `
       { namespace: "custom", key: "concentration" },
       { namespace: "custom", key: "indica" },
       { namespace: "custom", key: "sativa" },
+      { namespace: "custom", key: "flavors" },
     ]) {
       key
       value

@@ -238,7 +238,7 @@ export function Strains({ product }: strainProps) {
                       </div>
                     </div>
                   )}
-                  <div className="relative w-full flex-1 min-h-0">
+                  <div className="relative w-full flex-1 min-h-0 py-3 sm:py-4 md:py-6">
                     <Image
                       src={strain?.images[0]?.url ?? ''}
                       alt={strain?.title}

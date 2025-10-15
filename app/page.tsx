@@ -53,8 +53,8 @@ export default async function HomePage() {
       const loopOneArr: string[] = JSON.parse(fields["loop_one"] || "[]");
       const loopTwoArr: string[] = JSON.parse(fields["loop_two"] || "[]");
 
-      const loopOneText = loopOneArr.map((item) => item.trim()).join(" ") + " ";
-      const loopTwoText = loopTwoArr.map((item) => item.trim()).join(" ") + " ";
+      const loopOneText = loopOneArr.map((item) => item.trim()).filter(Boolean).join(" • ") + " • ";
+      const loopTwoText = loopTwoArr.map((item) => item.trim()).filter(Boolean).join(" • ") + " • ";
 
       return { loopOne: loopOneText, loopTwo: loopTwoText };
     } catch (error) {
@@ -73,8 +73,8 @@ export default async function HomePage() {
   function splitProductTitles(products: Product[]) {
     const titles = products.map((p) => p.title.trim());
     const mid = Math.ceil(titles.length / 2);
-    const firstHalf = titles.slice(0, mid).join(" ") + " ";
-    const secondHalf = titles.slice(mid).join(" ") + " ";
+    const firstHalf = titles.slice(0, mid).join(" • ") + " • ";
+    const secondHalf = titles.slice(mid).join(" • ") + " • ";
     return { firstHalf, secondHalf };
   }
 
@@ -109,7 +109,7 @@ export default async function HomePage() {
         )}
       </section>
       <CurvedLoop
-        marqueeText={loopOneText.split(" ").filter(Boolean).join(" • ") + " • "}
+        marqueeText={loopOneText}
         speed={1.2}
         curveAmount={225}
         direction="left"
@@ -164,7 +164,7 @@ export default async function HomePage() {
       </section>
 
       <CurvedLoop
-        marqueeText={loopTwoText.split(" ").filter(Boolean).join(" • ") + " • "}
+        marqueeText={loopTwoText}
         speed={1.2}
         curveAmount={-225}
         direction="right"

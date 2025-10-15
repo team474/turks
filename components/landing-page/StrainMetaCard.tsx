@@ -230,7 +230,7 @@ export function StrainMetaCard({
         </div>
         
           <span className="w-full h-px min-h-px bg-[#1010101A]"></span>
-        <div className="flex p-2 sm:p-4 items-center justify-between gap-3 sm:gap-4 flex-1">
+        <div className="flex py-1 sm:py-2 px-2 sm:px-4 items-center gap-3 sm:gap-4 flex-1">
           <motion.p
             className="text-sm sm:text-lg font-bold leading-[120%] uppercase"
             animate={{ color: textColor }}
@@ -238,10 +238,11 @@ export function StrainMetaCard({
           >
             Terpenes
           </motion.p>
+          <span className="w-px self-center h-[70%] bg-[#1010101A]"></span>
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={`terpenes-${name}`}
-              className="flex gap-4 md:gap-8 items-center"
+              className="flex gap-2 sm:gap-3 items-center"
               variants={listStagger}
               initial="initial"
               animate="animate"
@@ -250,7 +251,7 @@ export function StrainMetaCard({
               {terpenes?.map((item, index) => (
                 <motion.div
                   key={index}
-                  className="flex items-center justify-between"
+                  className="flex items-center gap-2 sm:gap-3"
                   variants={listItem}
                 >
                   <motion.p
@@ -263,6 +264,16 @@ export function StrainMetaCard({
                   >
                     {item}
                   </motion.p>
+                  {index < terpenes.length - 1 && (
+                    <motion.span
+                      className="w-1 h-1 rounded-full"
+                      animate={{ backgroundColor: textColor }}
+                      transition={{
+                        duration: colorBlend,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                    />
+                  )}
                 </motion.div>
               ))}
             </motion.div>

@@ -211,11 +211,11 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
             </motion.div>
           )}
         </AnimatePresence>
-        {/* Logo watermark in bottom center */}
+        {/* Logo watermark in bottom right corner */}
         <motion.div 
-          className="absolute bottom-5 sm:bottom-8 left-1/2 -translate-x-1/2 w-24 sm:w-32 z-10 pointer-events-none"
+          className="absolute bottom-5 sm:bottom-8 right-5 sm:right-8 w-32 sm:w-48 z-10 pointer-events-none"
           animate={{ 
-            backgroundColor: '#1D431D'
+            backgroundColor: mixWithBlack(borderColorHex || '#1D431D', 50)
           }}
           transition={{ duration: heroFadeDuration, ease: motionEasings.out }}
           style={{
@@ -227,7 +227,7 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
             maskSize: 'contain',
             maskRepeat: 'no-repeat',
             maskPosition: 'center',
-            opacity: 0.25,
+            opacity: 0.6,
             aspectRatio: '3/1'
           }}
         />

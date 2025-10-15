@@ -56,7 +56,11 @@ export function Hero({ product }: HeroProps) {
   const fontFamily = getStrainFontFamily(strainIndex >= 0 ? strainIndex : 0);
   // const prefersReducedMotion = useReducedMotion();
 
+<<<<<<< HEAD
   const { caseColor, effects, terpenes, concentration, indica, sativa } = useProductMeta(featureProduct);
+=======
+  const { caseColor, effects, terpenes, concentration, flavors} = useProductMeta(featureProduct);
+>>>>>>> 04f8836fac5863b3f52b152287ef4665005b97ec
 
 
 
@@ -261,6 +265,7 @@ export function Hero({ product }: HeroProps) {
             terpenes={terpenes}
             description={featureProduct?.descriptionHtml || featureProduct?.description || ''}
             concentration={concentration}
+            flavors={flavors}
           />
         </motion.div>
 

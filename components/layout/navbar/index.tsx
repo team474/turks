@@ -108,7 +108,9 @@ export function Navbar() {
               ))}
             </nav>
           ) : null}
-          {/* <CartModal /> */}
+          <Suspense fallback={null}>
+            <CartModal />
+          </Suspense>
         </div>
       </div>
     </header>

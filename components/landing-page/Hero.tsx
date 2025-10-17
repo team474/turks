@@ -262,6 +262,7 @@ export function Hero({ product }: HeroProps) {
             description={featureProduct?.descriptionHtml || featureProduct?.description || ''}
             concentration={concentration}
             flavors={flavors}
+            image={featureProduct?.featuredImage?.url || featureProduct?.images?.[0]?.url}
           />
         </motion.div>
       </div>

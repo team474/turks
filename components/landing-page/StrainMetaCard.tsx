@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { gradientAround, mixWithBlack, saturateHex } from '@/lib/color'
 import { BorderBeam } from '@/components/ui/border-beam'
 import { listItem, listStagger, colorBlend } from '@/lib/animation'
+import { Dialog, DialogContent, DialogTrigger, DialogClose, DialogTitle } from '@/components/ui/dialog'
+import Image from 'next/image'
 
 interface StrainMetaCardProps {
   name: string;
@@ -14,6 +16,7 @@ interface StrainMetaCardProps {
   className?: string;
   concentration?: string | null;
   flavors?: string[];
+  image?: string;
 }
 
 export function StrainMetaCard({
@@ -25,6 +28,7 @@ export function StrainMetaCard({
   className,
   concentration,
   flavors,
+  image,
 }: StrainMetaCardProps) {
 
   const backgroundGradient = gradientAround(colorHex || "#FFFFFF", 15);
@@ -242,7 +246,7 @@ export function StrainMetaCard({
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={`terpenes-${name}`}
-              className="flex gap-2 sm:gap-3 items-center"
+              className="flex flex-wrap gap-2 sm:gap-3 items-center"
               variants={listStagger}
               initial="initial"
               animate="animate"
@@ -255,7 +259,7 @@ export function StrainMetaCard({
                   variants={listItem}
                 >
                   <motion.p
-                    className="text-sm sm:text-lg font-normal leading-[150%] text-center"
+                    className="text-xs sm:text-lg font-normal leading-[150%] text-center"
                     animate={{ color: textColor }}
                     transition={{
                       duration: colorBlend,
@@ -294,10 +298,89 @@ export function StrainMetaCard({
                 transition={{ duration: 0.3 }}
               >
                 <div
-                  className="text-sm sm:text-base font-normal leading-[150%]"
+                  className="text-sm sm:text-base font-normal leading-[150%] line-clamp-3"
                   dangerouslySetInnerHTML={{ __html: description }}
                   suppressHydrationWarning
                 />
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <motion.button
+                      className="mt-2 text-sm font-semibold underline cursor-pointer hover:opacity-80 transition-opacity"
+                      animate={{ color: textColor }}
+                      transition={{ duration: colorBlend, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      Read more
+                    </motion.button>
+                  </DialogTrigger>
+                  <DialogContent
+                    className="w-[calc(100vw-2rem)] sm:w-[calc(100vw-4rem)] max-w-3xl max-h-[90vh] overflow-y-auto border-2 !rounded-3xl"
+                    style={{
+                      background: backgroundGradient,
+                      borderColor,
+                    }}
+                    showCloseButton={false}
+                  >
+                    <div className="relative">
+                      <DialogClose
+                        className="absolute -top-2 -right-2 rounded-full p-2 transition-all hover:opacity-80 z-10"
+                        style={{
+                          backgroundColor: borderColor,
+                          color: backgroundGradient.includes('gradient') ? '#FFFFFF' : textColor,
+                        }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M18 6 6 18" />
+                          <path d="m6 6 12 12" />
+                        </svg>
+                        <span className="sr-only">Close</span>
+                      </DialogClose>
+                      
+                      {/* Image Section */}
+                      {image && (
+                        <div className="relative w-full h-64 sm:h-80 mb-6 rounded-2xl overflow-hidden" style={{ backgroundColor: colorHex || '#E3EAD5' }}>
+                          <Image
+                            src={image}
+                            alt={name}
+                            fill
+                            priority
+                            sizes="(max-width: 768px) 100vw, 672px"
+                            className="object-cover scale-[1.35] opacity-0 transition-opacity duration-300"
+                            onLoad={(e) => {
+                              e.currentTarget.classList.remove('opacity-0');
+                              e.currentTarget.classList.add('opacity-100');
+                            }}
+                          />
+                        </div>
+                      )}
+
+                      <DialogTitle asChild>
+                        <h2
+                          className="text-2xl sm:text-3xl font-bold mb-4 uppercase"
+                          style={{ color: textColor }}
+                        >
+                          {name}
+                        </h2>
+                      </DialogTitle>
+
+                      <div
+                        className="text-base sm:text-lg font-normal leading-[150%]"
+                        style={{ color: textColor }}
+                        dangerouslySetInnerHTML={{ __html: description }}
+                        suppressHydrationWarning
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </motion.div>
             </AnimatePresence>
           </>

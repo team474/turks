@@ -101,6 +101,9 @@ export function VerificationModel() {
             </button>
           </div>
         </div>
+      <p className="text-[#1D431D] text-xs font-normal text-center">
+        We will not ship to the following States: Idaho, Nebraska, South Dakota, Kansas, West Virginia, Wyoming
+      </p>
       </DialogContent>
     </Dialog>
   );

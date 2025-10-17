@@ -2,12 +2,13 @@
 
 import { Metafield, Product } from "@/lib/shopify/types";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui/carousel";
-import { mixWithBlack, saturateHex, mixWithWhite, hexToRgb } from "@/lib/color";
+import { mixWithBlack, saturateHex, mixWithWhite, hexToRgb, gradientAround } from "@/lib/color";
 import Image from "next/image";
 import { Button } from "./Button";
 import { useEffect, useState, type CSSProperties } from "react";
 import { motion } from "framer-motion";
 import { listItemSlow } from "@/lib/animation";
+import { Dialog, DialogContent, DialogTrigger, DialogClose, DialogTitle } from "@/components/ui/dialog";
 
 interface infoProps {
   product: Product[];
@@ -61,7 +62,7 @@ export function StrainsInfo({ product }: infoProps) {
         color: caseColorMetafield?.value || "#FFFFFF",
         concentration,
         indica,
-        sativa
+        sativa,
       };
     });
   }
@@ -222,9 +223,95 @@ export function StrainsInfo({ product }: infoProps) {
                     <p className="text-base sm:text-lg md:text-xl font-semibold leading-[145%]" style={{ color: textIconColor }}>
                       {item.type}
                     </p>
-                    <p className="text-base md:text-lg font-normal leading-[150%]" style={{ color: textIconColor }}>
-                      {item.description}
-                    </p>
+                    <div>
+                      <p className="text-base md:text-lg font-normal leading-[150%] line-clamp-3" style={{ color: textIconColor }}>
+                        {item.description}
+                      </p>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <button
+                            className="mt-2 text-sm font-semibold underline cursor-pointer hover:opacity-80 transition-opacity"
+                            style={{ color: textIconColor }}
+                          >
+                            Read more
+                          </button>
+                        </DialogTrigger>
+                        <DialogContent
+                          className="w-[calc(100vw-2rem)] sm:w-[calc(100vw-4rem)] max-w-3xl max-h-[90vh] overflow-y-auto border-2 !rounded-3xl"
+                          style={{
+                            background: gradientAround(baseColor, 15),
+                            borderColor: textIconColor,
+                          }}
+                          showCloseButton={false}
+                        >
+                          <div className="relative">
+                            <DialogClose
+                              className="absolute -top-2 -right-2 rounded-full p-2 transition-all hover:opacity-80 z-10"
+                              style={{
+                                backgroundColor: textIconColor,
+                                color: panelColor,
+                              }}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                              </svg>
+                              <span className="sr-only">Close</span>
+                            </DialogClose>
+                            
+                            {/* Image Section */}
+                            {item.image && (
+                              <div className="relative w-full h-64 sm:h-80 mb-6 rounded-2xl overflow-hidden" style={{ backgroundColor: baseColor }}>
+                                <Image
+                                  src={item.image}
+                                  alt={item.name}
+                                  fill
+                                  priority
+                                  sizes="(max-width: 768px) 100vw, 672px"
+                                  className="object-cover scale-[1.35] opacity-0 transition-opacity duration-300"
+                                  onLoad={(e) => {
+                                    e.currentTarget.classList.remove('opacity-0');
+                                    e.currentTarget.classList.add('opacity-100');
+                                  }}
+                                />
+                              </div>
+                            )}
+
+                            <DialogTitle asChild>
+                              <h2
+                                className="text-2xl sm:text-3xl font-bold mb-2 uppercase"
+                                style={{ color: textIconColor }}
+                              >
+                                {item.name}
+                              </h2>
+                            </DialogTitle>
+                            <h3
+                              className="text-lg sm:text-xl font-semibold mb-4"
+                              style={{ color: textIconColor }}
+                            >
+                              {item.type}
+                            </h3>
+
+                            <div
+                              className="text-base sm:text-lg font-normal leading-[150%]"
+                              style={{ color: textIconColor }}
+                            >
+                              {item.description}
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
                   </div>
                 </div>
               </motion.div>

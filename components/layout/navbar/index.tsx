@@ -53,7 +53,8 @@ export function Navbar() {
           }}
         />
         <div className="relative z-10 max-w-[1440px] mx-auto px-6 py-2 text-center">
-          <p className="text-white text-xs md:text-sm font-medium">Free shipping on all orders!</p>
+          <p className="text-white text-xs md:text-sm font-medium">Free shipping on all orders! 🚚</p>
+          <p className="text-white text-[10px] md:text-xs font-normal mt-0.5">We will not ship to the following States: Idaho, Nebraska, South Dakota, Kansas, West Virginia, Wyoming</p>
         </div>
       </div>
 
@@ -107,7 +108,9 @@ export function Navbar() {
               ))}
             </nav>
           ) : null}
-          {/* <CartModal /> */}
+          <Suspense fallback={null}>
+            <CartModal />
+          </Suspense>
         </div>
       </div>
     </header>

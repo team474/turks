@@ -124,7 +124,9 @@ export async function Footer() {
             <p className="text-base font-normal leading-[150%] text-[#1D431D]">
               {ctaText}
             </p>
-
+            <p className="text-sm font-normal leading-[150%] text-[#1D431D]">
+              We will not ship to the following States: Idaho, Nebraska, South Dakota, Kansas, West Virginia, Wyoming
+            </p>
             <div className="flex flex-col gap-1">
               <p className="text-base font-medium leading-[150%] text-[#1D431D]">
                 FDA disclaimer :

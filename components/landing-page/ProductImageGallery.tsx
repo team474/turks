@@ -272,73 +272,139 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
         </div>
       </motion.div>
 
-      <div className="flex w-full items-center gap-3 sm:gap-5">
-        <motion.button
-          type="button"
-          aria-label="Previous thumbnails"
-          className="flex items-center justify-center size-9 sm:size-11 rounded-full border-2 text-lg sm:text-xl font-bold transition-all duration-200"
-          style={{ 
-            borderColor: mixWithBlack(borderColorHex || '#1D431D', 18),
-            color: mixWithBlack(borderColorHex || '#1D431D', 40),
-            backgroundColor: borderColorHex ? `${borderColorHex}10` : 'rgba(29, 67, 29, 0.06)'
-          }}
-          onClick={() => setThumbStartIndex((s) => Math.max(0, s - 1))}
-          disabled={thumbStartIndex === 0}
-          whileHover={{ scale: thumbStartIndex === 0 ? 1 : 1.1 }}
-          whileTap={{ scale: thumbStartIndex === 0 ? 1 : 0.95 }}
-        >
-          ‹
-        </motion.button>
-        <motion.div className="flex w-full items-center gap-5" layout>
-          {images.slice(thumbStartIndex, thumbStartIndex + 3).map((img, i) => {
-            const absoluteIndex = thumbStartIndex + i
-            const isSelected = selectedIndex === absoluteIndex
-            const baseBorder = borderColorHex || '#1D431D'
-            const tileBorder = isSelected ? mixWithBlack(baseBorder, 18) : mixWithBlack(baseBorder, 8)
-            return (
-              <motion.button
-                key={absoluteIndex}
-                onClick={() => onSelectIndexSafe(absoluteIndex)}
-                className={`relative aspect-square flex-1 rounded-2xl sm:rounded-4xl overflow-hidden cursor-pointer transition-colors duration-200 ${isSelected ? 'border-2' : 'border'}`}
-                style={{ borderColor: tileBorder }}
-                layout
-                animate={{ scale: isSelected ? 1.05 : 1 }}
-                whileHover={{ scale: prefersReducedMotion ? 1 : 1.03 }}
-                whileTap={{ scale: prefersReducedMotion ? 1 : 0.98 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20, mass: 0.3 }}
-              >
-                <>
-                <MiniGradientFade gradient={gradientOverlay || ''} />
-                {img?.url && (
-                  <Image
-                    src={img.url}
-                    alt={img.altText || ''}
-                    height={img.height}
-                    width={img.width}
-                    className="absolute inset-0 size-full object-cover z-[1]"
-                  />
-                )}
-                </>
-              </motion.button>
-            )
-          })}
-        </motion.div>
-        <motion.button
-          type="button"
-          aria-label="Next thumbnails"
-          className="flex items-center justify-center size-9 sm:size-11 rounded-full border-2 text-lg sm:text-xl font-bold transition-all duration-200"
-          style={{ 
-            borderColor: mixWithBlack(borderColorHex || '#1D431D', 18),
-            color: mixWithBlack(borderColorHex || '#1D431D', 40),
-            backgroundColor: borderColorHex ? `${borderColorHex}10` : 'rgba(29, 67, 29, 0.06)'
-          }}
-          onClick={() => setThumbStartIndex((s) => Math.min(Math.max(0, images.length - 3), s + 1))}
-          disabled={thumbStartIndex >= Math.max(0, images.length - 3)}
-          whileHover={{ scale: thumbStartIndex >= Math.max(0, images.length - 3) ? 1 : 1.1 }}
-          whileTap={{ scale: thumbStartIndex >= Math.max(0, images.length - 3) ? 1 : 0.95 }}
-        >
-          ›
-        </motion.button>
+      <div className="flex flex-col gap-3 items-center w-full">
+        <div className="flex w-full items-center justify-center gap-2 sm:gap-3">
+          <motion.button
+            type="button"
+            aria-label="Previous image"
+            className="flex items-center justify-center shrink-0 transition-all duration-200 disabled:cursor-not-allowed"
+            onClick={() => {
+              if (selectedIndex > 0) {
+                onSelectIndexSafe(selectedIndex - 1);
+              }
+            }}
+            disabled={selectedIndex === 0}
+            whileHover={{ scale: selectedIndex === 0 ? 1 : 1.08 }}
+            whileTap={{ scale: selectedIndex === 0 ? 1 : 0.95 }}
+            style={{ opacity: selectedIndex === 0 ? 0.5 : 1 }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none" className="w-9 h-9 sm:w-10 sm:h-10">
+              <circle 
+                cx="18" 
+                cy="18" 
+                r="17.5" 
+                fill={selectedIndex === 0 ? 'rgba(0,0,0,0.05)' : mixWithBlack(borderColorHex || '#1D431D', 12)} 
+                stroke={selectedIndex === 0 ? 'rgba(0,0,0,0.15)' : mixWithBlack(borderColorHex || '#1D431D', 25)} 
+                strokeWidth="1"
+              />
+              <path 
+                d="M20 12L14 18L20 24" 
+                stroke={selectedIndex === 0 ? 'rgba(0,0,0,0.3)' : mixWithBlack(borderColorHex || '#1D431D', 40)} 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+                fill="none"
+              />
+            </svg>
+          </motion.button>
+          <motion.div className="flex flex-1 items-center gap-2 sm:gap-3 justify-center" layout>
+            {images.slice(thumbStartIndex, thumbStartIndex + 3).map((img, i) => {
+              const absoluteIndex = thumbStartIndex + i
+              const isSelected = selectedIndex === absoluteIndex
+              const baseBorder = borderColorHex || '#1D431D'
+              const tileBorder = isSelected ? mixWithBlack(baseBorder, 18) : mixWithBlack(baseBorder, 8)
+              return (
+                <motion.button
+                  key={absoluteIndex}
+                  onClick={() => onSelectIndexSafe(absoluteIndex)}
+                  className={`relative flex-1 max-w-[100px] sm:max-w-[140px] aspect-[4/5] rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer transition-colors duration-200 ${isSelected ? 'border-2' : 'border'}`}
+                  style={{ borderColor: tileBorder }}
+                  layout
+                  animate={{ scale: isSelected ? 1.05 : 1 }}
+                  whileHover={{ scale: prefersReducedMotion ? 1 : 1.03 }}
+                  whileTap={{ scale: prefersReducedMotion ? 1 : 0.98 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20, mass: 0.3 }}
+                >
+                  <>
+                  <MiniGradientFade gradient={gradientOverlay || ''} />
+                  {img?.url && (
+                    <Image
+                      src={img.url}
+                      alt={img.altText || ''}
+                      height={img.height}
+                      width={img.width}
+                      className="absolute inset-0 size-full object-cover z-[1]"
+                    />
+                  )}
+                  </>
+                </motion.button>
+              )
+            })}
+          </motion.div>
+          <motion.button
+            type="button"
+            aria-label="Next image"
+            className="flex items-center justify-center shrink-0 transition-all duration-200 disabled:cursor-not-allowed"
+            onClick={() => {
+              if (selectedIndex < images.length - 1) {
+                onSelectIndexSafe(selectedIndex + 1);
+              }
+            }}
+            disabled={selectedIndex === images.length - 1}
+            whileHover={{ scale: selectedIndex === images.length - 1 ? 1 : 1.08 }}
+            whileTap={{ scale: selectedIndex === images.length - 1 ? 1 : 0.95 }}
+            style={{ opacity: selectedIndex === images.length - 1 ? 0.5 : 1 }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none" className="w-9 h-9 sm:w-10 sm:h-10">
+              <circle 
+                cx="18" 
+                cy="18" 
+                r="17.5" 
+                fill={selectedIndex === images.length - 1 ? 'rgba(0,0,0,0.05)' : mixWithBlack(borderColorHex || '#1D431D', 12)} 
+                stroke={selectedIndex === images.length - 1 ? 'rgba(0,0,0,0.15)' : mixWithBlack(borderColorHex || '#1D431D', 25)} 
+                strokeWidth="1"
+              />
+              <path 
+                d="M16 12L22 18L16 24" 
+                stroke={selectedIndex === images.length - 1 ? 'rgba(0,0,0,0.3)' : mixWithBlack(borderColorHex || '#1D431D', 40)} 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+                fill="none"
+              />
+            </svg>
+          </motion.button>
+        </div>
+        
+        {/* Image counter indicator */}
+        {images.length > 3 && (
+          <div className="flex items-center justify-center gap-1.5">
+            {images.map((_, index) => {
+              const isActive = index === selectedIndex;
+              const isInView = index >= thumbStartIndex && index < thumbStartIndex + 3;
+              return (
+                <button
+                  key={index}
+                  onClick={() => onSelectIndexSafe(index)}
+                  className="transition-all duration-200"
+                  style={{
+                    width: isActive ? '24px' : '6px',
+                    height: '6px',
+                    borderRadius: isActive ? '3px' : '50%',
+                    backgroundColor: isActive 
+                      ? mixWithBlack(borderColorHex || '#1D431D', 40)
+                      : isInView
+                        ? mixWithBlack(borderColorHex || '#1D431D', 15)
+                        : 'rgba(0,0,0,0.1)',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
+                  aria-label={`Go to image ${index + 1}`}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   )

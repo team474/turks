@@ -261,7 +261,7 @@ export function Strains({ product }: strainProps) {
                         {strain?.title}
                       </p>
                       <p className="text-base sm:text-lg md:text-xl font-semibold leading-[145%]" style={{ color: textIconColor }}>
-                        {currencyCodeMap[strain?.priceRange?.minVariantPrice?.currencyCode as keyof typeof currencyCodeMap] ?? ''}{strain?.priceRange?.minVariantPrice?.amount}/OZ
+                        {currencyCodeMap[strain?.priceRange?.minVariantPrice?.currencyCode as keyof typeof currencyCodeMap] ?? ''}{Math.round(parseFloat(strain?.priceRange?.minVariantPrice?.amount))}/OZ
                       </p>
                     </div>
 

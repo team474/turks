@@ -3,10 +3,12 @@
 import CartModal from "components/cart/modal";
 import { Menu } from "lib/shopify/types";
 import Link from "next/link";
+import Image from "next/image";
 import { Suspense } from "react";
 import { motion } from "framer-motion";
 import MobileMenu from "./mobile-menu";
 import wordmarkSvg from "@/assets/turks-wordmark.svg";
+import logomarkSvg from "@/assets/logomark.svg";
 
 const menu = [
   {
@@ -69,21 +71,31 @@ export function Navbar() {
         </div>
 
         <Link href="/" prefetch={true} className="mx-auto md:mx-0">
-          <div 
-            className="w-[120px] sm:w-[140px]" 
-            style={{ 
-              backgroundColor: '#1D431D',
-              WebkitMaskImage: `url(${wordmarkSvg.src})`,
-              WebkitMaskSize: 'contain',
-              WebkitMaskRepeat: 'no-repeat',
-              WebkitMaskPosition: 'center',
-              maskImage: `url(${wordmarkSvg.src})`,
-              maskSize: 'contain',
-              maskRepeat: 'no-repeat',
-              maskPosition: 'center',
-              aspectRatio: '3/1'
-            }}
-          />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Image
+              src={logomarkSvg.src}
+              alt="Turks logo mark"
+              width={28}
+              height={28}
+              className="h-12 w-12 sm:h-12 sm:w-18"
+              priority
+            />
+            <div 
+              className="w-[120px] sm:w-[140px]" 
+              style={{ 
+                backgroundColor: '#1D431D',
+                WebkitMaskImage: `url(${wordmarkSvg.src})`,
+                WebkitMaskSize: 'contain',
+                WebkitMaskRepeat: 'no-repeat',
+                WebkitMaskPosition: 'center',
+                maskImage: `url(${wordmarkSvg.src})`,
+                maskSize: 'contain',
+                maskRepeat: 'no-repeat',
+                maskPosition: 'center',
+                aspectRatio: '3/1'
+              }}
+            />
+          </div>
         </Link>
 
         <div className="block flex-none md:hidden absolute right-6">

@@ -107,7 +107,7 @@ export function Hero({ product }: HeroProps) {
     scheduleProcess();
   };
 
-  // Ensure we always show the first image when the featured product changes
+  // Ensure we always show the first image when the featured product changes 
   useEffect(() => {
     setSelectedIndex(0);
     setThumbStartIndex(0);

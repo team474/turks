@@ -190,26 +190,33 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
         {/* Main image section - square aspect ratio */}
         <div className="relative w-full aspect-square">
           <AnimatePresence mode="wait" initial={false}>
-            {images[selectedIndex]?.url && (
-              <motion.div
-                key={images[selectedIndex]?.url || String(selectedIndex)}
-                variants={fadeOnly}
-                initial="initial"
-                animate="animate"
-                exit={{ opacity: 0 }}
-                className="absolute inset-0"
-              transition={{ duration: imageFadeDuration, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <Image
-                  src={images[selectedIndex].url}
-                  alt={images[selectedIndex].altText || ''}
-                  height={images[selectedIndex].height}
-                  width={images[selectedIndex].width}
-                  className="size-full object-cover scale-125"
-                  priority
-                />
-              </motion.div>
-            )}
+            {images[selectedIndex]?.url && (() => {
+              const currentImage = images[selectedIndex];
+              const aspectRatio = currentImage.width / currentImage.height;
+              // Portrait images have aspect ratio < 1
+              const isPortrait = aspectRatio < 1;
+              
+              return (
+                <motion.div
+                  key={currentImage.url || String(selectedIndex)}
+                  variants={fadeOnly}
+                  initial="initial"
+                  animate="animate"
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0"
+                  transition={{ duration: imageFadeDuration, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <Image
+                    src={currentImage.url}
+                    alt={currentImage.altText || ''}
+                    height={currentImage.height}
+                    width={currentImage.width}
+                    className={`size-full ${isPortrait ? 'object-contain' : 'object-cover scale-125'}`}
+                    priority
+                  />
+                </motion.div>
+              );
+            })()}
           </AnimatePresence>
           
           {/* Subtle border beam placed last to render above the image */}

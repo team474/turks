@@ -1,8 +1,10 @@
 import { getMenu, getMetaObject } from "@/lib/shopify";
 import type { Menu as MenuType, MetaObject } from "@/lib/shopify/types";
 import Link from "next/link";
+import Image from "next/image";
 import { Icon } from "../Icons";
 import wordmarkSvg from "@/assets/turks-wordmark.svg";
+import logomarkSvg from "@/assets/logomark.svg";
 
 const strains = [
   {
@@ -235,22 +237,32 @@ export async function Footer() {
             animation: 'fadeInUp 1s ease-out, breathe 4s ease-in-out infinite'
           }}
         >
-          {/* Wordmark */}
-          <div 
-            className="w-[240px] md:w-[400px]" 
-            style={{ 
-              backgroundColor: '#1D431D',
-              WebkitMaskImage: `url(${wordmarkSvg.src})`,
-              WebkitMaskSize: 'contain',
-              WebkitMaskRepeat: 'no-repeat',
-              WebkitMaskPosition: 'center',
-              maskImage: `url(${wordmarkSvg.src})`,
-              maskSize: 'contain',
-              maskRepeat: 'no-repeat',
-              maskPosition: 'center',
-              aspectRatio: '3/1'
-            }}
-          />
+          <div className="flex items-center justify-center gap-3 md:gap-4">
+            {/* Logomark */}
+            <Image
+              src={logomarkSvg.src}
+              alt="Turks logo mark"
+              width={133}
+              height={133}
+              className="h-24 w-24 md:h-[160px] md:w-[160px]"
+            />
+            {/* Wordmark */}
+            <div 
+              className="w-[240px] md:w-[400px]" 
+              style={{ 
+                backgroundColor: '#1D431D',
+                WebkitMaskImage: `url(${wordmarkSvg.src})`,
+                WebkitMaskSize: 'contain',
+                WebkitMaskRepeat: 'no-repeat',
+                WebkitMaskPosition: 'center',
+                maskImage: `url(${wordmarkSvg.src})`,
+                maskSize: 'contain',
+                maskRepeat: 'no-repeat',
+                maskPosition: 'center',
+                aspectRatio: '3/1'
+              }}
+            />
+          </div>
         </div>
       </div>
     </footer>

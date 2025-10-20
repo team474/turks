@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { fadeOnly } from '@/lib/animation'
 import { useEffect, useRef, useState } from 'react'
 import { MiniGradientFade } from '@/components/landing-page/MiniGradientFade'
-import { hexToRgb, mixWithBlack, mixWithWhite } from '@/lib/color'
+import { mixWithBlack, mixWithWhite } from '@/lib/color'
 import { BorderBeam } from '@/components/ui/border-beam'
 import wordmarkSvg from "@/assets/turks-wordmark.svg"
 
@@ -94,11 +94,6 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
 
   // Derive overlay visual tokens from provided border color
   const baseColor = borderColorHex || '#1D431D'
-  const overlayBg = (() => {
-    const rgb = hexToRgb(baseColor)
-    if (!rgb) return 'rgba(0,0,0,0.18)'
-    return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.18)`
-  })()
   const overlayText = mixWithBlack(baseColor, 75)
   const chipBg = mixWithWhite(baseColor, 80)
   const chipBorder = mixWithBlack(baseColor, 25)
@@ -148,21 +143,24 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
   return (
     <div className="flex flex-col items-start gap-3 sm:gap-5 w-full">
       <motion.div
-        className="relative rounded-2xl sm:rounded-4xl w-full aspect-square overflow-hidden border"
+        className="relative rounded-2xl sm:rounded-4xl w-full overflow-hidden border flex flex-col"
         style={{ background: gradientOverlay }}
         animate={{ borderColor: mixWithBlack(borderColorHex || '#1D431D', 12) }}
         transition={{ duration: heroFadeDuration, ease: motionEasings.out }}
       >
-        {/* Top overlay with THC and Indica/Sativa split */}
+        {/* Top section with THC and Indica/Sativa split - solid background */}
         {(thc !== null || indica !== null || sativa !== null) && (
           <div
-            className="absolute top-0 left-0 right-0 z-20 p-3 sm:p-4 pointer-events-none"
-            style={{ backgroundColor: overlayBg }}
+            className="relative z-20 px-3 py-2 sm:px-4 sm:py-2.5 border-b"
+            style={{ 
+              backgroundColor: gradientOverlay,
+              borderColor: 'rgba(16, 16, 16, 0.1)'
+            }}
           >
             <div className="flex items-start justify-between gap-3 sm:gap-4 w-full" style={{ color: overlayText }}>
               {thc !== null && (
                 <div
-                  className="pointer-events-auto inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm sm:text-base font-semibold"
+                  className="inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm sm:text-base font-semibold"
                   style={{ backgroundColor: chipBg, borderColor: chipBorder }}
                 >
                   <span>THC</span>
@@ -188,71 +186,83 @@ export function ProductImageGallery({ images, selectedIndex, onSelectIndex, grad
             </div>
           </div>
         )}
-        {/* gradient applied statically via background above */}
-        <AnimatePresence mode="wait" initial={false}>
-          {images[selectedIndex]?.url && (
-            <motion.div
-              key={images[selectedIndex]?.url || String(selectedIndex)}
-              variants={fadeOnly}
-              initial="initial"
-              animate="animate"
-              exit={{ opacity: 0 }}
-              className="absolute inset-0"
-            transition={{ duration: imageFadeDuration, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <Image
-                src={images[selectedIndex].url}
-                alt={images[selectedIndex].altText || ''}
-                height={images[selectedIndex].height}
-                width={images[selectedIndex].width}
-                className="size-full object-cover scale-125"
-                priority
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        {/* Logo watermark in bottom right corner */}
-        <motion.div 
-          className="absolute bottom-5 sm:bottom-8 right-5 sm:right-8 w-32 sm:w-48 z-10 pointer-events-none"
-          animate={{ 
-            backgroundColor: mixWithBlack(borderColorHex || '#1D431D', 50)
-          }}
-          transition={{ duration: heroFadeDuration, ease: motionEasings.out }}
-          style={{
-            WebkitMaskImage: `url(${wordmarkSvg.src})`,
-            WebkitMaskSize: 'contain',
-            WebkitMaskRepeat: 'no-repeat',
-            WebkitMaskPosition: 'center',
-            maskImage: `url(${wordmarkSvg.src})`,
-            maskSize: 'contain',
-            maskRepeat: 'no-repeat',
-            maskPosition: 'center',
-            opacity: 0.6,
-            aspectRatio: '3/1'
-          }}
-        />
         
-        {/* Subtle border beam placed last to render above the image */}
-        <>
-          <BorderBeam
-            size={120}
-            duration={16}
-            borderWidth={1}
-            initialOffset={0}
-            colorFrom={mixWithBlack(borderColorHex || '#1D431D', 28)}
-            colorTo={mixWithBlack(borderColorHex || '#1D431D', 55)}
-            style={{ opacity: 0.6 }}
+        {/* Main image section - square aspect ratio */}
+        <div className="relative w-full aspect-square">
+          <AnimatePresence mode="wait" initial={false}>
+            {images[selectedIndex]?.url && (
+              <motion.div
+                key={images[selectedIndex]?.url || String(selectedIndex)}
+                variants={fadeOnly}
+                initial="initial"
+                animate="animate"
+                exit={{ opacity: 0 }}
+                className="absolute inset-0"
+              transition={{ duration: imageFadeDuration, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <Image
+                  src={images[selectedIndex].url}
+                  alt={images[selectedIndex].altText || ''}
+                  height={images[selectedIndex].height}
+                  width={images[selectedIndex].width}
+                  className="size-full object-cover scale-125"
+                  priority
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+          
+          {/* Subtle border beam placed last to render above the image */}
+          <>
+            <BorderBeam
+              size={120}
+              duration={16}
+              borderWidth={1}
+              initialOffset={0}
+              colorFrom={mixWithBlack(borderColorHex || '#1D431D', 28)}
+              colorTo={mixWithBlack(borderColorHex || '#1D431D', 55)}
+              style={{ opacity: 0.6 }}
+            />
+            <BorderBeam
+              size={120}
+              duration={16}
+              borderWidth={1}
+              initialOffset={50}
+              colorFrom={mixWithBlack(borderColorHex || '#1D431D', 28)}
+              colorTo={mixWithBlack(borderColorHex || '#1D431D', 55)}
+              style={{ opacity: 0.6 }}
+            />
+          </>
+        </div>
+        
+        {/* Logo section at bottom - solid background */}
+        <div 
+          className="relative z-20 px-3 py-2 sm:px-4 sm:py-3 flex items-center justify-end border-t"
+          style={{ 
+            backgroundColor: gradientOverlay,
+            borderColor: 'rgba(16, 16, 16, 0.1)'
+          }}
+        >
+          <motion.div 
+            className="w-24 sm:w-32 pointer-events-none"
+            animate={{ 
+              backgroundColor: mixWithBlack(borderColorHex || '#1D431D', 50)
+            }}
+            transition={{ duration: heroFadeDuration, ease: motionEasings.out }}
+            style={{
+              WebkitMaskImage: `url(${wordmarkSvg.src})`,
+              WebkitMaskSize: 'contain',
+              WebkitMaskRepeat: 'no-repeat',
+              WebkitMaskPosition: 'center',
+              maskImage: `url(${wordmarkSvg.src})`,
+              maskSize: 'contain',
+              maskRepeat: 'no-repeat',
+              maskPosition: 'center',
+              opacity: 0.6,
+              aspectRatio: '3/1'
+            }}
           />
-          <BorderBeam
-            size={120}
-            duration={16}
-            borderWidth={1}
-            initialOffset={50}
-            colorFrom={mixWithBlack(borderColorHex || '#1D431D', 28)}
-            colorTo={mixWithBlack(borderColorHex || '#1D431D', 55)}
-            style={{ opacity: 0.6 }}
-          />
-        </>
+        </div>
       </motion.div>
 
       <div className="flex w-full items-center gap-3 sm:gap-5">

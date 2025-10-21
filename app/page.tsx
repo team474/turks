@@ -6,6 +6,7 @@ import { Hero } from "@/components/landing-page/Hero";
 import { Strains } from "@/components/landing-page/Strains";
 import { StrainsInfo } from "@/components/landing-page/StrainsInfo";
 import { Testimonials } from "@/components/landing-page/Testimonials";
+import { SpecialOffersTab } from "@/components/landing-page/SpecialOffersTab";
 import { getProducts } from "@/lib/shopify";
 import { Metadata } from "next";
 import { Reveal } from "@/components/animation/Reveal";
@@ -97,7 +98,9 @@ export default async function HomePage() {
   } as React.CSSProperties;
 
   return (
-    <div id="cta-color-scope" style={styleVars}>
+    <>
+      <SpecialOffersTab />
+      <div id="cta-color-scope" style={styleVars}>
       <section
         id="strain"
         className="w-full max-w-[1170px] mx-auto p-6 lg:p-4 xl:px-0 lg:py-18"
@@ -204,5 +207,6 @@ export default async function HomePage() {
         </Reveal>
       </section>
     </div>
+    </>
   );
 }

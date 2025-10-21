@@ -3,6 +3,7 @@ import type { Menu as MenuType, MetaObject } from "@/lib/shopify/types";
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "../Icons";
+import { EmailCaptureForm } from "./EmailCaptureForm";
 import wordmarkSvg from "@/assets/turks-wordmark.svg";
 import logomarkSvg from "@/assets/logomark.svg";
 
@@ -139,18 +140,7 @@ export async function Footer() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 w-full">
-            <div className="px-8 py-4 flex-1 rounded-full border border-[#1D431D] bg-[#DBEEC8]">
-              <input
-                type="text"
-                placeholder="Enter your email"
-                className="text-base font-normal leading-[150%] text-[#1D431D] bg-transparent outline-none w-full"
-              />
-            </div>
-            <button className="flex px-8 py-4 justify-center items-center rounded-[48px] bg-[#1D431D]">
-              <Icon.arrowRightIcon className="text-white" />
-            </button>
-          </div>
+          <EmailCaptureForm />
         </div>
 
         <span className="hidden lg:block w-px h-full bg-[rgba(16,16,16,0.10)]" />

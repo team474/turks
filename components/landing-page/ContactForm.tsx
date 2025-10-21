@@ -34,9 +34,33 @@ export function ContactForm({ className }: ContactFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<null | { ok: boolean; error?: string }>(null);
 
+  const formatPhoneNumber = (value: string): string => {
+    // Remove all non-digit characters
+    const digits = value.replace(/\D/g, '');
+    
+    // Format as (XXX) XXX-XXXX
+    if (digits.length <= 3) {
+      return digits;
+    } else if (digits.length <= 6) {
+      return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    } else if (digits.length <= 10) {
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    } else {
+      // Limit to 10 digits for US numbers
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+    }
+  };
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    
+    // Auto-format phone number as user types
+    if (name === 'phone') {
+      const formatted = formatPhoneNumber(value);
+      setForm((prev) => ({ ...prev, [name]: formatted }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -143,12 +167,14 @@ export function ContactForm({ className }: ContactFormProps) {
           <input
             id={phoneId}
             name="phone"
-            type="text"
+            type="tel"
             inputMode="tel"
-            placeholder="Enter Your Phone Number"
+            placeholder="(555) 123-4567"
             value={form.phone}
             onChange={onChange}
+            maxLength={14}
             className="w-full text-base font-normal leading-[150%] text-[#101010] bg-transparent outline-none ring-0"
+            title="US phone number - auto-formatted as you type"
           />
         </div>
 

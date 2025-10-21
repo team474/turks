@@ -42,7 +42,7 @@ export default function page() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
                 <div className="flex flex-col items-start gap-6 md:gap-8">
                   <h2 className="text-xl w-full text-center md:text-left md:text-[28px] leading-[120%] text-[#101010] uppercase font-vast-shadow">
-                    Ready to Start Your Journey?
+                    Send us a message!
                   </h2>
                   <ContactForm />
                 </div>

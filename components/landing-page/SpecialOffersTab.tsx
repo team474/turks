@@ -122,7 +122,7 @@ export function SpecialOffersTab() {
                   Your Discount Code
                 </h3>
                 <p className="text-[#DBEEC8] text-center mb-6 text-sm">
-                  Use this code at checkout to save 10%!
+                  Use this code at checkout to save $10!
                 </p>
                 
                 <div className="bg-white/10 border-2 border-[#DBEEC8] rounded-lg p-6 mb-4">
@@ -152,7 +152,7 @@ export function SpecialOffersTab() {
               // Not subscribed yet - show signup form
               <>
                 <h3 className="text-2xl font-bold text-center mb-2">
-                  Get 10% Off
+                  Get $10 Off
                 </h3>
                 <p className="text-[#DBEEC8] text-center mb-6 text-sm">
                   Join our VIP list for exclusive deals, new strains, and special promotions!
@@ -183,7 +183,7 @@ export function SpecialOffersTab() {
                         Signing Up...
                       </span>
                     ) : (
-                      'Claim My 10% Off'
+                      'Claim My $10 Off'
                     )}
                   </button>
                 </form>
@@ -226,7 +226,7 @@ export function SpecialOffersTab() {
         <div className="flex flex-col items-center gap-2">
           <Gift className="w-5 h-5 sm:w-6 sm:h-6 animate-bounce" />
           <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest [writing-mode:vertical-lr] rotate-180">
-            {hasSubscribed ? 'Your Code' : '10% Off'}
+            {hasSubscribed ? 'Your Code' : '$10 Off'}
           </span>
         </div>
       </button>
